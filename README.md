@@ -179,7 +179,7 @@ Each notebook is self-contained with explanations, code, and verification checkp
 | Remediation workflow | Full lifecycle (detect -> log -> quarantine -> resolve) | Usually just detection |
 | Real dbt | Deployed in Snowflake (`EXECUTE DBT PROJECT`) | External dbt CLI |
 
-> **Note on dbt:** This lab provides a pre-built dbt project (`dbt/corp_dq_gold/`) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs.
+> **Note on dbt:** This lab provides a pre-built dbt project (`dbt/corp_dq_gold/`) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs. **Want to learn how the project was built?** See [guide/APPENDIX_DBT_DEVELOPMENT.md](guide/APPENDIX_DBT_DEVELOPMENT.md).
 
 ## Who Is This For
 
@@ -234,7 +234,8 @@ Each notebook is self-contained with explanations, code, and verification checkp
 │   ├── STUDENT_GUIDE.html              #   Same content, rich visual rendering
 │   ├── PREREQUISITES.md                #   Trial account, CLI install, workspace setup
 │   ├── WORKSHOP_CARDS.md               #   One-page summary per module
-│   └── LAB_MAP.md                      #   Flow diagram + learning paths
+│   ├── LAB_MAP.md                      #   Flow diagram + learning paths
+│   └── APPENDIX_DBT_DEVELOPMENT.md     #   How we built the dbt project (tutorial)
 │
 ├── facilitator/                        # Instructor materials
 │   └── FACILITATOR_NOTES.md            #   Teaching tips, timing, common issues
