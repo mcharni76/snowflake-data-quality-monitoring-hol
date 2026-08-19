@@ -70,7 +70,7 @@ Source Systems          Bronze              Silver                 Gold         
 
 ```bash
 # 1. Clone
-git clone https://github.com/mcharni/snowflake-data-quality-monitoring-hol.git
+git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
 cd snowflake-data-quality-monitoring-hol
 
 # 2. Setup Snowflake (requires ACCOUNTADMIN)
@@ -144,7 +144,7 @@ snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
 
 ## Publishing & Contributing
 
-**Repository:** [github.com/mcharni/snowflake-data-quality-monitoring-hol](https://github.com/mcharni/snowflake-data-quality-monitoring-hol)
+**Repository:** [github.com/mcharni76/snowflake-data-quality-monitoring-hol](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol)
 
 Contributions welcome. To contribute:
 1. Fork the repo
