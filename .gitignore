@@ -10,4 +10,3 @@ target/
 dbt_packages/
 logs/
 .user.yml
-.github/workflows/validate.yml

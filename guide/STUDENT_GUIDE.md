@@ -89,7 +89,7 @@ Every DQ check in this lab maps to one of 7 domains. Understanding these domains
 
 ## Module 0: Environment Setup
 
-**Duration:** 30 min
+**Duration:** 20 min
 
 ### What You Will Build
 
@@ -298,7 +298,7 @@ Module 4 includes a Python cell that queries all expectation results and generat
 
 ## Module 5: AI/ML-Powered Data Quality
 
-**Duration:** 60 min
+**Duration:** 75 min
 
 ### Key Concept: AI-Augmented Quality
 

@@ -311,7 +311,7 @@ li { margin-bottom: 0.4rem; }
 <h3>What You Will Build</h3>
 <ul>
 <li>Database <code>CORP_DWH</code> with Medallion schemas (RAW, SILVER, GOLD, DQ)</li>
-<li>Roles: <code>CORP_DWH_ADMIN</code> (lab exercises) and <code>CORP_DWH_STEWARD</code> (production pattern)</li>
+<li>Roles: <code>CORP_DQ_ADMIN</code> (lab exercises) and <code>CORP_DQ_STEWARD</code> (production pattern)</li>
 <li>Sample data with intentional DQ issues seeded across all layers</li>
 <li>Notification integration for email alerts</li>
 </ul>
@@ -327,28 +327,25 @@ li { margin-bottom: 0.4rem; }
 <h3>Expected Output (Verification Cell)</h3>
 <pre><code>TABLE_NAME                  | ROW_COUNT
 ----------------------------|----------
-GOLD.DIM_CUSTOMER           | 18-20
-GOLD.FACT_TRANSACTIONS      | 500
-RAW.STG_CUSTOMERS_CRM       | 6
-RAW.STG_CUSTOMERS_ERP       | 6
-RAW.STG_GOV_PORTAL        | 3
-RAW.STG_TRANSACTIONS        | 6
-SILVER.INT_CUSTOMERS        | 16
-SILVER.INT_TRANSACTIONS     | 500</code></pre>
+RAW.STG_CUSTOMERS_CRM       | 25
+RAW.STG_CUSTOMERS_ERP       | 30
+RAW.STG_GOV_PORTAL          | 10
+RAW.STG_TRANSACTIONS        | 50</code></pre>
 
 <h3>Intentional DQ Issues</h3>
 <table>
 <tr><th>Issue</th><th>Location</th><th>Why It Matters</th></tr>
-<tr><td>NULL National IDs</td><td>CRM feed (3 records)</td><td>Field not mandatory in Salesforce</td></tr>
-<tr><td>Invalid National IDs</td><td>Gov Portal / GOSI (all 3 records)</td><td>OCR errors: too short, too long, contains letters</td></tr>
+<tr><td>NULL National IDs</td><td>CRM feed (10 records)</td><td>Field not mandatory in Salesforce</td></tr>
+<tr><td>Invalid National IDs</td><td>Gov Portal / GOSI (3 records)</td><td>OCR errors: too short, too long, contains letters</td></tr>
 <tr><td>Blank CUSTOMER_REF</td><td>Transactions row 5</td><td>Empty string -- NULL_COUNT won't catch it!</td></tr>
 <tr><td>Duplicate customers</td><td>CRM + ERP overlap</td><td>Same person, different source emails</td></tr>
 <tr><td>Stale record</td><td>Transaction row 4</td><td>Loaded 3 days ago, SLA is 2 hours</td></tr>
-<tr><td>Invalid IBANs</td><td>Silver layer</td><td>"INVALID_IBAN" and "SA12345" (too short)</td></tr>
+<tr><td>Negative amount</td><td>Transaction row 6</td><td>Incorrectly coded refund</td></tr>
+<tr><td>Outlier amounts</td><td>Transactions rows 48-50</td><td>SAR 87K-92K (anomaly detection)</td></tr>
 </table>
 
 <div class="tip-box">
-<strong>Tip:</strong> After setup, switch to <code>CORP_DWH_ADMIN</code> role for all remaining modules. You should NOT need ACCOUNTADMIN again.
+<strong>Tip:</strong> After setup, switch to <code>CORP_DQ_ADMIN</code> role for all remaining modules. You should NOT need ACCOUNTADMIN again.
 </div>
 </div>
 </div>
@@ -649,7 +646,7 @@ THEN
 <table>
 <tr><th>Issue</th><th>Cause</th><th>Fix</th></tr>
 <tr><td>Empty DQ results</td><td>DMFs haven't run yet</td><td>Wait 1-2 min, or manually trigger with INSERT/UPDATE on the table</td></tr>
-<tr><td>"Insufficient privileges"</td><td>Wrong role</td><td><code>USE ROLE CORP_DWH_ADMIN;</code></td></tr>
+<tr><td>"Insufficient privileges"</td><td>Wrong role</td><td><code>USE ROLE CORP_DQ_ADMIN;</code></td></tr>
 <tr><td>"Data metric function not found"</td><td>DMF not created yet</td><td>Run Module 2 before Module 3/4</td></tr>
 <tr><td>Cortex AI error</td><td>Cross-region not enabled</td><td><code>ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';</code></td></tr>
 <tr><td>Alert not firing</td><td>Alert is suspended</td><td><code>ALTER ALERT alert_name RESUME;</code></td></tr>

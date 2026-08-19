@@ -11,10 +11,10 @@ One-page summary per module. Use as printed handouts, slide deck overview, or qu
 | **Duration** | 20 min |
 | **Role** | ACCOUNTADMIN |
 | **Domain** | Infrastructure |
-| **What you build** | Medallion architecture (RAW/SILVER/GOLD/DQ schemas), 2 roles, 4 source tables with 21 rows of seeded data |
+| **What you build** | Medallion architecture (RAW/SILVER/GOLD/DQ schemas), 2 roles, 4 source tables with 115 rows of seeded data |
 | **Key concept** | Each source system has different quality characteristics -- DQ starts with understanding your sources |
 | **Prerequisite** | ACCOUNTADMIN access, Enterprise Edition |
-| **Checkpoint** | 4 RAW tables: ERP (6), CRM (6), Gov Portal (3), Bank (6) |
+| **Checkpoint** | 4 RAW tables: ERP (30), CRM (25), Gov Portal (10), Bank (50) |
 
 ---
 
@@ -28,7 +28,7 @@ One-page summary per module. Use as printed handouts, slide deck overview, or qu
 | **What you build** | 2 Dynamic Tables (RAW->Silver), real dbt project deployed in Snowflake (Silver->Gold), 3 Gold views |
 | **Key concept** | Hybrid pattern: DT for "keep it fresh" (auto-refresh), dbt for "keep it correct" (governed, tested) |
 | **Prerequisite** | Module 0 + `snow` CLI installed |
-| **Checkpoint** | INT_CUSTOMERS (15 rows), INT_TRANSACTIONS (6 rows), DIM_CUSTOMER (deduplicated), dbt tests pass |
+| **Checkpoint** | INT_CUSTOMERS (65 rows), INT_TRANSACTIONS (50 rows), DIM_CUSTOMER (deduplicated), dbt tests pass |
 
 ---
 

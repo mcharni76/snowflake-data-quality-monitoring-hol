@@ -5,7 +5,7 @@
 **Duration:** Full day (~11 hours with all modules + breaks; see "Short on Time" below)
 **Format:** Instructor-led, hands-on workshop
 **Participants:** 4-12 (optimal: 6-8)
-**Repository:** github.com/mcharni/snowflake-data-quality-monitoring-hol
+**Repository:** github.com/mcharni76/snowflake-data-quality-monitoring-hol
 **Database:** CORP_DWH | **Roles:** CORP_DQ_ADMIN, CORP_DQ_STEWARD
 
 ---
