@@ -101,7 +101,7 @@ li { margin-bottom: 0.4rem; }
 <li><strong>Snowflake Trial Account</strong> &mdash; Sign up at <a href="https://signup.snowflake.com/" target="_blank">signup.snowflake.com</a>. Choose <strong>Enterprise Edition</strong>. Any cloud/region works (for KSA: GCP Dammam if available).</li>
 <li><strong>Snowflake CLI (<code>snow</code>)</strong> &mdash; Install: <code>brew install snowflake-cli</code> (macOS) or <code>pip install snowflake-cli</code> (all platforms). Verify: <code>snow --version</code></li>
 <li><strong>CLI Connection</strong> &mdash; Run <code>snow connection add</code> and enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Test: <code>snow connection test</code></li>
-<li><strong>Notebook Workspace</strong> &mdash; In Snowsight, go to <strong>Projects &gt; Notebooks</strong>, click <strong>+ Notebook &gt; Import .ipynb</strong>, and upload all 15 notebooks from the <code>notebooks/</code> folder.</li>
+<li><strong>Notebook Workspace</strong> &mdash; In Snowsight, go to <strong>Workspaces</strong> (left sidebar), create a folder (e.g., <code>DQ_Lab</code>), then click <strong>+ &gt; Upload File</strong> and upload all 15 <code>.ipynb</code> notebooks from the <code>notebooks/</code> folder.</li>
 <li><strong>Warehouse</strong> &mdash; Create one if needed: <code>CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE='XSMALL';</code></li>
 </ol>
 <p style="margin-top:1rem;color:var(--sf-text-muted);">Detailed step-by-step instructions: see <code>guide/PREREQUISITES.md</code> in the lab repository.</p>
@@ -117,16 +117,16 @@ li { margin-bottom: 0.4rem; }
   <!-- RAW -->
   <rect x="30" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>
   <text x="117" y="85" text-anchor="middle" fill="#29B5E8" font-size="12" font-weight="bold" font-family="system-ui">RAW (Bronze)</text>
-  <text x="117" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_ERP (6)</text>
-  <text x="117" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_CRM (6)</text>
-  <text x="117" y="146" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_GOV_PORTAL (3)</text>
-  <text x="117" y="164" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_TRANSACTIONS (6)</text>
+  <text x="117" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_ERP (30)</text>
+  <text x="117" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_CRM (25)</text>
+  <text x="117" y="146" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_GOV_PORTAL (10)</text>
+  <text x="117" y="164" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_TRANSACTIONS (50)</text>
 
   <!-- SILVER -->
   <rect x="220" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>
   <text x="307" y="85" text-anchor="middle" fill="#29B5E8" font-size="12" font-weight="bold" font-family="system-ui">SILVER</text>
-  <text x="307" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_CUSTOMERS (16)</text>
-  <text x="307" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_TRANSACTIONS (500)</text>
+  <text x="307" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_CUSTOMERS (65)</text>
+  <text x="307" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_TRANSACTIONS (50)</text>
 
   <!-- GOLD -->
   <rect x="410" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>

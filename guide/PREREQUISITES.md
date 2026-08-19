@@ -30,28 +30,33 @@ Your trial includes:
 
 ## Appendix B: Set Up a Snowflake Notebook Workspace
 
-Snowflake Notebooks run inside Snowsight (the Snowflake web UI). No local Jupyter installation needed.
+Snowflake Notebooks run inside **Workspaces** in Snowsight (the Snowflake web UI). No local Jupyter installation needed.
 
-### Create a Notebook from the Lab Files
+> **What is a Workspace?** A Workspace is a file-based development environment in Snowsight where you can organize notebooks, SQL files, and Python files into folders. Each user gets a personal "My Workspace" automatically.
+
+### Import Lab Notebooks into Your Workspace
 
 1. Log into Snowsight at your account URL
-2. Navigate to **Projects > Notebooks** in the left sidebar
-3. Click **+ Notebook** (top right)
-4. Choose **Import .ipynb file**
-5. Upload `0_SETUP.ipynb` from the `notebooks/` folder
-6. Set:
-   - **Database:** Leave blank (we create CORP_DWH in the notebook)
-   - **Warehouse:** COMPUTE_WH (or create one: `CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE = 'XSMALL'`)
+2. Select **Workspaces** from the left sidebar (or navigate to it from the top navigation)
+3. In your default workspace ("My Workspace"), create a folder for the lab:
+   - Click the **+** button in the file explorer (left panel) and select **New Folder**
+   - Name it `DQ_Lab`
+4. Upload all 15 notebooks into the folder:
+   - Click the **+** button again and select **Upload File**
+   - Select all `.ipynb` files from the `notebooks/` folder (you can multi-select)
+   - The files appear in your workspace file explorer
+5. Open `0_SETUP.ipynb` by clicking on it — it opens as a notebook tab in the editor
+6. Set the execution context using the **role and warehouse picker** (top-left of the notebook editor):
    - **Role:** ACCOUNTADMIN (for Module 0 only)
-7. Click **Create**
-8. Repeat steps 3-7 for each notebook (0B, 1, 1B, 2, 3, 4, 4B, 5, 6, 7, 8A/B/C, 9)
+   - **Warehouse:** COMPUTE_WH (or create one: `CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE = 'XSMALL'`)
 
 ### Tips
 
-- Upload all 15 notebooks at the start so you can switch between them easily
-- After Module 0, switch the notebook role to `CORP_DQ_ADMIN` (top-right role selector)
-- Each notebook is independent -- you can close and reopen without losing state (objects persist in Snowflake)
-- If a notebook disconnects, just reconnect -- your database objects are still there
+- Upload all 15 notebooks at the start so you can switch between them using the file explorer
+- After Module 0, switch the notebook role to `CORP_DQ_ADMIN` (top-left role picker)
+- Each notebook is independent — you can close and reopen without losing state (objects persist in Snowflake)
+- The notebook kernel stays active even if you navigate away or close your browser
+- Use the **minimap** (right side) for quick navigation between cells within a notebook
 
 ---
 
