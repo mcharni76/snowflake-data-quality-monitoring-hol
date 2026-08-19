@@ -52,18 +52,63 @@ A complete DQ lifecycle from raw data landing to executive dashboard:
 
 ## Architecture
 
-```
-Source Systems          Bronze              Silver                 Gold                  DQ Layer
-+-----------+       +----------+       +----------------+     +---------------+     +----------------+
-| SAP ERP   |------>| STG_ERP  |       |                |     |               |     | RULES_CATALOG  |
-| Salesforce|------>| STG_CRM  |--DT-->| INT_CUSTOMERS  |--+  | DIM_CUSTOMER  |     | DQ_ISSUES_LOG  |
-| Gov Portal|------>| STG_GOV  |       | INT_TRANS      |  |  | FACT_TRANS    |     | DQ_SWEEP_LOG   |
-| Bank Feed |------>| STG_TXN  |       +----------------+  |  +---------------+     +----------------+
-+-----------+       +----------+        (auto-refresh)     |         ^                      |
-                         |                                 |    snow dbt deploy         DMFs + Expectations
-                    System DMFs                       Custom DMFs     |                       |
-                    (Module 1)                        (Module 2)      +--- dbt tests ---------+
-                                                                          (build-time)    (continuous)
+```mermaid
+flowchart LR
+    subgraph sources [Source Systems]
+        ERP[SAP ERP]
+        CRM[Salesforce]
+        GOV[Gov Portal]
+        BANK[Bank Feed]
+    end
+
+    subgraph bronze [RAW - Bronze]
+        STG_ERP[STG_CUSTOMERS_ERP]
+        STG_CRM[STG_CUSTOMERS_CRM]
+        STG_GOV[STG_GOV_PORTAL]
+        STG_TXN[STG_TRANSACTIONS]
+    end
+
+    subgraph silver [SILVER - Dynamic Tables]
+        INT_CUST[INT_CUSTOMERS]
+        INT_TXN[INT_TRANSACTIONS]
+    end
+
+    subgraph gold [GOLD - dbt in Snowflake]
+        DIM[DIM_CUSTOMER]
+        FACT[FACT_TRANSACTIONS]
+        VIEWS[Gold Views]
+    end
+
+    subgraph dq [DQ Layer]
+        CATALOG[RULES_CATALOG]
+        ISSUES[DQ_ISSUES_LOG]
+        SWEEP[DQ_SWEEP_LOG]
+        DMFS[Custom DMFs]
+        AI[Cortex AI]
+    end
+
+    ERP --> STG_ERP
+    CRM --> STG_CRM
+    GOV --> STG_GOV
+    BANK --> STG_TXN
+
+    STG_ERP --> INT_CUST
+    STG_CRM --> INT_CUST
+    STG_GOV --> INT_CUST
+    STG_TXN --> INT_TXN
+
+    INT_CUST --> DIM
+    INT_TXN --> FACT
+    DIM --> VIEWS
+    FACT --> VIEWS
+
+    CATALOG --> DMFS
+    AI --> CATALOG
+    DMFS -.->|monitor| STG_ERP
+    DMFS -.->|monitor| INT_CUST
+    DMFS -.->|monitor| DIM
+    DMFS -.->|"alert on failure"| ISSUES
+    ISSUES --> SWEEP
 ```
 
 ## Quick Start
@@ -103,7 +148,6 @@ snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
 ## Who Is This For
 
 - **SI Partners** implementing DQ for enterprise customers
-- **Snowflake SEs** running customer workshops and demos
 - **Data Engineers** building quality frameworks on Snowflake
 - **Data Stewards** learning self-service rule management
 - **Analytics Engineers** combining dbt tests with continuous DMF monitoring
