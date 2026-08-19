@@ -151,26 +151,17 @@ snow connection test           # should show "Connection test successful"
 3. Run all cells top to bottom
 4. Verify the final cell shows: ERP=30, CRM=25, GOV=10, TXN=50
 
-### Step 6: Deploy the dbt project
-
-```bash
-cd dbt/corp_dq_gold
-snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
-```
-
-### Step 7: Run Module 0B (Pipeline)
-
-1. Open `0B_DATA_PIPELINE.ipynb`
-2. Switch role to **CORP_DQ_ADMIN** (top-left picker)
-3. Run all cells -- this creates Dynamic Tables and executes the dbt project
-
-### Step 8: Continue through modules in order
+### Step 6: Continue through modules in order
 
 ```
 0 -> 0B -> 1 -> 1B -> 2 -> 3 -> 4 -> 4B -> 5 -> 6 -> 7 -> 8A/B/C -> 9
 ```
 
 Each notebook is self-contained with explanations, code, and verification checkpoints.
+
+> **dbt deploy:** Module 0B will instruct you to deploy the dbt project from your terminal when you reach that step. Don't do it upfront -- the notebook explains what you're deploying and why.
+>
+> **After Module 0:** Switch role to `CORP_DQ_ADMIN` for all remaining modules. You won't need ACCOUNTADMIN again.
 
 > **Detailed prerequisites:** See [guide/PREREQUISITES.md](guide/PREREQUISITES.md) for trial account signup, troubleshooting, and more.
 >
@@ -187,6 +178,8 @@ Each notebook is self-contained with explanations, code, and verification checkp
 | Cost visibility | Built-in (Module 1B) | Rarely addressed |
 | Remediation workflow | Full lifecycle (detect -> log -> quarantine -> resolve) | Usually just detection |
 | Real dbt | Deployed in Snowflake (`EXECUTE DBT PROJECT`) | External dbt CLI |
+
+> **Note on dbt:** This lab provides a pre-built dbt project (`dbt/corp_dq_gold/`) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs.
 
 ## Who Is This For
 
