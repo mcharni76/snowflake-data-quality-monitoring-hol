@@ -1,0 +1,69 @@
+version: 2
+
+sources:
+  - name: silver
+    database: CORP_DWH
+    schema: SILVER
+    description: "Silver layer Dynamic Tables (auto-refreshing from RAW)"
+    tables:
+      - name: INT_CUSTOMERS
+        description: "Unified customer table from 3 source systems"
+      - name: INT_TRANSACTIONS
+        description: "Parsed and typed transactions from bank feed"
+
+models:
+  - name: stg_silver_customers
+    description: "Staging view over Silver customers for dbt lineage tracking"
+
+  - name: stg_silver_transactions
+    description: "Staging view over Silver transactions for dbt lineage tracking"
+
+  - name: dim_customer
+    description: "Deduplicated customer dimension - one row per unique customer"
+    columns:
+      - name: CUSTOMER_ID
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: NATIONAL_ID
+        description: "Saudi National ID (10 digits, starts with 1 or 2)"
+        tests:
+          - unique:
+              where: "NATIONAL_ID IS NOT NULL"
+      - name: EMAIL
+        description: "Customer email address"
+        tests:
+          - not_null
+      - name: SOURCE_SYSTEM
+        description: "Origin system (ERP, CRM, GOV_PORTAL)"
+        tests:
+          - accepted_values:
+              values: ['ERP', 'CRM', 'GOV_PORTAL']
+      - name: DQ_SCORE
+        description: "Data quality score (0-100) computed in Silver layer"
+
+  - name: fact_transactions
+    description: "Valid financial transactions joined to customer dimension"
+    columns:
+      - name: TXN_ID
+        description: "Surrogate key"
+        tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_ID
+        description: "FK to dim_customer"
+        tests:
+          - relationships:
+              to: ref('dim_customer')
+              field: CUSTOMER_ID
+              where: "CUSTOMER_ID IS NOT NULL"
+      - name: AMOUNT
+        description: "Transaction amount in SAR"
+        tests:
+          - not_null
+      - name: TXN_TYPE
+        description: "Transaction type"
+        tests:
+          - accepted_values:
+              values: ['PAYMENT', 'INVOICE', 'TRANSFER', 'REFUND']

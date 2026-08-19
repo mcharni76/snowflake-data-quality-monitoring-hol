@@ -1,0 +1,9 @@
+corp_dq_gold:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      database: CORP_DWH
+      schema: GOLD
+      warehouse: COMPUTE_WH
+      role: CORP_DQ_ADMIN

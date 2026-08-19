@@ -1,0 +1,12 @@
+# Snowflake DQ HOL
+.env
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+credentials.json
+connections.toml
+.snowflake/
+target/
+dbt_packages/
+logs/
+.user.yml

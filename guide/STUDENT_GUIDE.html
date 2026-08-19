@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Quality Monitoring with Snowflake - Student Guide</title>
+<style>
+:root {
+    --sf-blue: #29B5E8;
+    --sf-dark-blue: #1B9CD8;
+    --sf-navy: #0D2B4A;
+    --sf-dark-bg: #0f1923;
+    --sf-card-bg: #162230;
+    --sf-border: #1e3a52;
+    --sf-text: #e8edf3;
+    --sf-text-muted: #8899aa;
+    --sf-success: #4CAF50;
+    --sf-warning: #FF9800;
+    --sf-error: #f44336;
+    --sf-code-bg: #0d1b26;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: var(--font-sans);
+    background: var(--sf-dark-bg);
+    color: var(--sf-text);
+    line-height: 1.7;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+h1 { color: var(--sf-blue); font-size: 2.2rem; margin-bottom: 0.5rem; border-bottom: 2px solid var(--sf-blue); padding-bottom: 0.5rem; }
+h2 { color: var(--sf-blue); font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 1rem; }
+h3 { color: var(--sf-dark-blue); font-size: 1.2rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+p { margin-bottom: 1rem; }
+a { color: var(--sf-blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+th { background: var(--sf-navy); color: var(--sf-blue); text-align: left; padding: 0.75rem; border: 1px solid var(--sf-border); }
+td { padding: 0.75rem; border: 1px solid var(--sf-border); background: var(--sf-card-bg); }
+tr:hover td { background: #1a2d3f; }
+code { font-family: var(--font-mono); background: var(--sf-code-bg); padding: 0.2rem 0.4rem; border-radius: 3px; font-size: 0.85rem; color: var(--sf-blue); }
+pre { background: var(--sf-code-bg); border: 1px solid var(--sf-border); border-radius: 6px; padding: 1.2rem; overflow-x: auto; margin: 1rem 0; position: relative; }
+pre code { background: none; padding: 0; color: var(--sf-text); font-size: 0.82rem; line-height: 1.6; }
+.copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--sf-navy); color: var(--sf-blue); border: 1px solid var(--sf-border); padding: 0.25rem 0.5rem; border-radius: 3px; cursor: pointer; font-size: 0.7rem; }
+.copy-btn:hover { background: var(--sf-blue); color: white; }
+blockquote { border-left: 4px solid var(--sf-blue); background: var(--sf-card-bg); padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 6px 6px 0; }
+ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+.module { background: var(--sf-card-bg); border: 1px solid var(--sf-border); border-radius: 8px; margin: 1.5rem 0; overflow: hidden; }
+.module-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; cursor: pointer; background: var(--sf-navy); transition: background 0.2s; }
+.module-header:hover { background: #0f3356; }
+.module-header h2 { margin: 0; font-size: 1.2rem; }
+.module-header .duration { color: var(--sf-text-muted); font-size: 0.85rem; }
+.module-header .toggle { color: var(--sf-blue); font-size: 1.2rem; transition: transform 0.3s; }
+.module-content { padding: 1.5rem; display: none; }
+.module.open .module-content { display: block; }
+.module.open .toggle { transform: rotate(90deg); }
+.badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 3px; font-size: 0.75rem; font-weight: 600; }
+.badge-critical { background: var(--sf-error); color: white; }
+.badge-high { background: var(--sf-warning); color: black; }
+.badge-medium { background: var(--sf-blue); color: white; }
+.badge-low { background: #455a64; color: white; }
+.prereq-box { background: #1a2d20; border: 1px solid #2e7d32; border-radius: 6px; padding: 1.2rem; margin: 1rem 0; }
+.tip-box { background: #1a2a3d; border: 1px solid var(--sf-blue); border-radius: 6px; padding: 1.2rem; margin: 1rem 0; }
+.warning-box { background: #2d2a1a; border: 1px solid var(--sf-warning); border-radius: 6px; padding: 1.2rem; margin: 1rem 0; }
+.arch-diagram { background: var(--sf-code-bg); border: 1px solid var(--sf-border); border-radius: 6px; padding: 1.5rem; margin: 1rem 0; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4; white-space: pre; overflow-x: auto; }
+.toc { background: var(--sf-card-bg); border: 1px solid var(--sf-border); border-radius: 8px; padding: 1.5rem; margin: 2rem 0; }
+.toc h3 { color: var(--sf-blue); margin-bottom: 1rem; }
+.toc ol { counter-reset: toc-counter -1; }
+.toc li { counter-increment: toc-counter; list-style: none; padding: 0.4rem 0; border-bottom: 1px solid var(--sf-border); }
+.toc li:last-child { border-bottom: none; }
+.toc li::before { content: "Module " counter(toc-counter) ": "; color: var(--sf-blue); font-weight: 600; }
+.glossary dt { color: var(--sf-blue); font-weight: 600; margin-top: 0.8rem; }
+.glossary dd { margin-left: 1.5rem; color: var(--sf-text-muted); margin-bottom: 0.5rem; }
+.header-meta { color: var(--sf-text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+@media print {
+    body { background: white; color: black; }
+    .module-content { display: block !important; }
+    .copy-btn { display: none; }
+    pre { border: 1px solid #ccc; }
+    code { color: #0066cc; }
+    .module-header { background: #f0f0f0; }
+}
+@media (max-width: 768px) {
+    body { padding: 1rem; }
+    pre { font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<h1>Data Quality Monitoring with Snowflake</h1>
+<p class="header-meta">Hands-On Workshop | 4-8 hours (track-dependent) | Snowflake Enterprise Edition</p>
+
+<div class="prereq-box">
+<h3>Prerequisites (Complete Before Workshop Day)</h3>
+<ol>
+<li><strong>Snowflake Trial Account</strong> &mdash; Sign up at <a href="https://signup.snowflake.com/" target="_blank">signup.snowflake.com</a>. Choose <strong>Enterprise Edition</strong>. Any cloud/region works (for KSA: GCP Dammam if available).</li>
+<li><strong>Snowflake CLI (<code>snow</code>)</strong> &mdash; Install: <code>brew install snowflake-cli</code> (macOS) or <code>pip install snowflake-cli</code> (all platforms). Verify: <code>snow --version</code></li>
+<li><strong>CLI Connection</strong> &mdash; Run <code>snow connection add</code> and enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Test: <code>snow connection test</code></li>
+<li><strong>Notebook Workspace</strong> &mdash; In Snowsight, go to <strong>Projects &gt; Notebooks</strong>, click <strong>+ Notebook &gt; Import .ipynb</strong>, and upload all 15 notebooks from the <code>notebooks/</code> folder.</li>
+<li><strong>Warehouse</strong> &mdash; Create one if needed: <code>CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE='XSMALL';</code></li>
+</ol>
+<p style="margin-top:1rem;color:var(--sf-text-muted);">Detailed step-by-step instructions: see <code>guide/PREREQUISITES.md</code> in the lab repository.</p>
+</div>
+
+<h2>Architecture Overview</h2>
+
+<svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;margin:1rem auto;display:block;">
+  <!-- Background -->
+  <rect x="10" y="10" width="780" height="300" rx="12" fill="#0d1b26" stroke="#1e3a52" stroke-width="1.5"/>
+  <text x="400" y="40" text-anchor="middle" fill="#29B5E8" font-size="14" font-weight="bold" font-family="system-ui">CORP_DWH Database</text>
+
+  <!-- RAW -->
+  <rect x="30" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>
+  <text x="117" y="85" text-anchor="middle" fill="#29B5E8" font-size="12" font-weight="bold" font-family="system-ui">RAW (Bronze)</text>
+  <text x="117" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_ERP (6)</text>
+  <text x="117" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_CUSTOMERS_CRM (6)</text>
+  <text x="117" y="146" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_GOV_PORTAL (3)</text>
+  <text x="117" y="164" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">STG_TRANSACTIONS (6)</text>
+
+  <!-- SILVER -->
+  <rect x="220" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>
+  <text x="307" y="85" text-anchor="middle" fill="#29B5E8" font-size="12" font-weight="bold" font-family="system-ui">SILVER</text>
+  <text x="307" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_CUSTOMERS (16)</text>
+  <text x="307" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">INT_TRANSACTIONS (500)</text>
+
+  <!-- GOLD -->
+  <rect x="410" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1"/>
+  <text x="497" y="85" text-anchor="middle" fill="#29B5E8" font-size="12" font-weight="bold" font-family="system-ui">GOLD</text>
+  <text x="497" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">DIM_CUSTOMER (20)</text>
+  <text x="497" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">FACT_TRANSACTIONS (500)</text>
+  <text x="497" y="146" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">Views (3)</text>
+
+  <!-- DQ -->
+  <rect x="600" y="60" width="175" height="230" rx="8" fill="#162230" stroke="#FF9800" stroke-width="1.5"/>
+  <text x="687" y="85" text-anchor="middle" fill="#FF9800" font-size="12" font-weight="bold" font-family="system-ui">DQ (Quality Ops)</text>
+  <text x="687" y="110" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">RULES_CATALOG</text>
+  <text x="687" y="128" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">Custom DMFs</text>
+  <text x="687" y="146" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">Procedures</text>
+  <text x="687" y="164" text-anchor="middle" fill="#8899aa" font-size="10" font-family="monospace">Alerts &amp; Tasks</text>
+
+  <!-- Flow arrows -->
+  <defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#29B5E8"/></marker></defs>
+  <line x1="205" y1="260" x2="220" y2="260" stroke="#29B5E8" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="395" y1="260" x2="410" y2="260" stroke="#29B5E8" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- DQ arrows (vertical down from DQ to each layer) -->
+  <line x1="640" y1="270" x2="117" y2="270" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="640" y1="275" x2="307" y2="275" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,3"/>
+  <line x1="640" y1="280" x2="497" y2="280" stroke="#FF9800" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="400" y="298" text-anchor="middle" fill="#FF9800" font-size="9" font-family="system-ui">DMFs monitor all layers</text>
+</svg>
+
+<h2>DQ Monitoring Lifecycle</h2>
+
+<svg viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:800px;margin:1rem auto;display:block;">
+  <defs><marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#29B5E8"/></marker></defs>
+
+  <!-- Step 1 -->
+  <rect x="10" y="30" width="130" height="60" rx="8" fill="#162230" stroke="#4CAF50" stroke-width="1.5"/>
+  <text x="75" y="55" text-anchor="middle" fill="#4CAF50" font-size="11" font-weight="bold" font-family="system-ui">Data Lands</text>
+  <text x="75" y="72" text-anchor="middle" fill="#8899aa" font-size="9" font-family="system-ui">auto / batch</text>
+
+  <!-- Arrow 1-2 -->
+  <line x1="140" y1="60" x2="160" y2="60" stroke="#29B5E8" stroke-width="2" marker-end="url(#arr2)"/>
+
+  <!-- Step 2 -->
+  <rect x="162" y="30" width="130" height="60" rx="8" fill="#162230" stroke="#29B5E8" stroke-width="1.5"/>
+  <text x="227" y="55" text-anchor="middle" fill="#29B5E8" font-size="11" font-weight="bold" font-family="system-ui">DMFs Execute</text>
+  <text x="227" y="72" text-anchor="middle" fill="#8899aa" font-size="9" font-family="system-ui">serverless</text>
+
+  <!-- Arrow 2-3 -->
+  <line x1="292" y1="60" x2="312" y2="60" stroke="#29B5E8" stroke-width="2" marker-end="url(#arr2)"/>
+
+  <!-- Step 3 -->
+  <rect x="314" y="30" width="130" height="60" rx="8" fill="#162230" stroke="#FF9800" stroke-width="1.5"/>
+  <text x="379" y="55" text-anchor="middle" fill="#FF9800" font-size="11" font-weight="bold" font-family="system-ui">Expectations</text>
+  <text x="379" y="72" text-anchor="middle" fill="#8899aa" font-size="9" font-family="system-ui">PASS / FAIL</text>
+
+  <!-- Arrow 3-4 -->
+  <line x1="444" y1="60" x2="464" y2="60" stroke="#29B5E8" stroke-width="2" marker-end="url(#arr2)"/>
+
+  <!-- Step 4 -->
+  <rect x="466" y="30" width="130" height="60" rx="8" fill="#162230" stroke="#f44336" stroke-width="1.5"/>
+  <text x="531" y="55" text-anchor="middle" fill="#f44336" font-size="11" font-weight="bold" font-family="system-ui">Alerts Fire</text>
+  <text x="531" y="72" text-anchor="middle" fill="#8899aa" font-size="9" font-family="system-ui">email / task</text>
+
+  <!-- Arrow 4-5 -->
+  <line x1="596" y1="60" x2="616" y2="60" stroke="#29B5E8" stroke-width="2" marker-end="url(#arr2)"/>
+
+  <!-- Step 5 -->
+  <rect x="618" y="30" width="130" height="60" rx="8" fill="#162230" stroke="#e8edf3" stroke-width="1.5"/>
+  <text x="683" y="55" text-anchor="middle" fill="#e8edf3" font-size="11" font-weight="bold" font-family="system-ui">Team Acts</text>
+  <text x="683" y="72" text-anchor="middle" fill="#8899aa" font-size="9" font-family="system-ui">remediate</text>
+
+  <!-- Labels below -->
+  <text x="75" y="115" text-anchor="middle" fill="#4CAF50" font-size="9" font-family="monospace">RAW tables</text>
+  <text x="75" y="128" text-anchor="middle" fill="#8899aa" font-size="8" font-family="monospace">loaded</text>
+  <text x="227" y="115" text-anchor="middle" fill="#29B5E8" font-size="9" font-family="monospace">System + Custom</text>
+  <text x="227" y="128" text-anchor="middle" fill="#8899aa" font-size="8" font-family="monospace">DMFs + Catalog</text>
+  <text x="379" y="115" text-anchor="middle" fill="#FF9800" font-size="9" font-family="monospace">VALUE = 0?</text>
+  <text x="379" y="128" text-anchor="middle" fill="#8899aa" font-size="8" font-family="monospace">MET / NOT_MET</text>
+  <text x="531" y="115" text-anchor="middle" fill="#f44336" font-size="9" font-family="monospace">SYSTEM$SEND</text>
+  <text x="531" y="128" text-anchor="middle" fill="#8899aa" font-size="8" font-family="monospace">_EMAIL()</text>
+  <text x="683" y="115" text-anchor="middle" fill="#e8edf3" font-size="9" font-family="monospace">Fix source</text>
+  <text x="683" y="128" text-anchor="middle" fill="#8899aa" font-size="8" font-family="monospace">Update rules</text>
+
+  <!-- Automation label -->
+  <rect x="10" y="148" width="596" height="22" rx="4" fill="none" stroke="#29B5E8" stroke-width="1" stroke-dasharray="4,3"/>
+  <text x="303" y="163" text-anchor="middle" fill="#29B5E8" font-size="9" font-family="system-ui">Fully Automated (no human intervention)</text>
+  <rect x="618" y="148" width="130" height="22" rx="4" fill="none" stroke="#e8edf3" stroke-width="1"/>
+  <text x="683" y="163" text-anchor="middle" fill="#e8edf3" font-size="9" font-family="system-ui">Human Action</text>
+</svg>
+
+<h2>The 7 Data Quality Domains</h2>
+
+<p>Every DQ check in this lab maps to one of 7 domains. Understanding these domains helps you design comprehensive monitoring -- if you only check accuracy but ignore freshness, you'll serve correct-but-outdated data.</p>
+
+<table>
+<tr>
+<th>Domain</th>
+<th>Question It Answers</th>
+<th>Concrete Example (from this lab)</th>
+<th>What Happens If You Ignore It</th>
+<th>Lab Module</th>
+</tr>
+<tr>
+<td><strong>Accuracy</strong></td>
+<td>Is the data in the correct format and free of errors?</td>
+<td>National ID <code>98765</code> is only 5 digits. Saudi IDs must be exactly 10 digits starting with 1 or 2. This ID was truncated by OCR during PDF extraction from the government portal.</td>
+<td>A customer with an invalid National ID cannot complete digital onboarding (Absher, GOSI). They're stuck in manual processing costing SAR 200+ per case.</td>
+<td>M2, M3</td>
+</tr>
+<tr>
+<td><strong>Completeness</strong></td>
+<td>Are all required fields actually populated?</td>
+<td>3 out of 6 CRM customers have <code>NULL</code> National ID. In Salesforce, this field isn't mandatory -- sales reps skip it because they don't need it to close deals.</td>
+<td>KYC compliance fails. The regulator asks "show me all customer identities" and you can only produce 50%. Potential fine: SAR 100K per audit finding.</td>
+<td>M1, M3</td>
+</tr>
+<tr>
+<td><strong>Uniqueness</strong></td>
+<td>Are there duplicate records that shouldn't exist?</td>
+<td>Abdullah Al-Rashid appears in BOTH ERP (corporate email) and CRM (personal Gmail). Same National ID <code>1087654321</code>, two records. He'll get double-billed or double-counted in revenue reports.</td>
+<td>Customer receives 2 invoices for the same service. Revenue dashboard shows SAR 15M but actual is SAR 12M. CFO makes decisions on inflated numbers.</td>
+<td>M2, M4</td>
+</tr>
+<tr>
+<td><strong>Freshness</strong></td>
+<td>Is the data up-to-date within our SLA?</td>
+<td>Transaction row 4 was loaded 3 days ago but the SLA is 2 hours. The bank feed SFTP job failed silently on Friday, and nobody noticed until Monday's reconciliation.</td>
+<td>Daily revenue reports show stale numbers. Treasury team thinks SAR 3M is missing. They raise an incident, waste 4 hours investigating, and discover it's just a delayed feed.</td>
+<td>M1, M7</td>
+</tr>
+<tr>
+<td><strong>Validity</strong></td>
+<td>Does the data fall within acceptable values or ranges?</td>
+<td>Transaction type code must be one of: P (Payment), I (Invoice), T (Transfer), R (Refund). A value of "X" means the bank changed their codes without telling us -- our ETL will misclassify it.</td>
+<td>Revenue breakdown report shows "UNKNOWN" category growing. Finance can't reconcile because they don't know if "X" is a payment or a refund. Month-end close is delayed 2 days.</td>
+<td>M3, M5</td>
+</tr>
+<tr>
+<td><strong>Volume</strong></td>
+<td>Did the expected amount of data arrive?</td>
+<td>ERP normally sends 6 customer records per batch. If <code>ROW_COUNT</code> suddenly returns 0, the SFTP job failed. If it returns 600, someone accidentally loaded a full extract instead of a delta.</td>
+<td>A "zero rows" scenario means the Gold layer serves yesterday's data as if it's current. A "600 rows" scenario means duplicates flood downstream, breaking uniqueness constraints.</td>
+<td>M1</td>
+</tr>
+<tr>
+<td><strong>Consistency</strong></td>
+<td>Do related fields agree with each other?</td>
+<td>If <code>SOURCE_SYSTEM = 'ERP'</code>, then <code>IBAN</code> must NOT be NULL (ERP requires IBAN for payments). If <code>LAST_UPDATED</code> is before <code>CREATED_DATE</code>, someone backdated a record -- that's a data integrity violation.</td>
+<td>An ERP customer without IBAN means their salary payment bounces. A backdated record means audit trail is compromised -- regulators see this as potential fraud concealment.</td>
+<td>M3, M4</td>
+</tr>
+</table>
+
+<div class="tip-box">
+<strong>How to remember all 7:</strong> Think of a SAR bank transfer arriving in your system. Is the amount <strong>accurate</strong> (correct format)? Is the sender name <strong>complete</strong> (not missing)? Is it <strong>unique</strong> (not a duplicate transfer)? Is it <strong>fresh</strong> (arrived today, not last week)? Is the type <strong>valid</strong> (PAYMENT, not GARBAGE)? Did the full batch arrive (<strong>volume</strong>)? Does the currency match the country (<strong>consistency</strong>)?
+</div>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ol>
+<li>Environment Setup <span class="badge badge-low">20 min</span></li>
+<li>Data Pipeline: Dynamic Tables + dbt in Snowflake <span class="badge badge-high">90 min</span></li>
+<li>Raw Layer DQ - System DMFs <span class="badge badge-medium">45 min</span></li>
+<li>DMF Costs &amp; Optimization <span class="badge badge-low">20 min</span></li>
+<li>Silver Layer DQ - Custom DMFs <span class="badge badge-medium">60 min</span></li>
+<li>Gold Layer DQ - Business Rules Catalog <span class="badge badge-high">60 min</span></li>
+<li>Expectations + Cross-Reference Integrity <span class="badge badge-medium">45 min</span></li>
+<li>Record Investigation + Remediation <span class="badge badge-medium">45 min</span></li>
+<li>AI/ML-Powered Data Quality <span class="badge badge-high">60 min</span></li>
+<li>Governance Integration <span class="badge badge-medium">45 min</span></li>
+<li>Alerts - Close the Loop <span class="badge badge-medium">45 min</span></li>
+</ol>
+</div>
+
+<!-- MODULE 0 -->
+<div class="module open">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 0: Environment Setup</h2>
+<span class="duration">30 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>What You Will Build</h3>
+<ul>
+<li>Database <code>CORP_DWH</code> with Medallion schemas (RAW, SILVER, GOLD, DQ)</li>
+<li>Roles: <code>CORP_DWH_ADMIN</code> (lab exercises) and <code>CORP_DWH_STEWARD</code> (production pattern)</li>
+<li>Sample data with intentional DQ issues seeded across all layers</li>
+<li>Notification integration for email alerts</li>
+</ul>
+
+<h3>Steps</h3>
+<ol>
+<li>Open the <code>0_SETUP</code> notebook in Snowflake Notebooks</li>
+<li>Ensure you are using the <code>ACCOUNTADMIN</code> role</li>
+<li>Run all cells sequentially (top to bottom)</li>
+<li>Verify the row count output at the end matches expectations</li>
+</ol>
+
+<h3>Expected Output (Verification Cell)</h3>
+<pre><code>TABLE_NAME                  | ROW_COUNT
+----------------------------|----------
+GOLD.DIM_CUSTOMER           | 18-20
+GOLD.FACT_TRANSACTIONS      | 500
+RAW.STG_CUSTOMERS_CRM       | 6
+RAW.STG_CUSTOMERS_ERP       | 6
+RAW.STG_GOV_PORTAL        | 3
+RAW.STG_TRANSACTIONS        | 6
+SILVER.INT_CUSTOMERS        | 16
+SILVER.INT_TRANSACTIONS     | 500</code></pre>
+
+<h3>Intentional DQ Issues</h3>
+<table>
+<tr><th>Issue</th><th>Location</th><th>Why It Matters</th></tr>
+<tr><td>NULL National IDs</td><td>CRM feed (3 records)</td><td>Field not mandatory in Salesforce</td></tr>
+<tr><td>Invalid National IDs</td><td>Gov Portal / GOSI (all 3 records)</td><td>OCR errors: too short, too long, contains letters</td></tr>
+<tr><td>Blank CUSTOMER_REF</td><td>Transactions row 5</td><td>Empty string -- NULL_COUNT won't catch it!</td></tr>
+<tr><td>Duplicate customers</td><td>CRM + ERP overlap</td><td>Same person, different source emails</td></tr>
+<tr><td>Stale record</td><td>Transaction row 4</td><td>Loaded 3 days ago, SLA is 2 hours</td></tr>
+<tr><td>Invalid IBANs</td><td>Silver layer</td><td>"INVALID_IBAN" and "SA12345" (too short)</td></tr>
+</table>
+
+<div class="tip-box">
+<strong>Tip:</strong> After setup, switch to <code>CORP_DWH_ADMIN</code> role for all remaining modules. You should NOT need ACCOUNTADMIN again.
+</div>
+</div>
+</div>
+
+<!-- MODULE 1 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 1: Raw Layer DQ - System DMFs</h2>
+<span class="duration">45 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: Shift-Left Data Quality</h3>
+<p>Don't wait until Gold to find problems. Attach checks at the gate (RAW layer) so issues are detected the moment data lands.</p>
+
+<h3>System DMFs You Will Use</h3>
+<table>
+<tr><th>DMF</th><th>Level</th><th>Returns</th></tr>
+<tr><td><code>SNOWFLAKE.CORE.ROW_COUNT</code></td><td>Table</td><td>Total row count</td></tr>
+<tr><td><code>SNOWFLAKE.CORE.FRESHNESS</code></td><td>Column (TIMESTAMP)</td><td>Seconds since last DML</td></tr>
+<tr><td><code>SNOWFLAKE.CORE.NULL_COUNT</code></td><td>Column</td><td>Number of NULL values</td></tr>
+<tr><td><code>SNOWFLAKE.CORE.BLANK_COUNT</code></td><td>Column</td><td>Number of empty strings</td></tr>
+</table>
+
+<h3>What You Will Do</h3>
+<ol>
+<li>Attach <code>ROW_COUNT</code> to ERP table (volume check)</li>
+<li>Attach <code>FRESHNESS</code> to timestamp columns (SLA compliance)</li>
+<li>Attach <code>NULL_COUNT</code> to CRM National ID and Email (completeness)</li>
+<li>Attach <code>BLANK_COUNT</code> to Transaction CUSTOMER_REF (the tricky one!)</li>
+<li>Set <code>TRIGGER_ON_CHANGES</code> schedule on all raw tables</li>
+<li>Add expectations for automated pass/fail</li>
+<li>Query results via <code>DATA_QUALITY_MONITORING_RESULTS</code></li>
+</ol>
+
+<div class="warning-box">
+<strong>Important:</strong> <code>BLANK_COUNT</code> catches empty strings (<code>''</code>) that <code>NULL_COUNT</code> misses. Always use both for string columns where completeness matters.
+</div>
+
+<h3>Key SQL Pattern</h3>
+<pre><code>-- Attach a system DMF
+ALTER TABLE schema.table
+    ADD DATA METRIC FUNCTION SNOWFLAKE.CORE.NULL_COUNT ON (column_name);
+
+-- Set automatic schedule
+ALTER TABLE schema.table SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
+
+-- Add expectation
+ALTER TABLE schema.table
+    MODIFY DATA METRIC FUNCTION SNOWFLAKE.CORE.NULL_COUNT ON (column_name)
+    ADD EXPECTATION my_expectation_name (VALUE = 0);
+
+-- Query results
+SELECT * FROM TABLE(SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS(
+    REF_ENTITY_NAME => 'DB.SCHEMA.TABLE',
+    REF_ENTITY_DOMAIN => 'TABLE'
+));</code></pre>
+
+<div class="tip-box">
+<strong>Tip:</strong> Results may take 1-2 minutes to appear after attaching DMFs. If you see empty results, wait and re-run the query cell.
+</div>
+</div>
+</div>
+
+<!-- MODULE 2 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 2: Silver Layer DQ - Custom DMFs</h2>
+<span class="duration">60 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: Domain-Specific Validation</h3>
+<p>System DMFs catch generic issues. Custom DMFs encode YOUR business rules as first-class Snowflake objects.</p>
+
+<h3>Custom DMFs You Will Build</h3>
+<table>
+<tr><th>DMF Name</th><th>Validates</th><th>Regex/Logic</th></tr>
+<tr><td><code>CHECK_NATIONAL_ID_FORMAT</code></td><td>Saudi ID format</td><td><code>^[12][0-9]{9}$</code></td></tr>
+<tr><td><code>CHECK_IBAN_FORMAT</code></td><td>Saudi IBAN format</td><td><code>^SA[0-9A-Za-z]{22}$</code></td></tr>
+<tr><td><code>CHECK_PHONE_FORMAT</code></td><td>Saudi phone format</td><td><code>^(\+966|05|00966)[0-9]{8,9}$</code></td></tr>
+<tr><td><code>CHECK_DUPLICATES</code></td><td>Uniqueness</td><td><code>COUNT(*) - COUNT(DISTINCT col)</code></td></tr>
+<tr><td><code>CHECK_AMOUNT_NOT_NEGATIVE</code></td><td>No negative amounts</td><td><code>WHERE col &lt; 0</code></td></tr>
+</table>
+
+<h3>DMF Signature Pattern</h3>
+<pre><code>CREATE OR REPLACE DATA METRIC FUNCTION schema.dmf_name(
+    ARG_T TABLE(ARG_C datatype)  -- table argument with typed column
+)
+RETURNS NUMBER                    -- must return a number
+AS
+$$
+    SELECT COUNT(*)               -- count violations
+    FROM ARG_T
+    WHERE condition               -- your validation logic
+$$;</code></pre>
+
+<h3>Expected Findings</h3>
+<ul>
+<li><strong>3 invalid National IDs</strong> (Gov Portal records: 98765, 30876543210, ABC1234567)</li>
+<li><strong>2 invalid IBANs</strong> (INVALID_IBAN, SA12345)</li>
+<li><strong>2 duplicate National IDs</strong> (ERP/CRM overlap for Abdullah and Mohammed)</li>
+</ul>
+</div>
+</div>
+
+<!-- MODULE 3 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 3: Gold Layer DQ - Business Rules Catalog</h2>
+<span class="duration">60 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: Rules as Data</h3>
+<p>Instead of hard-coding checks, store rules in a catalog table. This enables self-service, auditability, and automation.</p>
+
+<h3>Rules Catalog Schema</h3>
+<table>
+<tr><th>Column</th><th>Purpose</th></tr>
+<tr><td>RULE_NAME</td><td>Human-readable name</td></tr>
+<tr><td>RULE_TYPE</td><td>REGEX, RANGE, ENUM, COMPLETENESS, UNIQUENESS, FRESHNESS</td></tr>
+<tr><td>TARGET_SCHEMA/TABLE/COLUMN</td><td>Where to apply</td></tr>
+<tr><td>REGEX_PATTERN / MIN_VALUE / MAX_VALUE / ENUM_VALUES</td><td>Rule parameters</td></tr>
+<tr><td>SEVERITY</td><td>LOW, MEDIUM, HIGH, CRITICAL</td></tr>
+<tr><td>OWNER</td><td>Responsible team</td></tr>
+<tr><td>DMF_NAME</td><td>Auto-populated by provisioning procedure</td></tr>
+</table>
+
+<h3>The Auto-Provisioning Pattern</h3>
+<pre><code>1. Steward adds rule to RULES_CATALOG
+2. CALL PROVISION_DMFS_FROM_CATALOG()
+3. Procedure reads catalog, generates DMF SQL
+4. DMF is created and attached to target table
+5. DMF_NAME column updated in catalog</code></pre>
+
+<div class="tip-box">
+<strong>Tip:</strong> The provisioning procedure handles REGEX, RANGE, and ENUM rules automatically. COMPLETENESS and UNIQUENESS require manual DMF creation (or extend the procedure as a challenge).
+</div>
+</div>
+</div>
+
+<!-- MODULE 4 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 4: Expectations - Automated Pass/Fail</h2>
+<span class="duration">45 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: Metrics to Decisions</h3>
+<p>A metric says "3 invalid IBANs." An expectation says "this table FAILS." Expectations transform monitoring into actionable gates.</p>
+
+<h3>Expectation Syntax</h3>
+<pre><code>ALTER TABLE db.schema.table
+    MODIFY DATA METRIC FUNCTION dmf_name ON (column)
+    ADD EXPECTATION expectation_name (VALUE operator threshold);
+
+-- Examples:
+-- Zero violations:       VALUE = 0
+-- Freshness under 2hr:   VALUE <= 7200
+-- At least 100 rows:     VALUE >= 100</code></pre>
+
+<h3>Reading Results</h3>
+<table>
+<tr><th>EXPECTATION_RESULT</th><th>Meaning</th><th>Action</th></tr>
+<tr><td><code>MET</code></td><td>Value satisfies condition</td><td>No action needed</td></tr>
+<tr><td><code>NOT_MET</code></td><td>Value violates condition</td><td>Investigate and remediate</td></tr>
+</table>
+
+<h3>DQ Scorecard (Python Cell)</h3>
+<p>Module 4 includes a Python cell that queries all expectation results and generates a summary scorecard showing pass/fail counts. This demonstrates how to build monitoring dashboards programmatically.</p>
+</div>
+</div>
+
+<!-- MODULE 5 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 5: AI/ML-Powered Data Quality</h2>
+<span class="duration">60 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: AI-Augmented Quality</h3>
+<p>Traditional DQ relies on humans defining every rule. AI helps discover rules humans haven't thought of yet.</p>
+
+<h3>Techniques Covered</h3>
+<table>
+<tr><th>Technique</th><th>Use Case</th><th>Implementation</th></tr>
+<tr><td>Z-Score Anomaly Detection</td><td>Find statistical outliers in amounts</td><td>SQL with CTEs</td></tr>
+<tr><td>Cortex AI Rule Suggestions</td><td>Let AI propose DQ rules from metadata</td><td><code>SNOWFLAKE.CORTEX.COMPLETE()</code></td></tr>
+<tr><td>Anomaly DMF</td><td>Ongoing monitoring of distribution shifts</td><td>Custom DMF with z-score logic</td></tr>
+</table>
+
+<h3>Cortex AI Pattern</h3>
+<pre><code>SELECT SNOWFLAKE.CORTEX.COMPLETE(
+    'mistral-large2',   -- model name
+    'Your prompt here'  -- natural language instruction
+) AS AI_RESPONSE;</code></pre>
+
+<div class="warning-box">
+<strong>Note:</strong> Cortex AI requires cross-region inference in some regions (e.g., ME-CENTRAL2). This was enabled in Module 0. If you get errors, verify with: <code>SHOW PARAMETERS LIKE 'CORTEX_ENABLED_CROSS_REGION' IN ACCOUNT;</code>
+</div>
+</div>
+</div>
+
+<!-- MODULE 6 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 6: Governance Integration</h2>
+<span class="duration">45 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: DQ is Part of Horizon</h3>
+<p>Data Quality doesn't exist in isolation. It connects to tags, classification, lineage, and access history.</p>
+
+<h3>Governance Features Used</h3>
+<table>
+<tr><th>Feature</th><th>DQ Connection</th></tr>
+<tr><td>Object Tags</td><td>Classify sensitivity (PII), ownership, SLA tiers</td></tr>
+<tr><td>Data Classification</td><td>Auto-detect columns that need DQ checks</td></tr>
+<tr><td>Object Dependencies</td><td>Impact analysis when upstream quality degrades</td></tr>
+<tr><td>Access History</td><td>Who consumed data that failed DQ checks?</td></tr>
+</table>
+
+<h3>Tags Created</h3>
+<ul>
+<li><code>SENSITIVITY</code> -- PII, SENSITIVE, INTERNAL, PUBLIC</li>
+<li><code>DATA_DOMAIN</code> -- CUSTOMER, TRANSACTION, FINANCE, HR</li>
+<li><code>SLA_TIER</code> -- TIER_1 (1hr), TIER_2 (4hr), TIER_3 (24hr)</li>
+<li><code>DQ_OWNER</code> -- Responsible team</li>
+</ul>
+</div>
+</div>
+
+<!-- MODULE 7 -->
+<div class="module">
+<div class="module-header" onclick="this.parentElement.classList.toggle('open')">
+<h2>Module 7: Alerts - Close the Loop</h2>
+<span class="duration">45 min</span>
+<span class="toggle">&#9654;</span>
+</div>
+<div class="module-content">
+<h3>Key Concept: Monitoring Without Alerting is Just Reporting</h3>
+<p>The final piece: automated notifications when quality degrades.</p>
+
+<h3>Components Built</h3>
+<table>
+<tr><th>Object</th><th>Purpose</th></tr>
+<tr><td><code>ALERT_DQ_FAILURES</code></td><td>Fires when expectations fail (every 5 min check)</td></tr>
+<tr><td><code>TASK_HOURLY_DQ_SWEEP</code></td><td>Scheduled comprehensive DQ sweep</td></tr>
+<tr><td><code>DQ_SWEEP_LOG</code></td><td>Historical record of sweep results</td></tr>
+<tr><td><code>RUN_DQ_SWEEP()</code></td><td>Procedure that collects and logs DQ status</td></tr>
+</table>
+
+<h3>Alert Pattern</h3>
+<pre><code>CREATE OR REPLACE ALERT alert_name
+    WAREHOUSE = wh_name
+    SCHEDULE = '5 MINUTES'
+IF (EXISTS (
+    SELECT 1 FROM ... WHERE condition
+))
+THEN
+    CALL SYSTEM$SEND_EMAIL(integration, recipient, subject, body);</code></pre>
+
+<div class="warning-box">
+<strong>Remember:</strong> Alerts are created SUSPENDED. You must <code>ALTER ALERT ... RESUME</code> to activate. Don't forget to SUSPEND them after the lab to avoid ongoing email noise.
+</div>
+</div>
+</div>
+
+<!-- GLOSSARY -->
+<h2>Glossary</h2>
+<dl class="glossary">
+<dt>DMF (Data Metric Function)</dt>
+<dd>A Snowflake function that measures a quality aspect of a table or column. Returns a number.</dd>
+<dt>System DMF</dt>
+<dd>Built-in DMFs provided by Snowflake (ROW_COUNT, FRESHNESS, NULL_COUNT, BLANK_COUNT, etc.)</dd>
+<dt>Custom DMF</dt>
+<dd>User-defined DMFs for business-specific validation (regex checks, range checks, etc.)</dd>
+<dt>Expectation</dt>
+<dd>A condition applied to a DMF result that produces a PASS (MET) or FAIL (NOT_MET) verdict.</dd>
+<dt>Rules Catalog</dt>
+<dd>A table storing business rules as data, enabling self-service and auto-provisioning.</dd>
+<dt>TRIGGER_ON_CHANGES</dt>
+<dd>Schedule mode where DMFs run automatically whenever the underlying table receives DML.</dd>
+<dt>DATA_QUALITY_MONITORING_RESULTS</dt>
+<dd>Table function that returns all DMF measurement results for a given table.</dd>
+<dt>Snowflake Horizon</dt>
+<dd>Snowflake's governance framework including tags, classification, lineage, and access policies.</dd>
+<dt>Cortex AI</dt>
+<dd>Snowflake's built-in LLM capabilities, accessed via SNOWFLAKE.CORTEX.COMPLETE().</dd>
+</dl>
+
+<!-- TROUBLESHOOTING -->
+<h2>Troubleshooting</h2>
+<table>
+<tr><th>Issue</th><th>Cause</th><th>Fix</th></tr>
+<tr><td>Empty DQ results</td><td>DMFs haven't run yet</td><td>Wait 1-2 min, or manually trigger with INSERT/UPDATE on the table</td></tr>
+<tr><td>"Insufficient privileges"</td><td>Wrong role</td><td><code>USE ROLE CORP_DWH_ADMIN;</code></td></tr>
+<tr><td>"Data metric function not found"</td><td>DMF not created yet</td><td>Run Module 2 before Module 3/4</td></tr>
+<tr><td>Cortex AI error</td><td>Cross-region not enabled</td><td><code>ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';</code></td></tr>
+<tr><td>Alert not firing</td><td>Alert is suspended</td><td><code>ALTER ALERT alert_name RESUME;</code></td></tr>
+<tr><td>"Cannot add DMF" error</td><td>Missing EXECUTE DATA METRIC FUNCTION grant</td><td>Re-run Module 0 role grants</td></tr>
+</table>
+
+<!-- NEXT STEPS -->
+<h2>Next Steps</h2>
+<ol>
+<li><strong>Deploy a Streamlit App</strong> -- Build a self-service UI for the Rules Catalog</li>
+<li><strong>Production Patterns</strong> -- Set up RBAC with DQ_STEWARD role for data teams</li>
+<li><strong>Extend the Catalog</strong> -- Add your own business rules and run provisioning</li>
+<li><strong>Dashboard Integration</strong> -- Connect DQ_SWEEP_LOG to your BI tool</li>
+<li><strong>Advanced AI</strong> -- Use Cortex for anomaly explanations and root cause analysis</li>
+</ol>
+
+<script>
+// Copy button for code blocks
+document.querySelectorAll('pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.onclick = () => {
+        navigator.clipboard.writeText(pre.querySelector('code').textContent);
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    };
+    pre.appendChild(btn);
+});
+</script>
+</body>
+</html>
