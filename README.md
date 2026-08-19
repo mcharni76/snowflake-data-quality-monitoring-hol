@@ -111,27 +111,70 @@ flowchart LR
     ISSUES --> SWEEP
 ```
 
-## Quick Start
+## Quick Start (I have an account -- what do I do?)
+
+### Step 1: Clone the repo
 
 ```bash
-# 1. Clone
 git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
 cd snowflake-data-quality-monitoring-hol
-
-# 2. Setup Snowflake (requires ACCOUNTADMIN)
-# Upload notebooks/0_SETUP.ipynb to Snowflake Notebooks and execute
-# OR: snow sql -f scripts/setup_only.sql
-
-# 3. Deploy dbt project
-cd dbt/corp_dq_gold
-snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
-
-# 4. Upload all notebooks to Snowflake Notebooks workspace
-
-# 5. Execute in order: 0 -> 0B -> 1 -> 1B -> 2 -> 3 -> 4 -> 4B -> 5 -> 6 -> 7 -> 8 -> 9
 ```
 
-> **First time?** See [guide/PREREQUISITES.md](guide/PREREQUISITES.md) for detailed setup: trial account, CLI install, connection config, notebook import.
+### Step 2: Install the Snowflake CLI
+
+```bash
+brew install snowflake-cli    # macOS
+# OR: pip install snowflake-cli  (all platforms)
+snow --version                # verify
+```
+
+### Step 3: Configure CLI connection
+
+```bash
+snow connection add
+# Enter: account ID, username, password, role=ACCOUNTADMIN, warehouse=COMPUTE_WH
+snow connection set-default default
+snow connection test           # should show "Connection test successful"
+```
+
+### Step 4: Upload notebooks to Snowflake
+
+1. Log into [Snowsight](https://app.snowflake.com)
+2. Go to **Workspaces** (left sidebar)
+3. Create a folder: **+ > New Folder** > name it `DQ_Lab`
+4. Upload all 15 `.ipynb` files from the `notebooks/` folder: **+ > Upload File** (multi-select)
+
+### Step 5: Run Module 0 (Setup)
+
+1. Open `0_SETUP.ipynb` in your workspace
+2. Set role to **ACCOUNTADMIN** and warehouse to **COMPUTE_WH** (top-left picker)
+3. Run all cells top to bottom
+4. Verify the final cell shows: ERP=30, CRM=25, GOV=10, TXN=50
+
+### Step 6: Deploy the dbt project
+
+```bash
+cd dbt/corp_dq_gold
+snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
+```
+
+### Step 7: Run Module 0B (Pipeline)
+
+1. Open `0B_DATA_PIPELINE.ipynb`
+2. Switch role to **CORP_DQ_ADMIN** (top-left picker)
+3. Run all cells -- this creates Dynamic Tables and executes the dbt project
+
+### Step 8: Continue through modules in order
+
+```
+0 -> 0B -> 1 -> 1B -> 2 -> 3 -> 4 -> 4B -> 5 -> 6 -> 7 -> 8A/B/C -> 9
+```
+
+Each notebook is self-contained with explanations, code, and verification checkpoints.
+
+> **Detailed prerequisites:** See [guide/PREREQUISITES.md](guide/PREREQUISITES.md) for trial account signup, troubleshooting, and more.
+>
+> **Reference while working:** See [guide/STUDENT_GUIDE.md](guide/STUDENT_GUIDE.md) for DQ domains, SQL patterns, glossary, and expected outputs per module.
 
 ## What Makes This Workshop Unique
 
@@ -157,7 +200,7 @@ snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
 | Domain | Question | Lab Example |
 |--------|----------|-------------|
 | Accuracy | Correct format? | National ID `98765` too short (need 10 digits) |
-| Completeness | Fields filled? | 3 CRM records with NULL National ID |
+| Completeness | Fields filled? | 10 CRM records with NULL National ID |
 | Uniqueness | Duplicates? | Abdullah in both ERP and CRM |
 | Freshness | Up to date? | Transaction 3 days stale (SLA: 2 hours) |
 | Validity | Allowed values? | City not in reference list |
@@ -167,23 +210,52 @@ snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
 ## Repository Structure
 
 ```
-├── notebooks/              # 15 Snowflake Notebooks (.ipynb)
-├── dbt/corp_dq_gold/       # Real dbt project (deploy via snow CLI)
-├── guide/
-│   ├── STUDENT_GUIDE.html  # Self-contained visual guide
-│   ├── PREREQUISITES.md    # Setup instructions (trial, CLI, workspace)
-│   ├── WORKSHOP_CARDS.md   # One-page summary per module
-│   └── LAB_MAP.md          # Flow diagram + learning paths
-├── facilitator/
-│   └── FACILITATOR_NOTES.md
-├── scripts/
-│   ├── setup_only.sql      # Quick setup (no notebook needed)
-│   ├── teardown.sql        # Quick cleanup
-│   └── validate_notebooks.py
-├── .github/workflows/validate.yml
+├── notebooks/                          # 15 Snowflake Notebooks (execute in Workspaces)
+│   ├── 0_SETUP.ipynb                   #   Environment + sample data (30+25+10+50 rows)
+│   ├── 0B_DATA_PIPELINE.ipynb          #   Dynamic Tables + dbt in Snowflake
+│   ├── 1_RAW_LAYER_DQ.ipynb            #   System DMFs (ROW_COUNT, NULL_COUNT, FRESHNESS)
+│   ├── 1B_DMF_COSTS.ipynb              #   Cost visibility + optimization
+│   ├── 2_SILVER_LAYER_DQ.ipynb         #   Custom DMFs (National ID, IBAN, phone, dupes)
+│   ├── 3_GOLD_LAYER_DQ.ipynb           #   Rules Catalog + auto-provisioning
+│   ├── 4_EXPECTATIONS.ipynb            #   Expectations + cross-reference integrity
+│   ├── 4B_REMEDIATION.ipynb            #   Record investigation + issue logging
+│   ├── 5_AI_ML_DQ.ipynb                #   Cortex AI rule suggestions + anomaly detection
+│   ├── 6_GOVERNANCE.ipynb              #   Tags, classification, Horizon integration
+│   ├── 7_ALERTS.ipynb                  #   Email alerts + scheduled DQ sweep
+│   ├── 8A_DASHBOARD_NATIVE.ipynb       #   Dashboard (SQL-only, native charts)
+│   ├── 8B_DASHBOARD_PYTHON.ipynb       #   Dashboard (Python + plotly)
+│   ├── 8C_DASHBOARD_STREAMLIT.ipynb    #   Dashboard (Streamlit in Notebook)
+│   ├── 9_TEARDOWN.ipynb                #   Cleanup all objects
+│   └── streamlit_dq_app.py             #   Standalone Streamlit app (Module 8C)
+│
+├── dbt/corp_dq_gold/                   # dbt project (deploy with snow dbt deploy)
+│   ├── dbt_project.yml
+│   ├── profiles.yml
+│   └── models/
+│       ├── schema.yml                  #   Sources, tests, docs
+│       ├── staging/                    #   stg_silver_customers, stg_silver_transactions
+│       └── marts/                      #   dim_customer, fact_transactions
+│
+├── guide/                              # Student-facing documentation
+│   ├── STUDENT_GUIDE.md                #   Full reference: domains, patterns, glossary
+│   ├── STUDENT_GUIDE.html              #   Same content, rich visual rendering
+│   ├── PREREQUISITES.md                #   Trial account, CLI install, workspace setup
+│   ├── WORKSHOP_CARDS.md               #   One-page summary per module
+│   └── LAB_MAP.md                      #   Flow diagram + learning paths
+│
+├── facilitator/                        # Instructor materials
+│   └── FACILITATOR_NOTES.md            #   Teaching tips, timing, common issues
+│
+├── scripts/                            # Utility scripts
+│   ├── setup_only.sql                  #   Quick setup without notebook (CLI only)
+│   ├── teardown.sql                    #   Quick cleanup without notebook
+│   └── validate_notebooks.py           #   Validates all .ipynb are valid JSON
+│
+├── .github/workflows/validate.yml      # CI: validates notebooks on push
 ├── .gitignore
-├── LICENSE (Apache 2.0)
-└── README.md
+├── LICENSE                             # Apache 2.0
+├── PUBLISHING.md                       # Release process notes
+└── README.md                           # This file
 ```
 
 ## Publishing & Contributing
