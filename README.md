@@ -219,7 +219,7 @@ Each notebook is self-contained with explanations, code, and verification checkp
 │   ├── 8B_DASHBOARD_PYTHON.ipynb       #   Dashboard (Python + plotly)
 │   ├── 8C_DASHBOARD_STREAMLIT.ipynb    #   Dashboard (Streamlit in Notebook)
 │   ├── 9_TEARDOWN.ipynb                #   Cleanup all objects
-│   └── streamlit_dq_app.py             #   Standalone Streamlit app (Module 8C)
+│   └── streamlit_dq_app.py             #   Standalone Streamlit dashboard (used by Module 8C)
 │
 ├── dbt/corp_dq_gold/                   # dbt project (deploy with snow dbt deploy)
 │   ├── dbt_project.yml
@@ -248,7 +248,6 @@ Each notebook is self-contained with explanations, code, and verification checkp
 ├── .github/workflows/validate.yml      # CI: validates notebooks on push
 ├── .gitignore
 ├── LICENSE                             # Apache 2.0
-├── PUBLISHING.md                       # Release process notes
 └── README.md                           # This file
 ```
 
