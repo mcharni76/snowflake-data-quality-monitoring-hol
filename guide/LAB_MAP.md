@@ -8,17 +8,17 @@ Visual journey showing module flow, dependencies, and learning paths.
 flowchart TD
     M0[0: Setup<br/>20 min] --> M0B[0B: Pipeline<br/>DT + dbt<br/>90 min]
     M0B --> M1[1: Raw Layer DQ<br/>System DMFs<br/>45 min]
-    M1 --> M1B[1B: DMF Costs<br/>20 min]
-    M1B --> M2[2: Silver Layer DQ<br/>Custom DMFs<br/>60 min]
+    M1 --> M2[2: Silver Layer DQ<br/>Custom DMFs<br/>60 min]
     M2 --> M3[3: Gold Layer DQ<br/>Rules Catalog<br/>60 min]
     M3 --> M4[4: Expectations<br/>Cross-Reference<br/>45 min]
     M4 --> M4B[4B: Remediation<br/>Issue Workflow<br/>45 min]
     M4B --> M5[5: AI/ML DQ<br/>Cortex AI<br/>75 min]
     M5 --> M6[6: Governance<br/>Horizon<br/>45 min]
     M6 --> M7[7: Alerts<br/>Automation<br/>45 min]
-    M7 --> M8A[8A: Native Dashboard]
-    M7 --> M8B[8B: Python Dashboard]
-    M7 --> M8C[8C: Streamlit Dashboard]
+    M7 --> M1B[1B: DMF Costs<br/>20 min]
+    M1B --> M8A[8A: Native Dashboard]
+    M1B --> M8B[8B: Python Dashboard]
+    M1B --> M8C[8C: Streamlit Dashboard]
     M8A --> M9[9: Teardown<br/>5 min]
     M8B --> M9
     M8C --> M9
@@ -78,7 +78,7 @@ Pick ONE Module 8 variant based on audience BI tooling.
 | 0 | None | - |
 | 0B | 0 | - |
 | 1 | 0B | - |
-| 1B | 1 | Account Usage needs 1-2h latency |
+| 1B | 7 | Account Usage needs 1-3h latency; run after Module 7 |
 | 2 | 0B | - |
 | 3 | 2 | - |
 | 4 | 2, 3 | - |

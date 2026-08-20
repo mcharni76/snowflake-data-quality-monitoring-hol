@@ -30,7 +30,6 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | 0B: Data Pipeline | 90 min | 1:50 | Dynamic Tables (RAW->Silver) + dbt (Silver->Gold) |
 | **Break** | 15 min | 2:05 | |
 | 1: Raw Layer DQ | 45 min | 2:50 | System DMFs, first "aha" moment |
-| 1B: DMF Costs | 20 min | 3:10 | Cost visibility, scheduling trade-offs |
 | 2: Silver Custom DMFs | 60 min | 3:50 | Most hands-on coding |
 | **Lunch** | 45 min | 4:35 | |
 | 3: Gold Rules Catalog | 60 min | 5:35 | Consistency checks + auto-provisioning |
@@ -40,7 +39,8 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | 5: AI/ML | 75 min | 8:35 | NL parsing, bulk suggest, recommender |
 | 6: Governance | 45 min | 9:20 | Tags, classification, lineage |
 | 7: Alerts | 45 min | 10:05 | Full lifecycle closed |
-| 8 (choose one): Dashboard | 45 min | 10:50 | Native/Python/Streamlit variant |
+| 1B: DMF Costs | 20 min | 10:25 | Cost analysis (Account Usage data now available) |
+| 8 (choose one): Dashboard | 45 min | 11:10 | Native/Python/Streamlit variant |
 | 9: Teardown | 5 min | 10:55 | Optional cleanup |
 
 ---
@@ -80,11 +80,13 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 - "Don't wait until Gold to find problems -- catch them at the gate"
 - BLANK_COUNT vs NULL_COUNT is the key insight
 
-### Module 1B: DMF Costs
+### Module 1B: DMF Costs (run after Module 7)
 - "The cheapest DMF is the one you don't need"
-- Cost formula: executions/day x 30 x credits/execution x $3
+- Key concept: DMFs are **batched per table** (not per individual DMF)
+- Cost formula: evaluations/day x 30 x credits/batch x $3
 - TRIGGER_ON_CHANGES on high-frequency tables = bill shock (show 12x difference)
 - Tiered monitoring pattern maps directly to SLA_TIER tags (Module 6)
+- **Why after Module 7:** Account Usage has 1-3h latency. By now, DMFs have been running long enough to have data
 
 ### Module 2: Custom DMFs
 - Saudi-specific validations resonate well with KSA partners

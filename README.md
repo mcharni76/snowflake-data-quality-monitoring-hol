@@ -25,7 +25,7 @@ A complete DQ lifecycle from raw data landing to executive dashboard:
 
 | Track | Duration | Modules | Best For |
 |-------|----------|---------|----------|
-| **Half Day** | 4 hours | 0, 0B, 1, 1B, 2, 3 | Quick enablement -- core DQ framework |
+| **Half Day** | 4 hours | 0, 0B, 1, 2, 3 | Quick enablement -- core DQ framework |
 | **Standard** | 6 hours | + 4, 4B, 5 | Full detection + remediation + AI |
 | **Full Day** | 8 hours | All (demo 5+6) | Complete enterprise framework |
 | **Extended** | 2 days | All hands-on | Deep-dive with exercises + discussion |
@@ -37,14 +37,14 @@ A complete DQ lifecycle from raw data landing to executive dashboard:
 | 0 | Environment Setup | 20 min | 0:20 |
 | 0B | Dynamic Tables + dbt in Snowflake | 90 min | 1:50 |
 | 1 | Raw Layer DQ (System DMFs) | 45 min | 2:35 |
-| 1B | DMF Cost Management | 20 min | 2:55 |
-| 2 | Silver Layer DQ (Custom DMFs) | 60 min | 3:55 |
-| 3 | Gold Rules Catalog + Consistency | 60 min | 4:55 |
-| 4 | Expectations + Cross-Reference Integrity | 45 min | 5:40 |
-| 4B | Record Investigation + Remediation | 45 min | 6:25 |
-| 5 | AI/ML-Powered DQ (Cortex AI) | 75 min | 7:40 |
-| 6 | Governance (Horizon Integration) | 45 min | 8:25 |
-| 7 | Alerts + Scheduled Monitoring | 45 min | 9:10 |
+| 2 | Silver Layer DQ (Custom DMFs) | 60 min | 3:35 |
+| 3 | Gold Rules Catalog + Consistency | 60 min | 4:35 |
+| 4 | Expectations + Cross-Reference Integrity | 45 min | 5:20 |
+| 4B | Record Investigation + Remediation | 45 min | 6:05 |
+| 5 | AI/ML-Powered DQ (Cortex AI) | 75 min | 7:20 |
+| 6 | Governance (Horizon Integration) | 45 min | 8:05 |
+| 7 | Alerts + Scheduled Monitoring | 45 min | 8:50 |
+| 1B | DMF Cost Analysis (needs Account Usage lag) | 20 min | 9:10 |
 | 8 | Dashboard (choose 1 of 3 variants) | 45 min | 9:55 |
 | 9 | Teardown | 5 min | 10:00 |
 | | **Total instruction time** | **10 hours** | |
@@ -155,7 +155,7 @@ snow connection test           # should show "Connection test successful"
 ### Step 6: Continue through modules in order
 
 ```
-0 -> 0B -> 1 -> 1B -> 2 -> 3 -> 4 -> 4B -> 5 -> 6 -> 7 -> 8A/B/C -> 9
+0 -> 0B -> 1 -> 2 -> 3 -> 4 -> 4B -> 5 -> 6 -> 7 -> 1B -> 8A/B/C -> 9
 ```
 
 Each notebook is self-contained with explanations, code, and verification checkpoints.
