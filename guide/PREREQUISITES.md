@@ -128,7 +128,7 @@ Follow the prompts:
 
 | Prompt | Value |
 |--------|-------|
-| Connection name | `default` |
+| Connection name | `dq-lab` |
 | Account identifier | Your account ID (e.g., `abc12345` or `orgname-accountname`) |
 | User | Your username (the email you signed up with) |
 | Password | Your password |
@@ -140,7 +140,7 @@ Follow the prompts:
 ### Step 2: Set as default connection
 
 ```bash
-snow connection set-default default
+snow connection set-default dq-lab
 ```
 
 ### Step 3: Test the connection

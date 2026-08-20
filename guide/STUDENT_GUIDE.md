@@ -8,7 +8,7 @@
 
 1. **Snowflake Trial Account** -- Sign up at [signup.snowflake.com](https://signup.snowflake.com/). Choose **Enterprise Edition**. Any cloud/region works (for KSA: GCP Dammam if available).
 2. **Snowflake CLI (`snow`)** -- Install: `brew install snowflake-cli` (macOS) or `pip install snowflake-cli` (all platforms). Verify: `snow --version`
-3. **CLI Connection** -- Run `snow connection add` and enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Test: `snow connection test`
+3. **CLI Connection** -- Run `snow connection add`, name it `dq-lab`, enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Set default: `snow connection set-default dq-lab`. Test: `snow connection test`
 4. **Notebook Workspace** -- In Snowsight, go to **Workspaces** (left sidebar), create a folder (e.g., `DQ_Lab`), then click **+ > Upload File** and upload all 15 `.ipynb` notebooks from the `notebooks/` folder.
 5. **Warehouse** -- Create one if needed: `CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE='XSMALL';`
 

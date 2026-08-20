@@ -72,7 +72,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 ### Module 0B: Data Pipeline
 - **Dynamic Tables:** "Set it and forget it -- auto-refreshes when source changes"
 - **dbt in Snowflake:** "Real project deployed as a Snowflake object -- no external infra"
-- **Prerequisite:** Students need `snow` CLI installed. Have them run `snow dbt deploy` BEFORE opening the notebook
+- **Prerequisite:** Students need `snow` CLI installed. Have them run `snow dbt deploy` from the `dbt/corp_dq_gold` directory BEFORE opening the notebook
 - **Hybrid pattern:** "DT for Silver (fresh), dbt for Gold (governed) -- use BOTH"
 - **dbt tests vs DMFs:** Build-time gate (dbt) vs continuous monitoring (DMFs) -- both have value
 
@@ -115,7 +115,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | Cortex AI error | Cross-region not enabled | Module 0 Step 3 |
 | Dynamic Table not refreshing | Initial lag period | Wait up to TARGET_LAG duration |
 | Dashboard view won't create | No DMF results yet | Run modules 1-4 first, then create views |
-| dbt project not found | Student didn't deploy | Run: `snow dbt deploy CORP_DQ_GOLD --source dbt/corp_dq_gold --database CORP_DWH --schema GOLD` |
+| dbt project not found | Student didn't deploy | Run: `snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source dbt/corp_dq_gold --database CORP_DWH --schema GOLD` |
 | "snow: command not found" | CLI not installed | Install: `pip install snowflake-cli` or `brew install snowflake-cli` |
 
 ---

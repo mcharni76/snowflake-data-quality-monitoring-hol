@@ -132,8 +132,9 @@ snow --version                # verify
 
 ```bash
 snow connection add
+# Connection name: dq-lab
 # Enter: account ID, username, password, role=ACCOUNTADMIN, warehouse=COMPUTE_WH
-snow connection set-default default
+snow connection set-default dq-lab
 snow connection test           # should show "Connection test successful"
 ```
 
@@ -159,7 +160,7 @@ snow connection test           # should show "Connection test successful"
 
 Each notebook is self-contained with explanations, code, and verification checkpoints.
 
-> **dbt deploy:** Module 0B will instruct you to deploy the dbt project from your terminal when you reach that step. Don't do it upfront -- the notebook explains what you're deploying and why.
+> **dbt deploy:** Do NOT deploy upfront. When you reach Module 0B Step 1, the notebook will tell you to open a terminal and run `snow dbt deploy`. The notebook explains what you're deploying and why before you execute it.
 >
 > **After Module 0:** Switch role to `CORP_DQ_ADMIN` for all remaining modules. You won't need ACCOUNTADMIN again.
 

@@ -288,7 +288,7 @@ With the project developed, deploy it as a Snowflake-native object:
 cd dbt/corp_dq_gold
 
 # Deploy (uploads project as a Snowflake object)
-snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
+snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source . --database CORP_DWH --schema GOLD
 
 # Verify it exists
 snow dbt list --in schema GOLD --database CORP_DWH
@@ -363,7 +363,7 @@ cd my_project
 # 6. Write mart models (business logic + joins)
 # 7. Add tests in schema.yml
 # 8. Deploy:
-snow dbt deploy MY_PROJECT --source . --database MY_DB --schema MY_SCHEMA
+snow dbt deploy MY_PROJECT --connection dq-lab --source . --database MY_DB --schema MY_SCHEMA
 
 # 9. Execute:
 snow dbt execute -c default --database MY_DB --schema MY_SCHEMA MY_PROJECT run
