@@ -67,7 +67,7 @@ corp_dq_gold:
       type: snowflake
       database: CORP_DWH
       schema: GOLD
-      warehouse: COMPUTE_WH
+      warehouse: DQ_LAB_WH
       role: CORP_DQ_ADMIN
 ```
 

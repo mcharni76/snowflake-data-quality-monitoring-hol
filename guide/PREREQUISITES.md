@@ -63,7 +63,7 @@ Snowflake Notebooks run inside **Workspaces** in Snowsight (the Snowflake web UI
 5. Open `0_SETUP.ipynb` by clicking on it — it opens as a notebook tab in the editor
 6. Set the execution context using the **role and warehouse picker** (top-left of the notebook editor):
    - **Role:** ACCOUNTADMIN (for Module 0 only)
-   - **Warehouse:** COMPUTE_WH (or create one: `CREATE WAREHOUSE COMPUTE_WH WAREHOUSE_SIZE = 'XSMALL'`)
+   - **Warehouse:** DQ_LAB_WH (or create one: `CREATE WAREHOUSE DQ_LAB_WH WAREHOUSE_SIZE = 'XSMALL'`)
 
 ### Tips
 
@@ -133,7 +133,7 @@ Follow the prompts:
 | User | Your username (the email you signed up with) |
 | Password | Your password |
 | Role | `ACCOUNTADMIN` |
-| Warehouse | `COMPUTE_WH` |
+| Warehouse | `DQ_LAB_WH` |
 | Database | `CORP_DWH` |
 | Schema | `GOLD` |
 
@@ -153,7 +153,7 @@ Expected output:
 ```
 Connection test successful.
 Role:      ACCOUNTADMIN
-Warehouse: COMPUTE_WH
+Warehouse: DQ_LAB_WH
 Database:  CORP_DWH
 ```
 
@@ -182,7 +182,7 @@ snow dbt --help
 
 - [ ] Snowflake trial account created (Enterprise Edition)
 - [ ] Can log into Snowsight web UI
-- [ ] COMPUTE_WH warehouse exists (or will be created in Module 0)
+- [ ] DQ_LAB_WH warehouse exists (or will be created in Module 0)
 - [ ] Snowflake CLI installed (`snow --version` works)
 - [ ] CLI connection configured and tested (`snow connection test` passes)
 - [ ] Lab notebooks downloaded from the repository

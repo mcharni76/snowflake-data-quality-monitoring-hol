@@ -133,7 +133,7 @@ snow --version                # verify
 ```bash
 snow connection add
 # Connection name: dq-lab
-# Enter: account ID, username, password, role=ACCOUNTADMIN, warehouse=COMPUTE_WH
+# Enter: account ID, username, password, role=ACCOUNTADMIN, warehouse=DQ_LAB_WH
 snow connection set-default dq-lab
 snow connection test           # should show "Connection test successful"
 ```
@@ -148,7 +148,7 @@ snow connection test           # should show "Connection test successful"
 ### Step 5: Run Module 0 (Setup)
 
 1. Open `0_SETUP.ipynb` in your workspace
-2. Set role to **ACCOUNTADMIN** and warehouse to **COMPUTE_WH** (top-left picker)
+2. Set role to **ACCOUNTADMIN** and warehouse to **DQ_LAB_WH** (top-left picker)
 3. Run all cells top to bottom
 4. Verify the final cell shows: ERP=30, CRM=25, GOV=10, TXN=50
 
