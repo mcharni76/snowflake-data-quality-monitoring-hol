@@ -1,9 +1,10 @@
 -- models/marts/dim_customer.sql
 -- Deduplicated customer dimension from Silver layer
 -- Business logic: keep only non-duplicate records (primary source wins)
+-- Surrogate key uses stable hash to ensure consistent IDs across refreshes
 
 SELECT
-    ROW_NUMBER() OVER (ORDER BY SOURCE_SYSTEM, CUSTOMER_NAME) AS CUSTOMER_ID,
+    ABS(HASH(COALESCE(NATIONAL_ID, '') || '|' || SOURCE_SYSTEM || '|' || COALESCE(EMAIL, ''))) AS CUSTOMER_ID,
     CUSTOMER_NAME,
     NATIONAL_ID,
     IBAN,

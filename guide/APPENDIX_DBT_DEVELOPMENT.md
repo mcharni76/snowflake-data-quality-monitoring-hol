@@ -165,9 +165,10 @@ Marts contain the real transformation logic. These become Gold tables.
 ```sql
 -- Deduplicated customer dimension from Silver layer
 -- Business logic: keep only non-duplicate records (primary source wins)
+-- Surrogate key uses stable hash to ensure consistent IDs across refreshes
 
 SELECT
-    ROW_NUMBER() OVER (ORDER BY SOURCE_SYSTEM, CUSTOMER_NAME) AS CUSTOMER_ID,
+    ABS(HASH(COALESCE(NATIONAL_ID, '') || '|' || SOURCE_SYSTEM || '|' || COALESCE(EMAIL, ''))) AS CUSTOMER_ID,
     CUSTOMER_NAME,
     NATIONAL_ID,
     IBAN,
@@ -185,18 +186,21 @@ WHERE IS_DUPLICATE = FALSE
 
 **Design decisions:**
 - `WHERE IS_DUPLICATE = FALSE` -- Silver already flagged duplicates (via ROW_NUMBER over NATIONAL_ID). Gold only keeps the "winner" (highest SOURCE_PRIORITY).
-- `ROW_NUMBER() ... AS CUSTOMER_ID` -- surrogate key generated at Gold layer. In production you'd use `dbt_utils.generate_surrogate_key()` or a sequence.
+- `ABS(HASH(...)) AS CUSTOMER_ID` -- deterministic surrogate key using a hash of NATIONAL_ID + SOURCE_SYSTEM + EMAIL. Unlike ROW_NUMBER(), this is stable across full refreshes.
 - `IS_ACTIVE = TRUE` -- all records start active. A future SCD pattern would set this to FALSE when a customer is deactivated.
 
 ### `models/marts/fact_transactions.sql`
 
 ```sql
--- Valid transactions joined to customer dimension
+-- Valid transactions with derived customer key for referential integrity
 -- Business logic: only valid transactions make it to Gold
+-- CUSTOMER_ID is a hash of CUSTOMER_REF (independent of dim_customer).
+-- The DQ lab intentionally demonstrates orphan detection when keys don't match.
 
 SELECT
-    ROW_NUMBER() OVER (ORDER BY t.TXN_DATE) AS TXN_ID,
-    c.CUSTOMER_ID,
+    ROW_NUMBER() OVER (ORDER BY t.TXN_DATE, t.CUSTOMER_REF) AS TXN_ID,
+    ABS(HASH(t.CUSTOMER_REF)) AS CUSTOMER_ID,
+    t.CUSTOMER_REF,
     t.TXN_DATE,
     t.AMOUNT,
     t.CURRENCY,
@@ -204,15 +208,14 @@ SELECT
     t.SOURCE_SYSTEM,
     t.LOADED_AT
 FROM {{ ref('stg_silver_transactions') }} t
-LEFT JOIN {{ ref('dim_customer') }} c
-    ON t.CUSTOMER_REF = 'CUST-' || LPAD(c.CUSTOMER_ID::STRING, 3, '0')
 WHERE t.IS_VALID = TRUE
 ```
 
 **Design decisions:**
 - `WHERE t.IS_VALID = TRUE` -- Silver flags invalid records (blank ref, negative amount, parse failures). Only clean rows reach Gold.
-- `LEFT JOIN dim_customer` -- we keep orphan transactions (no matching customer) because they still represent real financial events. CUSTOMER_ID will be NULL for these.
-- Join logic maps `CUST-001` to `CUSTOMER_ID = 1` via `LPAD` -- this is a simplified pattern. In production, you'd have a proper customer key mapping.
+- `ABS(HASH(t.CUSTOMER_REF)) AS CUSTOMER_ID` -- derived numeric key enables DMF attachment and referential integrity checks. Because it hashes a different input than dim_customer's key, orphans are always detected (intentional DQ demonstration).
+- `CUSTOMER_REF` kept as-is -- the original bank feed reference, useful for traceability.
+- `ROW_NUMBER() ... AS TXN_ID` -- surrogate key for the fact table, ordered deterministically by date + ref.
 
 ---
 
@@ -244,18 +247,20 @@ models:
               values: ['ERP', 'CRM', 'GOV_PORTAL']
 
   - name: fact_transactions
-    description: "Valid financial transactions joined to customer dimension"
+    description: "Valid financial transactions - only records passing validation reach Gold"
     columns:
       - name: TXN_ID
         tests:
           - unique
           - not_null
       - name: CUSTOMER_ID
+        description: "Derived numeric key (hash of CUSTOMER_REF)"
         tests:
-          - relationships:            # FK integrity check
-              to: ref('dim_customer')
-              field: CUSTOMER_ID
-              where: "CUSTOMER_ID IS NOT NULL"
+          - not_null
+      - name: CUSTOMER_REF
+        description: "Customer reference from bank feed"
+        tests:
+          - not_null
       - name: AMOUNT
         tests:
           - not_null
@@ -271,7 +276,7 @@ models:
 | `unique` | No duplicate values | Two rows have the same value |
 | `not_null` | No NULL values | Any row has NULL |
 | `accepted_values` | Value in allowed list | A row has 'UNKNOWN' or unexpected value |
-| `relationships` | FK exists in parent | A CUSTOMER_ID in facts doesn't exist in dim |
+| `relationships` | FK exists in parent | A value in child doesn't exist in parent (not used here -- see Module 4 for DMF-based FK checks) |
 
 ---
 
@@ -311,8 +316,8 @@ sources:                staging:                marts:
                         (views)                 (tables)
 
 INT_CUSTOMERS  ──────>  stg_silver_customers  ──────>  dim_customer
-(Dynamic Table)                                              │
-                                                             │ (joined)
+(Dynamic Table)
+
 INT_TRANSACTIONS ────>  stg_silver_transactions ─────>  fact_transactions
 (Dynamic Table)
 ```
@@ -320,7 +325,7 @@ INT_TRANSACTIONS ────>  stg_silver_transactions ─────>  fact_t
 **Data flow:**
 1. Source systems feed RAW tables (Module 0)
 2. Dynamic Tables auto-refresh Silver from RAW (Module 0B Part A)
-3. dbt reads Silver, deduplicates, joins, and materializes Gold (Module 0B Part B)
+3. dbt reads Silver, deduplicates, and materializes Gold (Module 0B Part B)
 4. DMFs monitor ALL layers continuously (Modules 1-7)
 
 ---

@@ -6,6 +6,21 @@ Complete these steps **before** the workshop day.
 
 ---
 
+## Step 0: Get the Lab Materials
+
+Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+cd snowflake-data-quality-monitoring-hol
+```
+
+> **No git?** Download the ZIP from [GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/archive/refs/heads/main.zip) and extract it.
+
+You will need the `notebooks/` folder (15 `.ipynb` files to upload) and `dbt/corp_dq_gold/` (for Module 0B).
+
+---
+
 ## Appendix A: Create a Snowflake Trial Account
 
 1. Go to [signup.snowflake.com](https://signup.snowflake.com/)
@@ -142,15 +157,14 @@ Warehouse: COMPUTE_WH
 Database:  CORP_DWH
 ```
 
-### Step 4: Deploy the dbt project
+### Step 4: Verify dbt commands are available
 
 ```bash
-# Navigate to the dbt project directory
-cd /path/to/DQ/hol/dbt/corp_dq_gold
-
-# Deploy
-snow dbt deploy CORP_DQ_GOLD --source . --database CORP_DWH --schema GOLD
+# Confirm the dbt subcommand is available
+snow dbt --help
 ```
+
+> **Note:** You will deploy the dbt project during the workshop (Module 0B). Do NOT run `snow dbt deploy` yet -- the database must be created first by Module 0.
 
 ### Troubleshooting
 

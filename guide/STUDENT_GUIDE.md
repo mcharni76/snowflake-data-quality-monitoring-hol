@@ -81,9 +81,11 @@ Every DQ check in this lab maps to one of 7 domains. Understanding these domains
 | 3 | Gold Layer DQ - Business Rules Catalog | 60 min |
 | 4 | Expectations + Cross-Reference Integrity | 45 min |
 | 4B | Record Investigation + Remediation | 45 min |
-| 5 | AI/ML-Powered Data Quality | 60 min |
+| 5 | AI/ML-Powered Data Quality | 75 min |
 | 6 | Governance Integration | 45 min |
 | 7 | Alerts - Close the Loop | 45 min |
+| 8 | Dashboard (choose 1 of 3 variants: Native/Python/Streamlit) | 45 min |
+| 9 | Teardown (cleanup all objects) | 5 min |
 
 ---
 
@@ -316,7 +318,7 @@ Traditional DQ relies on humans defining every rule. AI helps discover rules hum
 
 ```sql
 SELECT SNOWFLAKE.CORTEX.COMPLETE(
-    'mistral-large2',   -- model name
+    'claude-haiku-4-5', -- model name (or use 'auto' for Snowflake-selected model)
     'Your prompt here'  -- natural language instruction
 ) AS AI_RESPONSE;
 ```
@@ -382,6 +384,77 @@ THEN
 ```
 
 > **Remember:** Alerts are created SUSPENDED. You must `ALTER ALERT ... RESUME` to activate. Don't forget to SUSPEND them after the lab to avoid ongoing email noise.
+
+---
+
+## Module 4B: Record Investigation & Remediation
+
+**Duration:** 45 min
+
+### Key Concept: Detection Without Remediation is Noise
+
+Module 4 detects issues. Module 4B completes the lifecycle: investigate, log, remediate, verify.
+
+### What You Will Build
+
+| Object | Purpose |
+|--------|---------|
+| `DQ_ISSUES_LOG` | Central issue registry with status lifecycle |
+| `RESOLVE_ISSUE()` | Procedure to update issue status with audit trail |
+| Investigation queries | Drill-down patterns to identify root causes |
+
+### Remediation Lifecycle
+
+```
+DETECT → LOG → INVESTIGATE → REMEDIATE → VERIFY → CLOSE
+```
+
+Each issue progresses through states: `OPEN` → `INVESTIGATING` → `RESOLVED`. The stored procedure enforces valid transitions and logs resolution notes.
+
+> **Tip:** The `NOT EXISTS` anti-duplicate guard in the logging INSERT prevents the same issue from being logged twice — a critical pattern for scheduled DQ sweeps.
+
+---
+
+## Module 8: Dashboard (Choose One Variant)
+
+**Duration:** 45 min (pick 8A, 8B, or 8C)
+
+### Key Concept: Make Quality Visible
+
+All three variants share the same 4 dashboard views built on DMF results. The choice is about rendering technology:
+
+| Variant | Technology | Best For |
+|---------|-----------|----------|
+| **8A** | SQL + native Snowsight charts | Quick setup, no dependencies |
+| **8B** | Python + matplotlib | Custom visualizations, offline export |
+| **8C** | Streamlit in Snowflake | Interactive app, shareable URL |
+
+### Shared Views
+
+| View | Shows |
+|------|-------|
+| `V_DQ_RESULTS_FLAT` | All DMF results with metadata |
+| `V_DQ_SCORECARD` | Pass/fail rates per table |
+| `V_DQ_TREND` | Quality metrics over time |
+| `V_DQ_EXECUTIVE_SUMMARY` | High-level health score |
+
+> **Recommendation:** Try 8A first (fastest). If you want to impress stakeholders, 8C produces a shareable app with a URL.
+
+---
+
+## Module 9: Teardown
+
+**Duration:** 5 min
+
+### What Gets Cleaned Up
+
+| Object | Command |
+|--------|---------|
+| Database `CORP_DWH` | `DROP DATABASE` (removes all schemas, tables, views, Dynamic Tables, dbt objects) |
+| Role `CORP_DQ_ADMIN` | `DROP ROLE` |
+| Integration `CORP_DQ_ALERTS` | `DROP INTEGRATION` |
+
+> **Warning:** This is irreversible. Only run when you're completely finished with the lab. The verification cell confirms all objects are gone.
 
 ---
 

@@ -93,10 +93,10 @@ Pick ONE Module 8 variant based on audience BI tooling.
 
 | Component | Minutes |
 |-----------|---------|
-| Modules (all hands-on) | 660 |
+| Modules (all hands-on) | 600 |
 | Breaks (3x 15 min) | 45 |
 | Lunch | 45 |
 | Buffer (questions, debugging) | 30 |
-| **Total** | **780 min (13h)** |
+| **Total** | **720 min (~12h)** |
 
 **Realistic delivery:** 7-8 hours by demoing Modules 5+6 (save 2h) and picking one Module 8 variant (save 1.5h).

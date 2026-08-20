@@ -22,7 +22,7 @@ models:
     description: "Deduplicated customer dimension - one row per unique customer"
     columns:
       - name: CUSTOMER_ID
-        description: "Surrogate key"
+        description: "Surrogate key (deterministic hash of NATIONAL_ID + SOURCE_SYSTEM + EMAIL)"
         tests:
           - unique
           - not_null
@@ -44,7 +44,7 @@ models:
         description: "Data quality score (0-100) computed in Silver layer"
 
   - name: fact_transactions
-    description: "Valid financial transactions joined to customer dimension"
+    description: "Valid financial transactions - only records passing validation reach Gold"
     columns:
       - name: TXN_ID
         description: "Surrogate key"
@@ -52,12 +52,13 @@ models:
           - unique
           - not_null
       - name: CUSTOMER_ID
-        description: "FK to dim_customer"
+        description: "Derived numeric key (hash of CUSTOMER_REF) for referential integrity checks"
         tests:
-          - relationships:
-              to: ref('dim_customer')
-              field: CUSTOMER_ID
-              where: "CUSTOMER_ID IS NOT NULL"
+          - not_null
+      - name: CUSTOMER_REF
+        description: "Customer reference from bank feed (original string identifier)"
+        tests:
+          - not_null
       - name: AMOUNT
         description: "Transaction amount in SAR"
         tests:

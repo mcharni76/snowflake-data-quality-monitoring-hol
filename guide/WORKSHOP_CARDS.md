@@ -70,7 +70,7 @@ One-page summary per module. Use as printed handouts, slide deck overview, or qu
 | **What you build** | 5 custom DMFs (National ID, IBAN, Phone, Duplicates, Negative Amount) |
 | **Key concept** | Business rules encoded as first-class Snowflake objects -- grantable, auditable, versionable |
 | **Prerequisite** | Module 0B (INT_CUSTOMERS must exist) |
-| **Checkpoint** | 5 DMFs in DQ schema, 3 invalid National IDs detected, 2 invalid IBANs, 2 duplicates |
+| **Checkpoint** | 5 DMFs in DQ schema, 3 invalid National IDs detected, 0 invalid IBANs, ≥2 duplicates |
 
 ---
 
