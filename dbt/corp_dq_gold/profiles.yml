@@ -3,6 +3,10 @@ corp_dq_gold:
   outputs:
     dev:
       type: snowflake
+      # account and user are required by the CLI validator but not used at runtime
+      # (the deployed project runs under the deployer's session context)
+      account: "{{env_var('SNOWFLAKE_ACCOUNT', 'placeholder')}}"
+      user: "{{env_var('SNOWFLAKE_USER', 'placeholder')}}"
       database: CORP_DWH
       schema: GOLD
       warehouse: DQ_LAB_WH
