@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Here - DQ HOL</title>
+<style>
+:root { --sf-blue: #29B5E8; --sf-dark: #1B2A4A; --sf-light: #F0F9FF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; background: #fafbfc; }
+h1 { color: var(--sf-dark); border-bottom: 3px solid var(--sf-blue); padding-bottom: 0.5rem; margin: 1.5rem 0 1rem; }
+h2 { color: var(--sf-dark); border-bottom: 1px solid #e1e4e8; padding-bottom: 0.3rem; margin: 1.5rem 0 0.8rem; }
+h3 { color: var(--sf-dark); margin: 1.2rem 0 0.5rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th { background: var(--sf-blue); color: white; padding: 0.6rem; text-align: left; }
+td { border: 1px solid #e1e4e8; padding: 0.5rem; }
+tr:nth-child(even) { background: var(--sf-light); }
+code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
+a { color: var(--sf-blue); }
+nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
+nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav a:hover { text-decoration: underline; }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
+</head>
+<body>
+<nav>
+<a href="index.html">Home</a>
+<a href="start_here.html">Start Here</a>
+<a href="prerequisites.html">Prerequisites</a>
+<a href="student_guide.html">Student Guide</a>
+<a href="workshop_cards.html">Workshop Cards</a>
+<a href="lab_map.html">Lab Map</a>
+</nav>
+<h1 id="start-here-student-quick-start">START HERE - Student Quick Start</h1>
+<blockquote>
+<p><strong>Welcome!</strong> This is your single entry point. Follow the steps below in order.</p>
+</blockquote>
+<hr />
+<h2 id="before-you-begin">Before You Begin</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Snowflake Account</strong></td>
+<td>Trial or Enterprise (30-day trial works)</td>
+</tr>
+<tr>
+<td><strong>Snowflake CLI</strong></td>
+<td><code>brew install snowflake-cli</code> or <code>pip install snowflake-cli</code></td>
+</tr>
+<tr>
+<td><strong>Browser</strong></td>
+<td>Chrome/Edge for Snowsight</td>
+</tr>
+<tr>
+<td><strong>Time</strong></td>
+<td>4-10 hours depending on track (see below)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="step-1-clone-configure-5-min">Step 1: Clone &amp; Configure (5 min)</h2>
+<pre><code class="language-bash">git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+cd snowflake-data-quality-monitoring-hol/hol
+
+# Add your Snowflake connection
+snow connection add
+#   Connection name: dq-lab
+#   Account: &lt;your-account-id&gt;  (e.g., ABCDEFG-XY12345)
+#   User: &lt;your-username&gt;
+#   Password: &lt;your-password&gt;
+#   Role: ACCOUNTADMIN
+#   Warehouse: DQ_LAB_WH (will be created in Module 0)
+
+snow connection set-default dq-lab
+snow connection test
+</code></pre>
+<hr />
+<h2 id="step-2-upload-notebooks-3-min">Step 2: Upload Notebooks (3 min)</h2>
+<ol>
+<li>Open <a href="https://app.snowflake.com">Snowsight</a> in your browser</li>
+<li>Go to <strong>Projects &gt; Notebooks</strong> (left sidebar)</li>
+<li>Click <strong>Upload .ipynb file</strong> (top-right)</li>
+<li>Upload ALL <code>.ipynb</code> files from the <code>notebooks/</code> folder (multi-select)</li>
+<li>Set database to any (will be overridden by notebook cells)</li>
+</ol>
+<hr />
+<h2 id="step-3-execute-in-this-order">Step 3: Execute in This Order</h2>
+<pre><code>Module 0   --&gt;  Environment Setup (ACCOUNTADMIN role)
+Module 0B  --&gt;  Data Pipeline: Dynamic Tables + dbt
+Module 1   --&gt;  Raw Layer DQ: System DMFs
+Module 2   --&gt;  Silver Layer DQ: Custom DMFs
+Module 3   --&gt;  Gold Layer: Rules Catalog
+Module 4   --&gt;  Expectations &amp; Cross-Reference
+Module 4B  --&gt;  Record Investigation &amp; Remediation
+Module 5   --&gt;  AI/ML-Powered DQ (Cortex AI)
+Module 6   --&gt;  Governance (Horizon)
+Module 7   --&gt;  Alerts &amp; Monitoring
+Module 1B  --&gt;  DMF Cost Analysis (runs last - needs Account Usage lag)
+Module 8   --&gt;  Dashboard (choose A, B, or C)
+Module 9   --&gt;  Teardown (cleanup)
+</code></pre>
+<p><strong>Important:</strong>
+- After Module 0, switch role to <strong>CORP_DQ_ADMIN</strong> for all remaining modules
+- Module 0B requires a terminal command (<code>snow dbt deploy</code>) - the notebook tells you when
+- Module 1B is intentionally placed after Module 7 (requires 1-3h of Account Usage latency)
+- Module 8: pick ONE variant (A = SQL charts, B = Python/matplotlib, C = Streamlit)</p>
+<hr />
+<h2 id="step-4-how-to-run-each-notebook">Step 4: How to Run Each Notebook</h2>
+<ol>
+<li>Open the notebook in Snowsight</li>
+<li>Set <strong>Role</strong> = <code>CORP_DQ_ADMIN</code> (top-left, except Module 0 uses ACCOUNTADMIN)</li>
+<li>Set <strong>Warehouse</strong> = <code>DQ_LAB_WH</code> (top-left)</li>
+<li>Run cells <strong>top to bottom</strong> (Shift+Enter or Run button)</li>
+<li>After each code cell, compare your output to the <strong>Expected result</strong> block below it</li>
+<li>At checkpoints, verify all checks show <code>[PASS]</code></li>
+</ol>
+<hr />
+<h2 id="choose-your-track">Choose Your Track</h2>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Duration</th>
+<th>Modules</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core</strong></td>
+<td>4 hours</td>
+<td>0, 0B, 1, 2, 3</td>
+<td>Build a working DQ framework</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>6 hours</td>
+<td>+ 4, 4B, 5</td>
+<td>Add expectations + AI</td>
+</tr>
+<tr>
+<td><strong>Full</strong></td>
+<td>8 hours</td>
+<td>All modules</td>
+<td>Complete enterprise solution</td>
+</tr>
+<tr>
+<td><strong>Extended</strong></td>
+<td>2 days</td>
+<td>All + exercises</td>
+<td>Deep-dive with discussion</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="if-something-goes-wrong">If Something Goes Wrong</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Object does not exist"</td>
+<td>Did you run Module 0 first? Check role is CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td>DMF results show 0 rows</td>
+<td>Wait 1-2 minutes (async). Run the trigger cell, then re-query</td>
+</tr>
+<tr>
+<td>dbt deploy fails</td>
+<td>Run from terminal: <code>snow dbt deploy --project-dir dbt/corp_dq_gold --connection dq-lab</code></td>
+</tr>
+<tr>
+<td>Permission denied</td>
+<td>Check you're using the right role (ACCOUNTADMIN for M0, CORP_DQ_ADMIN after)</td>
+</tr>
+<tr>
+<td>Account Usage empty</td>
+<td>Normal -- 1-3h latency. This is why Module 1B runs last</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="reference-materials">Reference Materials</h2>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="guide/PREREQUISITES.md">PREREQUISITES.md</a></td>
+<td>Trial account signup, CLI install details</td>
+</tr>
+<tr>
+<td><a href="guide/STUDENT_GUIDE.md">STUDENT_GUIDE.md</a></td>
+<td>DQ domains, SQL patterns, glossary</td>
+</tr>
+<tr>
+<td><a href="guide/WORKSHOP_CARDS.md">WORKSHOP_CARDS.md</a></td>
+<td>One-page summary per module</td>
+</tr>
+<tr>
+<td><a href="guide/LAB_MAP.md">LAB_MAP.md</a></td>
+<td>Visual flow diagram</td>
+</tr>
+<tr>
+<td><a href="guide/APPENDIX_DBT_DEVELOPMENT.md">APPENDIX_DBT_DEVELOPMENT.md</a></td>
+<td>How the dbt project was built</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="feedback">Feedback</h2>
+<p>After completing the lab, please fill in the feedback form:
+<strong><a href="guide/DQ_HOL_Feedback_Form.xlsx">guide/DQ_HOL_Feedback_Form.xlsx</a></strong></p>
+<p>3 sheets:
+1. <strong>Module Feedback</strong> -- rate each module (difficulty, clarity, usefulness)
+2. <strong>Enhancement Requests</strong> -- bugs, gaps, ideas (free-form)
+3. <strong>Cohort Tracker</strong> -- for your facilitator to track group progress</p>
+<hr />
+<blockquote>
+<p><strong>Questions?</strong> Reach out to your workshop facilitator or open an issue on GitHub.</p>
+</blockquote>
+</body>
+</html>

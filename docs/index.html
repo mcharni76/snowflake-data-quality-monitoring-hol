@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Quality Monitoring HOL - DQ HOL</title>
+<style>
+:root { --sf-blue: #29B5E8; --sf-dark: #1B2A4A; --sf-light: #F0F9FF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; background: #fafbfc; }
+h1 { color: var(--sf-dark); border-bottom: 3px solid var(--sf-blue); padding-bottom: 0.5rem; margin: 1.5rem 0 1rem; }
+h2 { color: var(--sf-dark); border-bottom: 1px solid #e1e4e8; padding-bottom: 0.3rem; margin: 1.5rem 0 0.8rem; }
+h3 { color: var(--sf-dark); margin: 1.2rem 0 0.5rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th { background: var(--sf-blue); color: white; padding: 0.6rem; text-align: left; }
+td { border: 1px solid #e1e4e8; padding: 0.5rem; }
+tr:nth-child(even) { background: var(--sf-light); }
+code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
+a { color: var(--sf-blue); }
+nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
+nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav a:hover { text-decoration: underline; }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
+</head>
+<body>
+<nav>
+<a href="index.html">Home</a>
+<a href="start_here.html">Start Here</a>
+<a href="prerequisites.html">Prerequisites</a>
+<a href="student_guide.html">Student Guide</a>
+<a href="workshop_cards.html">Workshop Cards</a>
+<a href="lab_map.html">Lab Map</a>
+</nav>
+<h1 id="data-quality-monitoring-with-snowflake">Data Quality Monitoring with Snowflake</h1>
+<p><img alt="Snowflake" src="https://img.shields.io/badge/Snowflake-Enterprise-29B5E8?logo=snowflake&amp;logoColor=white" />
+<img alt="dbt" src="https://img.shields.io/badge/dbt-in_Snowflake-FF694B?logo=dbt&amp;logoColor=white" />
+<img alt="Cortex AI" src="https://img.shields.io/badge/Cortex_AI-Powered-9B59B6" />
+<img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-green" />
+<img alt="Modules" src="https://img.shields.io/badge/Modules-15-blue" /></p>
+<p>Build a <strong>production-ready data quality monitoring framework</strong> using only native Snowflake capabilities. No external tools, no additional infrastructure, no ongoing maintenance -- just Snowflake.</p>
+<h2 id="what-you-will-build">What You Will Build</h2>
+<p>A complete DQ lifecycle from raw data landing to executive dashboard:</p>
+<ul>
+<li><strong>Data Metric Functions (DMFs)</strong> -- system and custom checks on every layer</li>
+<li><strong>Dynamic Tables</strong> -- auto-refreshing Silver layer (RAW to Silver)</li>
+<li><strong>dbt in Snowflake</strong> -- governed Gold layer with tests (Silver to Gold)</li>
+<li><strong>Rules Catalog</strong> -- self-service rule management with auto-provisioning</li>
+<li><strong>Expectations</strong> -- automated pass/fail verdicts and cross-reference integrity</li>
+<li><strong>Cortex AI</strong> -- natural language rule parsing, bulk table analysis, anomaly detection</li>
+<li><strong>Horizon Governance</strong> -- tags, classification, lineage integration</li>
+<li><strong>Alerts &amp; Dashboards</strong> -- email notifications, sweep logs, BI-ready views</li>
+</ul>
+<h2 id="workshop-duration">Workshop Duration</h2>
+<table>
+<thead>
+<tr>
+<th>Track</th>
+<th>Duration</th>
+<th>Modules</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Half Day</strong></td>
+<td>4 hours</td>
+<td>0, 0B, 1, 2, 3</td>
+<td>Quick enablement -- core DQ framework</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td>6 hours</td>
+<td>+ 4, 4B, 5</td>
+<td>Full detection + remediation + AI</td>
+</tr>
+<tr>
+<td><strong>Full Day</strong></td>
+<td>8 hours</td>
+<td>All (demo 5+6)</td>
+<td>Complete enterprise framework</td>
+</tr>
+<tr>
+<td><strong>Extended</strong></td>
+<td>2 days</td>
+<td>All hands-on</td>
+<td>Deep-dive with exercises + discussion</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Detailed timing (all hands-on, no shortcuts):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Topic</th>
+<th>Duration</th>
+<th>Cumulative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Environment Setup</td>
+<td>20 min</td>
+<td>0:20</td>
+</tr>
+<tr>
+<td>0B</td>
+<td>Dynamic Tables + dbt in Snowflake</td>
+<td>90 min</td>
+<td>1:50</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Raw Layer DQ (System DMFs)</td>
+<td>45 min</td>
+<td>2:35</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Silver Layer DQ (Custom DMFs)</td>
+<td>60 min</td>
+<td>3:35</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Gold Rules Catalog + Consistency</td>
+<td>60 min</td>
+<td>4:35</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Expectations + Cross-Reference Integrity</td>
+<td>45 min</td>
+<td>5:20</td>
+</tr>
+<tr>
+<td>4B</td>
+<td>Record Investigation + Remediation</td>
+<td>45 min</td>
+<td>6:05</td>
+</tr>
+<tr>
+<td>5</td>
+<td>AI/ML-Powered DQ (Cortex AI)</td>
+<td>75 min</td>
+<td>7:20</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Governance (Horizon Integration)</td>
+<td>45 min</td>
+<td>8:05</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Alerts + Scheduled Monitoring</td>
+<td>45 min</td>
+<td>8:50</td>
+</tr>
+<tr>
+<td>1B</td>
+<td>DMF Cost Analysis (needs Account Usage lag)</td>
+<td>20 min</td>
+<td>9:10</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Dashboard (choose 1 of 3 variants)</td>
+<td>45 min</td>
+<td>9:55</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Teardown</td>
+<td>5 min</td>
+<td>10:00</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Total instruction time</strong></td>
+<td><strong>10 hours</strong></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>+ Breaks (3x15 min) + Lunch (45 min)</td>
+<td>+1:30</td>
+<td><strong>11:30</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="architecture">Architecture</h2>
+<div class="mermaid">flowchart LR
+    subgraph sources [Source Systems]
+        ERP[SAP ERP]
+        CRM[Salesforce]
+        GOV[Gov Portal]
+        BANK[Bank Feed]
+    end
+
+    subgraph bronze [RAW - Bronze]
+        STG_ERP[STG_CUSTOMERS_ERP]
+        STG_CRM[STG_CUSTOMERS_CRM]
+        STG_GOV[STG_GOV_PORTAL]
+        STG_TXN[STG_TRANSACTIONS]
+    end
+
+    subgraph silver [SILVER - Dynamic Tables]
+        INT_CUST[INT_CUSTOMERS]
+        INT_TXN[INT_TRANSACTIONS]
+    end
+
+    subgraph gold [GOLD - dbt in Snowflake]
+        DIM[DIM_CUSTOMER]
+        FACT[FACT_TRANSACTIONS]
+        VIEWS[Gold Views]
+    end
+
+    subgraph dq [DQ Layer]
+        CATALOG[RULES_CATALOG]
+        ISSUES[DQ_ISSUES_LOG]
+        SWEEP[DQ_SWEEP_LOG]
+        DMFS[Custom DMFs]
+        AI[Cortex AI]
+    end
+
+    ERP --> STG_ERP
+    CRM --> STG_CRM
+    GOV --> STG_GOV
+    BANK --> STG_TXN
+
+    STG_ERP --> INT_CUST
+    STG_CRM --> INT_CUST
+    STG_GOV --> INT_CUST
+    STG_TXN --> INT_TXN
+
+    INT_CUST --> DIM
+    INT_TXN --> FACT
+    DIM --> VIEWS
+    FACT --> VIEWS
+
+    CATALOG --> DMFS
+    AI --> CATALOG
+    DMFS -.->|monitor| STG_ERP
+    DMFS -.->|monitor| INT_CUST
+    DMFS -.->|monitor| DIM
+    DMFS -.->|&quot;alert on failure&quot;| ISSUES
+    ISSUES --> SWEEP
+</div>
+<h2 id="quick-start">Quick Start</h2>
+<blockquote>
+<p><strong>Students:</strong> Go directly to <strong><a href="START_HERE.md">START_HERE.md</a></strong> for step-by-step instructions.</p>
+</blockquote>
+<p>Below is a condensed version for experienced users:</p>
+<h3 id="step-1-clone-the-repo">Step 1: Clone the repo</h3>
+<pre><code class="language-bash">git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+cd snowflake-data-quality-monitoring-hol
+</code></pre>
+<h3 id="step-2-install-the-snowflake-cli">Step 2: Install the Snowflake CLI</h3>
+<pre><code class="language-bash">brew install snowflake-cli    # macOS
+# OR: pip install snowflake-cli  (all platforms)
+snow --version                # verify
+</code></pre>
+<h3 id="step-3-configure-cli-connection">Step 3: Configure CLI connection</h3>
+<pre><code class="language-bash">snow connection add
+# Connection name: dq-lab
+# Enter: account ID, username, password, role=ACCOUNTADMIN, warehouse=DQ_LAB_WH
+snow connection set-default dq-lab
+snow connection test           # should show &quot;Connection test successful&quot;
+</code></pre>
+<h3 id="step-4-upload-notebooks-to-snowflake">Step 4: Upload notebooks to Snowflake</h3>
+<ol>
+<li>Log into <a href="https://app.snowflake.com">Snowsight</a></li>
+<li>Go to <strong>Workspaces</strong> (left sidebar)</li>
+<li>Create a folder: <strong>+ &gt; New Folder</strong> &gt; name it <code>DQ_Lab</code></li>
+<li>Upload all 15 <code>.ipynb</code> files from the <code>notebooks/</code> folder: <strong>+ &gt; Upload File</strong> (multi-select)</li>
+</ol>
+<h3 id="step-5-run-module-0-setup">Step 5: Run Module 0 (Setup)</h3>
+<ol>
+<li>Open <code>0_SETUP.ipynb</code> in your workspace</li>
+<li>Set role to <strong>ACCOUNTADMIN</strong> and warehouse to <strong>DQ_LAB_WH</strong> (top-left picker)</li>
+<li>Run all cells top to bottom</li>
+<li>Verify the final cell shows: ERP=30, CRM=25, GOV=10, TXN=50</li>
+</ol>
+<h3 id="step-6-continue-through-modules-in-order">Step 6: Continue through modules in order</h3>
+<pre><code>0 -&gt; 0B -&gt; 1 -&gt; 2 -&gt; 3 -&gt; 4 -&gt; 4B -&gt; 5 -&gt; 6 -&gt; 7 -&gt; 1B -&gt; 8A/B/C -&gt; 9
+</code></pre>
+<p>Each notebook is self-contained with explanations, code, and verification checkpoints.</p>
+<blockquote>
+<p><strong>dbt deploy:</strong> Do NOT deploy upfront. When you reach Module 0B Step 1, the notebook will tell you to open a terminal and run <code>snow dbt deploy</code>. The notebook explains what you're deploying and why before you execute it.</p>
+<p><strong>After Module 0:</strong> Switch role to <code>CORP_DQ_ADMIN</code> for all remaining modules. You won't need ACCOUNTADMIN again.</p>
+<p><strong>Detailed prerequisites:</strong> See <a href="guide/PREREQUISITES.md">guide/PREREQUISITES.md</a> for trial account signup, troubleshooting, and more.</p>
+<p><strong>Reference while working:</strong> See <a href="guide/STUDENT_GUIDE.md">guide/STUDENT_GUIDE.md</a> for DQ domains, SQL patterns, glossary, and expected outputs per module.</p>
+</blockquote>
+<h2 id="what-makes-this-workshop-unique">What Makes This Workshop Unique</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>This Workshop</th>
+<th>Typical DQ Workshops</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tools required</td>
+<td>Snowflake only</td>
+<td>Great Expectations + Airflow + dbt Cloud + ...</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>Zero (serverless DMFs)</td>
+<td>Kubernetes, schedulers, external DBs</td>
+</tr>
+<tr>
+<td>AI-powered</td>
+<td>Cortex AI for rule discovery</td>
+<td>Manual rule writing only</td>
+</tr>
+<tr>
+<td>Governance</td>
+<td>Native Horizon integration</td>
+<td>Separate catalog tool</td>
+</tr>
+<tr>
+<td>Cost visibility</td>
+<td>Built-in (Module 1B)</td>
+<td>Rarely addressed</td>
+</tr>
+<tr>
+<td>Remediation workflow</td>
+<td>Full lifecycle (detect -&gt; log -&gt; quarantine -&gt; resolve)</td>
+<td>Usually just detection</td>
+</tr>
+<tr>
+<td>Real dbt</td>
+<td>Deployed in Snowflake (<code>EXECUTE DBT PROJECT</code>)</td>
+<td>External dbt CLI</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note on dbt:</strong> This lab provides a pre-built dbt project (<code>dbt/corp_dq_gold/</code>) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs. <strong>Want to learn how the project was built?</strong> See <a href="guide/APPENDIX_DBT_DEVELOPMENT.md">guide/APPENDIX_DBT_DEVELOPMENT.md</a>.</p>
+</blockquote>
+<h2 id="who-is-this-for">Who Is This For</h2>
+<ul>
+<li><strong>SI Partners</strong> implementing DQ for enterprise customers</li>
+<li><strong>Data Engineers</strong> building quality frameworks on Snowflake</li>
+<li><strong>Data Stewards</strong> learning self-service rule management</li>
+<li><strong>Analytics Engineers</strong> combining dbt tests with continuous DMF monitoring</li>
+</ul>
+<h2 id="dq-domains-covered">DQ Domains Covered</h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Question</th>
+<th>Lab Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accuracy</td>
+<td>Correct format?</td>
+<td>National ID <code>98765</code> too short (need 10 digits)</td>
+</tr>
+<tr>
+<td>Completeness</td>
+<td>Fields filled?</td>
+<td>10 CRM records with NULL National ID</td>
+</tr>
+<tr>
+<td>Uniqueness</td>
+<td>Duplicates?</td>
+<td>Abdullah in both ERP and CRM</td>
+</tr>
+<tr>
+<td>Freshness</td>
+<td>Up to date?</td>
+<td>Transaction 3 days stale (SLA: 2 hours)</td>
+</tr>
+<tr>
+<td>Validity</td>
+<td>Allowed values?</td>
+<td>City not in reference list</td>
+</tr>
+<tr>
+<td>Volume</td>
+<td>Enough data?</td>
+<td>ERP feed drops from 1000 to 5 rows</td>
+</tr>
+<tr>
+<td>Consistency</td>
+<td>Fields agree?</td>
+<td>ERP customer missing mandatory IBAN</td>
+</tr>
+</tbody>
+</table>
+<h2 id="repository-structure">Repository Structure</h2>
+<pre><code>├── notebooks/                          # 15 Snowflake Notebooks (execute in Workspaces)
+│   ├── 0_SETUP.ipynb                   #   Environment + sample data (30+25+10+50 rows)
+│   ├── 0B_DATA_PIPELINE.ipynb          #   Dynamic Tables + dbt in Snowflake
+│   ├── 1_RAW_LAYER_DQ.ipynb            #   System DMFs (ROW_COUNT, NULL_COUNT, FRESHNESS)
+│   ├── 1B_DMF_COSTS.ipynb              #   Cost visibility + optimization
+│   ├── 2_SILVER_LAYER_DQ.ipynb         #   Custom DMFs (National ID, IBAN, phone, dupes)
+│   ├── 3_GOLD_LAYER_DQ.ipynb           #   Rules Catalog + auto-provisioning
+│   ├── 4_EXPECTATIONS.ipynb            #   Expectations + cross-reference integrity
+│   ├── 4B_REMEDIATION.ipynb            #   Record investigation + issue logging
+│   ├── 5_AI_ML_DQ.ipynb                #   Cortex AI rule suggestions + anomaly detection
+│   ├── 6_GOVERNANCE.ipynb              #   Tags, classification, Horizon integration
+│   ├── 7_ALERTS.ipynb                  #   Email alerts + scheduled DQ sweep
+│   ├── 8A_DASHBOARD_NATIVE.ipynb       #   Dashboard (SQL-only, native charts)
+│   ├── 8B_DASHBOARD_PYTHON.ipynb       #   Dashboard (Python + plotly)
+│   ├── 8C_DASHBOARD_STREAMLIT.ipynb    #   Dashboard (Streamlit in Notebook)
+│   ├── 9_TEARDOWN.ipynb                #   Cleanup all objects
+│   └── streamlit_dq_app.py             #   Standalone Streamlit dashboard (used by Module 8C)
+│
+├── dbt/corp_dq_gold/                   # dbt project (deploy with snow dbt deploy)
+│   ├── dbt_project.yml
+│   ├── profiles.yml
+│   └── models/
+│       ├── schema.yml                  #   Sources, tests, docs
+│       ├── staging/                    #   stg_silver_customers, stg_silver_transactions
+│       └── marts/                      #   dim_customer, fact_transactions
+│
+├── START_HERE.md                          # Student entry point (start here!)
+├── guide/                              # Student-facing documentation
+│   ├── STUDENT_GUIDE.md                #   Full reference: domains, patterns, glossary
+│   ├── STUDENT_GUIDE.html              #   Same content, rich visual rendering
+│   ├── PREREQUISITES.md                #   Trial account, CLI install, workspace setup
+│   ├── WORKSHOP_CARDS.md               #   One-page summary per module
+│   ├── LAB_MAP.md                      #   Flow diagram + learning paths
+│   ├── APPENDIX_DBT_DEVELOPMENT.md     #   How we built the dbt project (tutorial)
+│   └── DQ_HOL_Feedback_Form.xlsx       #   Feedback form + cohort tracker (Excel)
+│
+├── facilitator/                        # Instructor materials
+│   └── FACILITATOR_NOTES.md            #   Teaching tips, timing, common issues
+│
+├── scripts/                            # Utility scripts
+│   ├── setup_only.sql                  #   Quick setup without notebook (CLI only)
+│   ├── teardown.sql                    #   Quick cleanup without notebook
+│   └── validate_notebooks.py           #   Validates all .ipynb are valid JSON
+│
+├── .github/workflows/validate.yml      # CI: validates notebooks on push
+├── .gitignore
+├── LICENSE                             # Apache 2.0
+└── README.md                           # This file
+</code></pre>
+<h2 id="publishing-contributing">Publishing &amp; Contributing</h2>
+<p><strong>Repository:</strong> <a href="https://github.com/mcharni76/snowflake-data-quality-monitoring-hol">github.com/mcharni76/snowflake-data-quality-monitoring-hol</a></p>
+<p>Contributions welcome. To contribute:
+1. Fork the repo
+2. Create a feature branch
+3. Submit a PR with description of changes</p>
+<h2 id="keywords">Keywords</h2>
+<p><code>snowflake</code> <code>data-quality</code> <code>data-metric-functions</code> <code>dmf</code> <code>dbt</code> <code>dynamic-tables</code> <code>cortex-ai</code> <code>data-governance</code> <code>horizon</code> <code>hands-on-lab</code> <code>workshop</code> <code>enterprise</code> <code>monitoring</code> <code>expectations</code> <code>alerts</code></p>
+<h2 id="license">License</h2>
+<p>Apache 2.0. See <a href="LICENSE">LICENSE</a>.</p>
+</body>
+</html>

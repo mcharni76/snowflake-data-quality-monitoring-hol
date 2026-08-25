@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workshop Cards - DQ HOL</title>
+<style>
+:root { --sf-blue: #29B5E8; --sf-dark: #1B2A4A; --sf-light: #F0F9FF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; background: #fafbfc; }
+h1 { color: var(--sf-dark); border-bottom: 3px solid var(--sf-blue); padding-bottom: 0.5rem; margin: 1.5rem 0 1rem; }
+h2 { color: var(--sf-dark); border-bottom: 1px solid #e1e4e8; padding-bottom: 0.3rem; margin: 1.5rem 0 0.8rem; }
+h3 { color: var(--sf-dark); margin: 1.2rem 0 0.5rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th { background: var(--sf-blue); color: white; padding: 0.6rem; text-align: left; }
+td { border: 1px solid #e1e4e8; padding: 0.5rem; }
+tr:nth-child(even) { background: var(--sf-light); }
+code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
+a { color: var(--sf-blue); }
+nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
+nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav a:hover { text-decoration: underline; }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
+</head>
+<body>
+<nav>
+<a href="index.html">Home</a>
+<a href="start_here.html">Start Here</a>
+<a href="prerequisites.html">Prerequisites</a>
+<a href="student_guide.html">Student Guide</a>
+<a href="workshop_cards.html">Workshop Cards</a>
+<a href="lab_map.html">Lab Map</a>
+</nav>
+<h1 id="workshop-cards">Workshop Cards</h1>
+<p>One-page summary per module. Use as printed handouts, slide deck overview, or quick reference.</p>
+<hr />
+<h2 id="module-0-environment-setup">Module 0: Environment Setup</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>20 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>ACCOUNTADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Infrastructure</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>Medallion architecture (RAW/SILVER/GOLD/DQ schemas), 2 roles, 4 source tables with 115 rows of seeded data</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Each source system has different quality characteristics -- DQ starts with understanding your sources</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>ACCOUNTADMIN access, Enterprise Edition</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>4 RAW tables: ERP (30), CRM (25), Gov Portal (10), Bank (50)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-0b-data-pipeline">Module 0B: Data Pipeline</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>90 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Transformation</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>2 Dynamic Tables (RAW-&gt;Silver), real dbt project deployed in Snowflake (Silver-&gt;Gold), 3 Gold views</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Hybrid pattern: DT for "keep it fresh" (auto-refresh), dbt for "keep it correct" (governed, tested)</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 0 + <code>snow</code> CLI installed</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>INT_CUSTOMERS (65 rows), INT_TRANSACTIONS (50 rows), DIM_CUSTOMER (deduplicated), dbt tests pass</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-1-raw-layer-dq">Module 1: Raw Layer DQ</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Volume, Freshness, Completeness</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>8+ system DMFs on RAW tables, expectations with pass/fail, TRIGGER_ON_CHANGES schedules</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Shift-left: catch issues at the gate, not after expensive transforms</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 0B (Silver tables must exist for schedule triggers)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>3+ DMFs on ERP, 2+ on CRM, expectations firing on STG_TRANSACTIONS</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-1b-dmf-costs">Module 1B: DMF Costs</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>20 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Cost Optimization</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>Cost consumption queries, monthly projection view, tiered monitoring strategy</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>TRIGGER_ON_CHANGES costs 12x more than hourly cron on high-frequency tables. Tier your monitoring.</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 1 (DMFs must have run for Account Usage data)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Can query DATA_QUALITY_MONITORING_USAGE_HISTORY (may show 0 if just started)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-2-silver-custom-dmfs">Module 2: Silver Custom DMFs</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>60 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Accuracy, Uniqueness</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>5 custom DMFs (National ID, IBAN, Phone, Duplicates, Negative Amount)</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Business rules encoded as first-class Snowflake objects -- grantable, auditable, versionable</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 0B (INT_CUSTOMERS must exist)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>5 DMFs in DQ schema, 3 invalid National IDs detected, 0 invalid IBANs, ≥2 duplicates</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-3-gold-rules-catalog">Module 3: Gold Rules Catalog</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>60 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>All (governance infrastructure)</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>RULES_CATALOG table (12 rules), auto-provisioning procedure, multi-column consistency DMFs</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Rules as data: self-service, auditable, automatable. Stewards add rules without SQL.</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 2 (DMFs exist for reference)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>7+ rules provisioned with DMF_NAME populated, consistency checks attached</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-4-expectations">Module 4: Expectations</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Accuracy, Consistency</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>Expectations on Gold/Silver DMFs, cross-reference integrity DMFs (FK orphans, ETL data loss)</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>From metrics to decisions: VALUE -&gt; threshold -&gt; PASS/FAIL verdict (automated)</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Modules 2+3 (DMFs attached to tables)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>MET/NOT_MET results visible, orphan detection working</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-4b-remediation">Module 4B: Remediation</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>All (operations)</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>DQ_ISSUES_LOG, idempotent auto-scan procedure, quarantine workflow, resolution procedure, SLA report</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Detection without remediation is just noise. Issues need owners, SLAs, and audit trails.</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 4 (expectations configured)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Issues logged with lifecycle (OPEN -&gt; QUARANTINED -&gt; ACCEPTED), procedure is idempotent</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-5-aiml-dq">Module 5: AI/ML DQ</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>75 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>All (AI-augmented)</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>Z-score anomaly DMF, NL rule parsing (Cortex), bulk AI suggestion procedure with JSON parsing, system DMF recommender</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>AI suggests -&gt; Human reviews -&gt; Catalog stores -&gt; Procedure provisions</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 3 (catalog exists), cross-region inference enabled</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Anomaly DMF attached, AI suggestions parsed into catalog, FACT_TRANSACTIONS fully monitored</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-6-governance">Module 6: Governance</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Classification, Lineage</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>4 tag types (SENSITIVITY, DATA_DOMAIN, SLA_TIER, DQ_OWNER), classification scan, lineage query</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Quality IS governance: tags + classification + lineage + access history work together</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 4 (Gold tables with data)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>7+ tags on DIM_CUSTOMER, 3 PII-tagged columns identified</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-7-alerts">Module 7: Alerts</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>All (automation)</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>Email alert on expectation failures, sweep log table, sweep procedure, hourly scheduled task</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Complete lifecycle: 6 automated steps (land -&gt; DMF -&gt; expect -&gt; alert -&gt; email) before human acts</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Modules 4+6 (expectations + tags configured)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Alert RESUMED, Task RESUMED, sweep log has entries from manual run</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-8-dashboard-choose-one-variant">Module 8: Dashboard (Choose One Variant)</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>45 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>CORP_DQ_ADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Reporting</td>
+</tr>
+<tr>
+<td><strong>Variants</strong></td>
+<td>8A: Native SQL tiles + Power BI guide / 8B: Python matplotlib / 8C: Streamlit SiS app</td>
+</tr>
+<tr>
+<td><strong>What you build</strong></td>
+<td>4 DQ reporting views (flat results, scorecard, trend, executive summary) + visualization</td>
+</tr>
+<tr>
+<td><strong>Key concept</strong></td>
+<td>Same DQ data, multiple consumption patterns for different personas</td>
+</tr>
+<tr>
+<td><strong>Prerequisite</strong></td>
+<td>Module 7 (all DMFs running, expectations evaluated)</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>All 4 views return data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="module-9-teardown">Module 9: Teardown</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duration</strong></td>
+<td>5 min</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>ACCOUNTADMIN</td>
+</tr>
+<tr>
+<td><strong>Domain</strong></td>
+<td>Cleanup</td>
+</tr>
+<tr>
+<td><strong>What you do</strong></td>
+<td>Suspend alerts/tasks, DROP database + roles + integration</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td><code>SHOW DATABASES LIKE 'CORP_DWH'</code> returns empty</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
