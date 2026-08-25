@@ -111,7 +111,11 @@ flowchart LR
     ISSUES --> SWEEP
 ```
 
-## Quick Start (I have an account -- what do I do?)
+## Quick Start
+
+> **Students:** Go directly to **[START_HERE.md](START_HERE.md)** for step-by-step instructions.
+
+Below is a condensed version for experienced users:
 
 ### Step 1: Clone the repo
 
@@ -230,13 +234,15 @@ Each notebook is self-contained with explanations, code, and verification checkp
 │       ├── staging/                    #   stg_silver_customers, stg_silver_transactions
 │       └── marts/                      #   dim_customer, fact_transactions
 │
+├── START_HERE.md                          # Student entry point (start here!)
 ├── guide/                              # Student-facing documentation
 │   ├── STUDENT_GUIDE.md                #   Full reference: domains, patterns, glossary
 │   ├── STUDENT_GUIDE.html              #   Same content, rich visual rendering
 │   ├── PREREQUISITES.md                #   Trial account, CLI install, workspace setup
 │   ├── WORKSHOP_CARDS.md               #   One-page summary per module
 │   ├── LAB_MAP.md                      #   Flow diagram + learning paths
-│   └── APPENDIX_DBT_DEVELOPMENT.md     #   How we built the dbt project (tutorial)
+│   ├── APPENDIX_DBT_DEVELOPMENT.md     #   How we built the dbt project (tutorial)
+│   └── DQ_HOL_Feedback_Form.xlsx       #   Feedback form + cohort tracker (Excel)
 │
 ├── facilitator/                        # Instructor materials
 │   └── FACILITATOR_NOTES.md            #   Teaching tips, timing, common issues
