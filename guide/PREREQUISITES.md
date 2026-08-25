@@ -1,5 +1,21 @@
 # Prerequisites Guide
 
+## Setup Flow
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#29B5E8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B8AB5', 'lineColor': '#1B2A4A', 'secondaryColor': '#F0F9FF', 'tertiaryColor': '#E8F8FF', 'fontFamily': 'Segoe UI, sans-serif'}}}%%
+flowchart LR
+    A[Create Trial Account] --> B[Install Snow CLI]
+    B --> C[Add Connection 'dq-lab']
+    C --> D[Upload Notebooks]
+    D --> E[Run Module 0]
+    E --> F[Ready!]
+    style A fill:#29B5E8,color:#fff
+    style F fill:#2ECC71,color:#fff
+
+```
+
+
 Step-by-step instructions to get ready for the Data Quality Monitoring Hands-On Lab.
 
 Complete these steps **before** the workshop day.

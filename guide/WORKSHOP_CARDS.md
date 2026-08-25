@@ -1,5 +1,31 @@
 # Workshop Cards
 
+## Module Categories
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#29B5E8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B8AB5', 'lineColor': '#1B2A4A', 'secondaryColor': '#F0F9FF', 'tertiaryColor': '#E8F8FF', 'fontFamily': 'Segoe UI, sans-serif'}}}%%
+flowchart TD
+    subgraph FOUNDATION["Foundation (M0-M0B)"]
+        M0[Setup] --> M0B[Pipeline]
+    end
+    subgraph DETECTION["Detection (M1-M3)"]
+        M1[Raw DMFs] --> M2[Custom DMFs] --> M3[Rules Catalog]
+    end
+    subgraph AUTOMATION["Automation (M4-M5)"]
+        M4[Expectations] --> M4B[Remediation] --> M5[AI/ML]
+    end
+    subgraph OPERATIONS["Operations (M6-M8)"]
+        M6[Governance] --> M7[Alerts] --> M8[Dashboard]
+    end
+    FOUNDATION --> DETECTION --> AUTOMATION --> OPERATIONS
+    style FOUNDATION fill:#E8F8FF,stroke:#29B5E8
+    style DETECTION fill:#E8F8FF,stroke:#29B5E8
+    style AUTOMATION fill:#E8F8FF,stroke:#29B5E8
+    style OPERATIONS fill:#E8F8FF,stroke:#29B5E8
+
+```
+
+
 One-page summary per module. Use as printed handouts, slide deck overview, or quick reference.
 
 ---

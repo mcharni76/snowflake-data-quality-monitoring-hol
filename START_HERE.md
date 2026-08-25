@@ -48,6 +48,27 @@ snow connection test
 
 ## Step 3: Execute in This Order
 
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#29B5E8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B8AB5', 'lineColor': '#1B2A4A', 'secondaryColor': '#F0F9FF', 'tertiaryColor': '#E8F8FF', 'fontFamily': 'Segoe UI, sans-serif'}}}%%
+flowchart LR
+    M0[M0<br/>Setup] --> M0B[M0B<br/>Pipeline]
+    M0B --> M1[M1<br/>Raw DQ]
+    M1 --> M2[M2<br/>Silver DQ]
+    M2 --> M3[M3<br/>Gold Rules]
+    M3 --> M4[M4<br/>Expect]
+    M4 --> M4B[M4B<br/>Remediate]
+    M4B --> M5[M5<br/>AI/ML]
+    M5 --> M6[M6<br/>Govern]
+    M6 --> M7[M7<br/>Alerts]
+    M7 --> M1B[M1B<br/>Costs]
+    M1B --> M8[M8<br/>Dashboard]
+    M8 --> M9[M9<br/>Teardown]
+    style M0 fill:#29B5E8,color:#fff
+    style M9 fill:#E74C3C,color:#fff
+
+```
+
+
 ```
 Module 0   -->  Environment Setup (ACCOUNTADMIN role)
 Module 0B  -->  Data Pipeline: Dynamic Tables + dbt

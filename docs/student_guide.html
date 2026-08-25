@@ -38,6 +38,36 @@ nav a:hover { text-decoration: underline; }
 <a href="lab_map.html">Lab Map</a>
 </nav>
 <h1 id="data-quality-monitoring-with-snowflake">Data Quality Monitoring with Snowflake</h1>
+<h2 id="dq-lifecycle-overview">DQ Lifecycle Overview</h2>
+<div class="mermaid">%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#29B5E8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B8AB5', 'lineColor': '#1B2A4A', 'secondaryColor': '#F0F9FF', 'tertiaryColor': '#E8F8FF', 'fontFamily': 'Segoe UI, sans-serif'}}}%%
+flowchart LR
+    subgraph DETECT[&quot;1. DETECT&quot;]
+        direction TB
+        D1[System DMFs]
+        D2[Custom DMFs]
+        D3[AI Rules]
+    end
+    subgraph EVALUATE[&quot;2. EVALUATE&quot;]
+        direction TB
+        E1[Expectations]
+        E2[Pass / Fail]
+        E3[Scorecard]
+    end
+    subgraph RESPOND[&quot;3. RESPOND&quot;]
+        direction TB
+        R1[Log Issues]
+        R2[Quarantine]
+        R3[Alert]
+    end
+    subgraph GOVERN[&quot;4. GOVERN&quot;]
+        direction TB
+        G1[Tags & PII]
+        G2[Lineage]
+        G3[Dashboard]
+    end
+    DETECT --> EVALUATE --> RESPOND --> GOVERN
+
+</div>
 <p><strong>Hands-On Workshop | 4-8 hours (track-dependent) | Snowflake Enterprise Edition</strong></p>
 <hr />
 <h2 id="prerequisites-complete-before-workshop-day">Prerequisites (Complete Before Workshop Day)</h2>

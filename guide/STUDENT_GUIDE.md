@@ -1,5 +1,39 @@
 # Data Quality Monitoring with Snowflake
 
+## DQ Lifecycle Overview
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#29B5E8', 'primaryTextColor': '#fff', 'primaryBorderColor': '#1B8AB5', 'lineColor': '#1B2A4A', 'secondaryColor': '#F0F9FF', 'tertiaryColor': '#E8F8FF', 'fontFamily': 'Segoe UI, sans-serif'}}}%%
+flowchart LR
+    subgraph DETECT["1. DETECT"]
+        direction TB
+        D1[System DMFs]
+        D2[Custom DMFs]
+        D3[AI Rules]
+    end
+    subgraph EVALUATE["2. EVALUATE"]
+        direction TB
+        E1[Expectations]
+        E2[Pass / Fail]
+        E3[Scorecard]
+    end
+    subgraph RESPOND["3. RESPOND"]
+        direction TB
+        R1[Log Issues]
+        R2[Quarantine]
+        R3[Alert]
+    end
+    subgraph GOVERN["4. GOVERN"]
+        direction TB
+        G1[Tags & PII]
+        G2[Lineage]
+        G3[Dashboard]
+    end
+    DETECT --> EVALUATE --> RESPOND --> GOVERN
+
+```
+
+
 **Hands-On Workshop | 4-8 hours (track-dependent) | Snowflake Enterprise Edition**
 
 ---
