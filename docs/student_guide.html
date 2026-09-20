@@ -20,16 +20,26 @@ pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 
 pre code { background: none; color: inherit; padding: 0; }
 blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
 a { color: var(--sf-blue); }
-nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
-nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav { background: var(--sf-dark); padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+nav .logo { display: flex; align-items: center; gap: 0.5rem; margin-right: auto; }
+nav .logo svg { width: 28px; height: 28px; }
+nav .logo span { color: white; font-weight: 700; font-size: 1.1em; }
+nav a { color: white; text-decoration: none; font-weight: 500; }
 nav a:hover { text-decoration: underline; }
-.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+footer { margin-top: 3rem; padding: 1.5rem; background: var(--sf-dark); color: #ccc; border-radius: 6px; text-align: center; font-size: 0.85em; }
+footer a { color: var(--sf-blue); }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; overflow-x: auto; }
+.mermaid svg { min-width: 800px; }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
 </head>
 <body>
 <nav>
+<div class="logo">
+<svg viewBox="0 0 24 24" fill="white"><path d="M11 1v4.07A6.007 6.007 0 0 0 6.07 10H2v2h4.07A6.007 6.007 0 0 0 11 16.93V21h2v-4.07A6.007 6.007 0 0 0 17.93 12H22v-2h-4.07A6.007 6.007 0 0 0 13 5.07V1h-2zm1 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+<span>Snowflake DQ Lab</span>
+</div>
 <a href="index.html">Home</a>
 <a href="start_here.html">Start Here</a>
 <a href="prerequisites.html">Prerequisites</a>
@@ -72,7 +82,7 @@ flowchart LR
 <hr />
 <h2 id="prerequisites-complete-before-workshop-day">Prerequisites (Complete Before Workshop Day)</h2>
 <ol>
-<li><strong>Snowflake Trial Account</strong> -- Sign up at <a href="https://signup.snowflake.com/">signup.snowflake.com</a>. Choose <strong>Enterprise Edition</strong>. Any cloud/region works (for KSA: GCP Dammam if available).</li>
+<li><strong>Snowflake Trial Account</strong> -- Sign up at <a href="https://signup.snowflake.com/">signup.snowflake.com</a>. Choose <strong>Enterprise Edition</strong>. Any cloud provider and region works.</li>
 <li><strong>Snowflake CLI (<code>snow</code>)</strong> -- Install: <code>brew install snowflake-cli</code> (macOS) or <code>pip install snowflake-cli</code> (all platforms). Verify: <code>snow --version</code></li>
 <li><strong>CLI Connection</strong> -- Run <code>snow connection add</code>, name it <code>dq-lab</code>, enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Set default: <code>snow connection set-default dq-lab</code>. Test: <code>snow connection test</code></li>
 <li><strong>Notebook Workspace</strong> -- In Snowsight, go to <strong>Workspaces</strong> (left sidebar), create a folder (e.g., <code>DQ_Lab</code>), then click <strong>+ &gt; Upload File</strong> and upload all 15 <code>.ipynb</code> notebooks from the <code>notebooks/</code> folder.</li>
@@ -593,7 +603,7 @@ $$;
 ) AS AI_RESPONSE;
 </code></pre>
 <blockquote>
-<p><strong>Note:</strong> Cortex AI requires cross-region inference in some regions (e.g., ME-CENTRAL2). This was enabled in Module 0. If you get errors, verify with: <code>SHOW PARAMETERS LIKE 'CORTEX_ENABLED_CROSS_REGION' IN ACCOUNT;</code></p>
+<p><strong>Note:</strong> Cortex AI requires cross-region inference in some regions (any region outside the US). This was enabled in Module 0. If you get errors, verify with: <code>SHOW PARAMETERS LIKE 'CORTEX_ENABLED_CROSS_REGION' IN ACCOUNT;</code></p>
 </blockquote>
 <hr />
 <h2 id="module-6-governance-integration">Module 6: Governance Integration</h2>
@@ -904,5 +914,10 @@ THEN
 <li><strong>Dashboard Integration</strong> -- Connect DQ_SWEEP_LOG to your BI tool</li>
 <li><strong>Advanced AI</strong> -- Use Cortex for anomaly explanations and root cause analysis</li>
 </ol>
+<footer>
+<p>Data Quality Monitoring with Snowflake &mdash; Hands-On Lab</p>
+<p>Facilitated by <strong>Marawen Charni</strong> | Senior Partner Solutions Engineer, Snowflake</p>
+<p style="margin-top:0.5rem; color:#666;">&copy; 2026 Snowflake Inc. All rights reserved.</p>
+</footer>
 </body>
 </html>

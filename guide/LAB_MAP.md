@@ -5,7 +5,7 @@ Visual journey showing module flow, dependencies, and learning paths.
 ## Module Flow (Mermaid)
 
 ```mermaid
-flowchart TD
+flowchart LR
     M0[0: Setup<br/>20 min] --> M0B[0B: Pipeline<br/>DT + dbt<br/>90 min]
     M0B --> M1[1: Raw Layer DQ<br/>System DMFs<br/>45 min]
     M1 --> M2[2: Silver Layer DQ<br/>Custom DMFs<br/>60 min]

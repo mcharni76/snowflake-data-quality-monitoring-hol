@@ -20,16 +20,26 @@ pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 
 pre code { background: none; color: inherit; padding: 0; }
 blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
 a { color: var(--sf-blue); }
-nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
-nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav { background: var(--sf-dark); padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+nav .logo { display: flex; align-items: center; gap: 0.5rem; margin-right: auto; }
+nav .logo svg { width: 28px; height: 28px; }
+nav .logo span { color: white; font-weight: 700; font-size: 1.1em; }
+nav a { color: white; text-decoration: none; font-weight: 500; }
 nav a:hover { text-decoration: underline; }
-.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+footer { margin-top: 3rem; padding: 1.5rem; background: var(--sf-dark); color: #ccc; border-radius: 6px; text-align: center; font-size: 0.85em; }
+footer a { color: var(--sf-blue); }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; overflow-x: auto; }
+.mermaid svg { min-width: 800px; }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
 </head>
 <body>
 <nav>
+<div class="logo">
+<svg viewBox="0 0 24 24" fill="white"><path d="M11 1v4.07A6.007 6.007 0 0 0 6.07 10H2v2h4.07A6.007 6.007 0 0 0 11 16.93V21h2v-4.07A6.007 6.007 0 0 0 17.93 12H22v-2h-4.07A6.007 6.007 0 0 0 13 5.07V1h-2zm1 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+<span>Snowflake DQ Lab</span>
+</div>
 <a href="index.html">Home</a>
 <a href="start_here.html">Start Here</a>
 <a href="prerequisites.html">Prerequisites</a>
@@ -42,36 +52,49 @@ nav a:hover { text-decoration: underline; }
 <p><strong>Welcome!</strong> This is your single entry point. Follow the steps below in order.</p>
 </blockquote>
 <hr />
+<h2 id="your-mission">Your Mission</h2>
+<p>You are building a <strong>data quality monitoring framework</strong> for a <strong>Saudi diversified holding company</strong>. Their Snowflake data platform ingests customer records from 4 source systems (SAP ERP, Salesforce CRM, Government Portal, Bank Feed) -- each with different quality issues: invalid National IDs, duplicate customers across systems, stale transaction feeds, and NULL identifiers.</p>
+<p>Your job: detect every issue automatically, log it, alert the right people, and give the CFO a single scorecard. All using native Snowflake -- no external tools.</p>
+<blockquote>
+<p>See <a href="index.html#the-scenario-a-saudi-holding-company">README.md</a> for the full business context.</p>
+</blockquote>
+<hr />
 <h2 id="before-you-begin">Before You Begin</h2>
 <table>
 <thead>
 <tr>
+<th>#</th>
 <th>Requirement</th>
 <th>Details</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Snowflake Account</strong></td>
-<td>Trial or Enterprise (30-day trial works)</td>
+<td>1</td>
+<td><strong>Snowflake Trial</strong></td>
+<td><a href="https://signup.snowflake.com/">Sign up for a free 30-day trial</a> -- select <strong>Enterprise Edition</strong>, any cloud/region</td>
 </tr>
 <tr>
+<td>2</td>
 <td><strong>Snowflake CLI</strong></td>
 <td><code>brew install snowflake-cli</code> or <code>pip install snowflake-cli</code></td>
 </tr>
 <tr>
+<td>3</td>
 <td><strong>Browser</strong></td>
 <td>Chrome/Edge for Snowsight</td>
 </tr>
 <tr>
+<td>4</td>
 <td><strong>Time</strong></td>
 <td>4-10 hours depending on track (see below)</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="step-1-clone-configure-5-min">Step 1: Clone &amp; Configure (5 min)</h2>
-<pre><code class="language-bash">git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+<h2 id="step-1-unzip-configure-5-min">Step 1: Unzip &amp; Configure (5 min)</h2>
+<pre><code class="language-bash"># Unzip the lab package you received
+unzip snowflake-data-quality-monitoring-hol.zip
 cd snowflake-data-quality-monitoring-hol/hol
 
 # Add your Snowflake connection
@@ -225,23 +248,23 @@ Module 9   --&gt;  Teardown (cleanup)
 </thead>
 <tbody>
 <tr>
-<td><a href="guide/PREREQUISITES.md">PREREQUISITES.md</a></td>
+<td><a href="prerequisites.html">PREREQUISITES.md</a></td>
 <td>Trial account signup, CLI install details</td>
 </tr>
 <tr>
-<td><a href="guide/STUDENT_GUIDE.md">STUDENT_GUIDE.md</a></td>
+<td><a href="student_guide.html">STUDENT_GUIDE.md</a></td>
 <td>DQ domains, SQL patterns, glossary</td>
 </tr>
 <tr>
-<td><a href="guide/WORKSHOP_CARDS.md">WORKSHOP_CARDS.md</a></td>
+<td><a href="workshop_cards.html">WORKSHOP_CARDS.md</a></td>
 <td>One-page summary per module</td>
 </tr>
 <tr>
-<td><a href="guide/LAB_MAP.md">LAB_MAP.md</a></td>
+<td><a href="lab_map.html">LAB_MAP.md</a></td>
 <td>Visual flow diagram</td>
 </tr>
 <tr>
-<td><a href="guide/APPENDIX_DBT_DEVELOPMENT.md">APPENDIX_DBT_DEVELOPMENT.md</a></td>
+<td><a href="appendix_dbt.html">APPENDIX_DBT_DEVELOPMENT.md</a></td>
 <td>How the dbt project was built</td>
 </tr>
 </tbody>
@@ -249,14 +272,37 @@ Module 9   --&gt;  Teardown (cleanup)
 <hr />
 <h2 id="feedback">Feedback</h2>
 <p>After completing the lab, please fill in the feedback form:
-<strong><a href="guide/DQ_HOL_Feedback_Form.xlsx">guide/DQ_HOL_Feedback_Form.xlsx</a></strong></p>
-<p>3 sheets:
-1. <strong>Module Feedback</strong> -- rate each module (difficulty, clarity, usefulness)
-2. <strong>Enhancement Requests</strong> -- bugs, gaps, ideas (free-form)
-3. <strong>Cohort Tracker</strong> -- for your facilitator to track group progress</p>
+<strong><a href="guide/DQ_HOL_Feedback_Form.xlsx">DQ_HOL_Feedback_Form.xlsx</a></strong></p>
+<table>
+<thead>
+<tr>
+<th>Sheet</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Module Feedback</strong></td>
+<td>Rate each module (difficulty, clarity, usefulness)</td>
+</tr>
+<tr>
+<td><strong>Enhancement Requests</strong></td>
+<td>Bugs, gaps, ideas (free-form)</td>
+</tr>
+<tr>
+<td><strong>Cohort Tracker</strong></td>
+<td>For your facilitator to track group progress</td>
+</tr>
+</tbody>
+</table>
 <hr />
 <blockquote>
-<p><strong>Questions?</strong> Reach out to your workshop facilitator or open an issue on GitHub.</p>
+<p><strong>Questions?</strong> Reach out to your workshop facilitator.</p>
 </blockquote>
+<footer>
+<p>Data Quality Monitoring with Snowflake &mdash; Hands-On Lab</p>
+<p>Facilitated by <strong>Marawen Charni</strong> | Senior Partner Solutions Engineer, Snowflake</p>
+<p style="margin-top:0.5rem; color:#666;">&copy; 2026 Snowflake Inc. All rights reserved.</p>
+</footer>
 </body>
 </html>

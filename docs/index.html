@@ -20,16 +20,26 @@ pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 
 pre code { background: none; color: inherit; padding: 0; }
 blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
 a { color: var(--sf-blue); }
-nav { background: var(--sf-dark); padding: 1rem; border-radius: 6px; margin-bottom: 2rem; }
-nav a { color: white; margin-right: 1.5rem; text-decoration: none; font-weight: 500; }
+nav { background: var(--sf-dark); padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+nav .logo { display: flex; align-items: center; gap: 0.5rem; margin-right: auto; }
+nav .logo svg { width: 28px; height: 28px; }
+nav .logo span { color: white; font-weight: 700; font-size: 1.1em; }
+nav a { color: white; text-decoration: none; font-weight: 500; }
 nav a:hover { text-decoration: underline; }
-.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; }
+footer { margin-top: 3rem; padding: 1.5rem; background: var(--sf-dark); color: #ccc; border-radius: 6px; text-align: center; font-size: 0.85em; }
+footer a { color: var(--sf-blue); }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; overflow-x: auto; }
+.mermaid svg { min-width: 800px; }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
 </head>
 <body>
 <nav>
+<div class="logo">
+<svg viewBox="0 0 24 24" fill="white"><path d="M11 1v4.07A6.007 6.007 0 0 0 6.07 10H2v2h4.07A6.007 6.007 0 0 0 11 16.93V21h2v-4.07A6.007 6.007 0 0 0 17.93 12H22v-2h-4.07A6.007 6.007 0 0 0 13 5.07V1h-2zm1 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+<span>Snowflake DQ Lab</span>
+</div>
 <a href="index.html">Home</a>
 <a href="start_here.html">Start Here</a>
 <a href="prerequisites.html">Prerequisites</a>
@@ -38,12 +48,125 @@ nav a:hover { text-decoration: underline; }
 <a href="lab_map.html">Lab Map</a>
 </nav>
 <h1 id="data-quality-monitoring-with-snowflake">Data Quality Monitoring with Snowflake</h1>
-<p><img alt="Snowflake" src="https://img.shields.io/badge/Snowflake-Enterprise-29B5E8?logo=snowflake&amp;logoColor=white" />
-<img alt="dbt" src="https://img.shields.io/badge/dbt-in_Snowflake-FF694B?logo=dbt&amp;logoColor=white" />
-<img alt="Cortex AI" src="https://img.shields.io/badge/Cortex_AI-Powered-9B59B6" />
-<img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-green" />
-<img alt="Modules" src="https://img.shields.io/badge/Modules-15-blue" /></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Platform</strong></td>
+<td>Snowflake Enterprise Edition</td>
+</tr>
+<tr>
+<td><strong>Features</strong></td>
+<td>Data Metric Functions, Dynamic Tables, Cortex AI, dbt in Snowflake</td>
+</tr>
+<tr>
+<td><strong>Modules</strong></td>
+<td>15 hands-on modules</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>4-10 hours (track-dependent)</td>
+</tr>
+<tr>
+<td><strong>License</strong></td>
+<td>Apache 2.0</td>
+</tr>
+</tbody>
+</table>
 <p>Build a <strong>production-ready data quality monitoring framework</strong> using only native Snowflake capabilities. No external tools, no additional infrastructure, no ongoing maintenance -- just Snowflake.</p>
+<hr />
+<h2 id="your-facilitator">Your Facilitator</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>Marawen Charni</td>
+</tr>
+<tr>
+<td><strong>Role</strong></td>
+<td>Senior Partner Solutions Engineer, Snowflake</td>
+</tr>
+<tr>
+<td><strong>Region</strong></td>
+<td>Middle East &amp; Africa</td>
+</tr>
+<tr>
+<td><strong>Focus</strong></td>
+<td>Data Cloud, Partner Enablement, AI/ML, Data Engineering</td>
+</tr>
+<tr>
+<td><strong>Events</strong></td>
+<td>Speaker at GITEX, LEAP</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-scenario-a-saudi-holding-company">The Scenario: A Saudi Holding Company</h2>
+<blockquote>
+<p><strong>Fictional context for this lab.</strong> All data, names, and scenarios are synthetic.</p>
+</blockquote>
+<p>Our fictional company is a Saudi diversified holding group headquartered in Riyadh with subsidiaries in real estate development, facility management, and industrial services. They operate across 5 regions of KSA with 56 corporate customers and process ~50 financial transactions daily.</p>
+<h3 id="the-business-problem">The Business Problem</h3>
+<p>The company recently migrated to Snowflake as their enterprise data platform. Data flows in from four source systems:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>System</th>
+<th>What It Contains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ERP</strong></td>
+<td>SAP S/4HANA</td>
+<td>30 corporate customer records (Arabic names, National IDs, IBANs)</td>
+</tr>
+<tr>
+<td><strong>CRM</strong></td>
+<td>Salesforce</td>
+<td>25 customer records (overlapping with ERP -- different field formats)</td>
+</tr>
+<tr>
+<td><strong>Gov Portal</strong></td>
+<td>Unified National Platform (Nafath)</td>
+<td>10 government-verified identity records</td>
+</tr>
+<tr>
+<td><strong>Bank Feed</strong></td>
+<td>SAMA-regulated payment gateway</td>
+<td>50 daily transactions (SAR amounts, beneficiary refs)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The challenge:</strong> Each source system has different data quality characteristics. The ERP has customers with invalid National IDs (too short, wrong format). The CRM has NULL identifiers. Customer "Abdullah" appears in both ERP and CRM with slightly different details. Transaction feeds occasionally go stale. And nobody knows which records to trust when sources disagree.</p>
+<p><strong>Your mission:</strong> Build a comprehensive, automated data quality monitoring framework that detects issues at every layer (RAW → Silver → Gold), logs them, alerts stakeholders, and provides an executive dashboard -- all using native Snowflake capabilities.</p>
+<h3 id="the-data-landscape">The Data Landscape</h3>
+<pre><code>CORP_DWH (Corporate Data Warehouse)
+├── RAW     → 4 staging tables (raw feeds, untransformed)
+├── SILVER  → 2 Dynamic Tables (deduped, merged, auto-refreshing)
+├── GOLD    → 2 dimension/fact tables + views (dbt-governed, tested)
+└── DQ      → Rules catalog, DMFs, issues log, sweep log, AI models
+</code></pre>
+<h3 id="why-this-matters">Why This Matters</h3>
+<ol>
+<li><strong>Regulatory compliance</strong> -- Saudi Central Bank (SAMA) requires accurate beneficiary identification; invalid National IDs risk transaction rejection</li>
+<li><strong>Customer 360 trust</strong> -- Merging ERP + CRM + Gov data without quality checks produces unreliable golden records</li>
+<li><strong>Operational SLAs</strong> -- Transaction feeds must arrive within 2 hours; stale data means missed payment deadlines</li>
+<li><strong>Board reporting</strong> -- The CFO needs a single DQ scorecard across all entities, not per-system excuses</li>
+</ol>
+<hr />
 <h2 id="what-you-will-build">What You Will Build</h2>
 <p>A complete DQ lifecycle from raw data landing to executive dashboard:</p>
 <ul>
@@ -256,11 +379,11 @@ nav a:hover { text-decoration: underline; }
 </div>
 <h2 id="quick-start">Quick Start</h2>
 <blockquote>
-<p><strong>Students:</strong> Go directly to <strong><a href="START_HERE.md">START_HERE.md</a></strong> for step-by-step instructions.</p>
+<p><strong>Students:</strong> Go directly to <strong><a href="start_here.html">START_HERE.md</a></strong> for step-by-step instructions.</p>
 </blockquote>
 <p>Below is a condensed version for experienced users:</p>
-<h3 id="step-1-clone-the-repo">Step 1: Clone the repo</h3>
-<pre><code class="language-bash">git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+<h3 id="step-1-unzip-the-lab-package">Step 1: Unzip the lab package</h3>
+<pre><code class="language-bash">unzip snowflake-data-quality-monitoring-hol.zip
 cd snowflake-data-quality-monitoring-hol
 </code></pre>
 <h3 id="step-2-install-the-snowflake-cli">Step 2: Install the Snowflake CLI</h3>
@@ -296,8 +419,8 @@ snow connection test           # should show &quot;Connection test successful&qu
 <blockquote>
 <p><strong>dbt deploy:</strong> Do NOT deploy upfront. When you reach Module 0B Step 1, the notebook will tell you to open a terminal and run <code>snow dbt deploy</code>. The notebook explains what you're deploying and why before you execute it.</p>
 <p><strong>After Module 0:</strong> Switch role to <code>CORP_DQ_ADMIN</code> for all remaining modules. You won't need ACCOUNTADMIN again.</p>
-<p><strong>Detailed prerequisites:</strong> See <a href="guide/PREREQUISITES.md">guide/PREREQUISITES.md</a> for trial account signup, troubleshooting, and more.</p>
-<p><strong>Reference while working:</strong> See <a href="guide/STUDENT_GUIDE.md">guide/STUDENT_GUIDE.md</a> for DQ domains, SQL patterns, glossary, and expected outputs per module.</p>
+<p><strong>Detailed prerequisites:</strong> See <a href="prerequisites.html">guide/PREREQUISITES.md</a> for trial account signup, troubleshooting, and more.</p>
+<p><strong>Reference while working:</strong> See <a href="student_guide.html">guide/STUDENT_GUIDE.md</a> for DQ domains, SQL patterns, glossary, and expected outputs per module.</p>
 </blockquote>
 <h2 id="what-makes-this-workshop-unique">What Makes This Workshop Unique</h2>
 <table>
@@ -347,7 +470,7 @@ snow connection test           # should show &quot;Connection test successful&qu
 </tbody>
 </table>
 <blockquote>
-<p><strong>Note on dbt:</strong> This lab provides a pre-built dbt project (<code>dbt/corp_dq_gold/</code>) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs. <strong>Want to learn how the project was built?</strong> See <a href="guide/APPENDIX_DBT_DEVELOPMENT.md">guide/APPENDIX_DBT_DEVELOPMENT.md</a>.</p>
+<p><strong>Note on dbt:</strong> This lab provides a pre-built dbt project (<code>dbt/corp_dq_gold/</code>) ready to deploy. It does NOT teach dbt model development (writing SQL models, schema.yml, etc.). The focus is on how dbt integrates with Snowflake's native DQ framework -- deploying as a Snowflake object, running via SQL, and comparing dbt tests with DMFs. <strong>Want to learn how the project was built?</strong> See <a href="appendix_dbt.html">guide/APPENDIX_DBT_DEVELOPMENT.md</a>.</p>
 </blockquote>
 <h2 id="who-is-this-for">Who Is This For</h2>
 <ul>
@@ -448,20 +571,19 @@ snow connection test           # should show &quot;Connection test successful&qu
 │   ├── teardown.sql                    #   Quick cleanup without notebook
 │   └── validate_notebooks.py           #   Validates all .ipynb are valid JSON
 │
-├── .github/workflows/validate.yml      # CI: validates notebooks on push
-├── .gitignore
 ├── LICENSE                             # Apache 2.0
 └── README.md                           # This file
 </code></pre>
-<h2 id="publishing-contributing">Publishing &amp; Contributing</h2>
-<p><strong>Repository:</strong> <a href="https://github.com/mcharni76/snowflake-data-quality-monitoring-hol">github.com/mcharni76/snowflake-data-quality-monitoring-hol</a></p>
-<p>Contributions welcome. To contribute:
-1. Fork the repo
-2. Create a feature branch
-3. Submit a PR with description of changes</p>
+<h2 id="contact">Contact</h2>
+<p>For questions, feedback, or issues with this lab, reach out to your workshop facilitator.</p>
 <h2 id="keywords">Keywords</h2>
 <p><code>snowflake</code> <code>data-quality</code> <code>data-metric-functions</code> <code>dmf</code> <code>dbt</code> <code>dynamic-tables</code> <code>cortex-ai</code> <code>data-governance</code> <code>horizon</code> <code>hands-on-lab</code> <code>workshop</code> <code>enterprise</code> <code>monitoring</code> <code>expectations</code> <code>alerts</code></p>
 <h2 id="license">License</h2>
 <p>Apache 2.0. See <a href="LICENSE">LICENSE</a>.</p>
+<footer>
+<p>Data Quality Monitoring with Snowflake &mdash; Hands-On Lab</p>
+<p>Facilitated by <strong>Marawen Charni</strong> | Senior Partner Solutions Engineer, Snowflake</p>
+<p style="margin-top:0.5rem; color:#666;">&copy; 2026 Snowflake Inc. All rights reserved.</p>
+</footer>
 </body>
 </html>

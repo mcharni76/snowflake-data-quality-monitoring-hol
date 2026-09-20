@@ -271,6 +271,7 @@ models:
 ```
 
 **Test types used:**
+
 | Test | What it checks | Fails when... |
 |------|---------------|---------------|
 | `unique` | No duplicate values | Two rows have the same value |
@@ -370,6 +371,7 @@ snow dbt execute -c default --database MY_DB --schema MY_SCHEMA MY_PROJECT run
 ```
 
 **Tips:**
+
 - Start small: 1 source, 1 staging, 1 mart. Add complexity after it works.
 - Use `+materialized: view` for staging, `+materialized: table` for marts.
 - No passwords in `profiles.yml` -- Snowflake handles auth at deploy time.

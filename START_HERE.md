@@ -4,21 +4,32 @@
 
 ---
 
-## Before You Begin
+## Your Mission
 
-| Requirement | Details |
-|-------------|---------|
-| **Snowflake Account** | Trial or Enterprise (30-day trial works) |
-| **Snowflake CLI** | `brew install snowflake-cli` or `pip install snowflake-cli` |
-| **Browser** | Chrome/Edge for Snowsight |
-| **Time** | 4-10 hours depending on track (see below) |
+You are building a **data quality monitoring framework** for a **Saudi diversified holding company**. Their Snowflake data platform ingests customer records from 4 source systems (SAP ERP, Salesforce CRM, Government Portal, Bank Feed) -- each with different quality issues: invalid National IDs, duplicate customers across systems, stale transaction feeds, and NULL identifiers.
+
+Your job: detect every issue automatically, log it, alert the right people, and give the CFO a single scorecard. All using native Snowflake -- no external tools.
+
+> See [README.md](README.md#the-scenario-a-saudi-holding-company) for the full business context.
 
 ---
 
-## Step 1: Clone & Configure (5 min)
+## Before You Begin
+
+| # | Requirement | Details |
+|---|-------------|---------|
+| 1 | **Snowflake Trial** | [Sign up for a free 30-day trial](https://signup.snowflake.com/) -- select **Enterprise Edition**, any cloud/region |
+| 2 | **Snowflake CLI** | `brew install snowflake-cli` or `pip install snowflake-cli` |
+| 3 | **Browser** | Chrome/Edge for Snowsight |
+| 4 | **Time** | 4-10 hours depending on track (see below) |
+
+---
+
+## Step 1: Unzip & Configure (5 min)
 
 ```bash
-git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+# Unzip the lab package you received
+unzip snowflake-data-quality-monitoring-hol.zip
 cd snowflake-data-quality-monitoring-hol/hol
 
 # Add your Snowflake connection
@@ -142,13 +153,14 @@ Module 9   -->  Teardown (cleanup)
 ## Feedback
 
 After completing the lab, please fill in the feedback form:
-**[guide/DQ_HOL_Feedback_Form.xlsx](guide/DQ_HOL_Feedback_Form.xlsx)**
+**[DQ_HOL_Feedback_Form.xlsx](guide/DQ_HOL_Feedback_Form.xlsx)**
 
-3 sheets:
-1. **Module Feedback** -- rate each module (difficulty, clarity, usefulness)
-2. **Enhancement Requests** -- bugs, gaps, ideas (free-form)
-3. **Cohort Tracker** -- for your facilitator to track group progress
+| Sheet | Purpose |
+|-------|---------|
+| **Module Feedback** | Rate each module (difficulty, clarity, usefulness) |
+| **Enhancement Requests** | Bugs, gaps, ideas (free-form) |
+| **Cohort Tracker** | For your facilitator to track group progress |
 
 ---
 
-> **Questions?** Reach out to your workshop facilitator or open an issue on GitHub.
+> **Questions?** Reach out to your workshop facilitator.

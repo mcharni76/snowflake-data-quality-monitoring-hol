@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appendix: dbt Development - DQ HOL</title>
+<style>
+:root { --sf-blue: #29B5E8; --sf-dark: #1B2A4A; --sf-light: #F0F9FF; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 2rem; background: #fafbfc; }
+h1 { color: var(--sf-dark); border-bottom: 3px solid var(--sf-blue); padding-bottom: 0.5rem; margin: 1.5rem 0 1rem; }
+h2 { color: var(--sf-dark); border-bottom: 1px solid #e1e4e8; padding-bottom: 0.3rem; margin: 1.5rem 0 0.8rem; }
+h3 { color: var(--sf-dark); margin: 1.2rem 0 0.5rem; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+th { background: var(--sf-blue); color: white; padding: 0.6rem; text-align: left; }
+td { border: 1px solid #e1e4e8; padding: 0.5rem; }
+tr:nth-child(even) { background: var(--sf-light); }
+code { background: #f0f0f0; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+pre { background: var(--sf-dark); color: #e6e6e6; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+pre code { background: none; color: inherit; padding: 0; }
+blockquote { border-left: 4px solid var(--sf-blue); padding: 0.5rem 1rem; margin: 1rem 0; background: var(--sf-light); }
+a { color: var(--sf-blue); }
+nav { background: var(--sf-dark); padding: 1rem 1.5rem; border-radius: 6px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+nav .logo { display: flex; align-items: center; gap: 0.5rem; margin-right: auto; }
+nav .logo svg { width: 28px; height: 28px; }
+nav .logo span { color: white; font-weight: 700; font-size: 1.1em; }
+nav a { color: white; text-decoration: none; font-weight: 500; }
+nav a:hover { text-decoration: underline; }
+footer { margin-top: 3rem; padding: 1.5rem; background: var(--sf-dark); color: #ccc; border-radius: 6px; text-align: center; font-size: 0.85em; }
+footer a { color: var(--sf-blue); }
+.mermaid { background: white; padding: 1rem; border-radius: 6px; border: 1px solid #e1e4e8; margin: 1rem 0; overflow-x: auto; }
+.mermaid svg { min-width: 800px; }
+</style>
+<script src="mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
+</head>
+<body>
+<nav>
+<div class="logo">
+<svg viewBox="0 0 24 24" fill="white"><path d="M11 1v4.07A6.007 6.007 0 0 0 6.07 10H2v2h4.07A6.007 6.007 0 0 0 11 16.93V21h2v-4.07A6.007 6.007 0 0 0 17.93 12H22v-2h-4.07A6.007 6.007 0 0 0 13 5.07V1h-2zm1 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8z"/></svg>
+<span>Snowflake DQ Lab</span>
+</div>
+<a href="index.html">Home</a>
+<a href="start_here.html">Start Here</a>
+<a href="prerequisites.html">Prerequisites</a>
+<a href="student_guide.html">Student Guide</a>
+<a href="workshop_cards.html">Workshop Cards</a>
+<a href="lab_map.html">Lab Map</a>
+</nav>
+<h1 id="appendix-how-we-built-the-dbt-project">Appendix: How We Built the dbt Project</h1>
+<p>This appendix walks through how the <code>dbt/corp_dq_gold/</code> project was developed from scratch. Use it as a learning reference if you want to understand the "why" behind each file, or as a template for building your own dbt-in-Snowflake projects.</p>
+<hr />
+<h2 id="what-is-dbt-in-snowflake">What is dbt in Snowflake?</h2>
+<p>Traditional dbt runs externally (dbt Cloud, GitHub Actions, local CLI). <strong>dbt in Snowflake</strong> deploys the project as a first-class Snowflake object. No external scheduler, no CI/CD pipeline, no dbt Cloud subscription.</p>
+<table>
+<thead>
+<tr>
+<th>Traditional dbt</th>
+<th>dbt in Snowflake</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dbt run</code> from terminal</td>
+<td><code>EXECUTE DBT PROJECT ... ARGS = 'run'</code> from SQL</td>
+</tr>
+<tr>
+<td>Needs <code>profiles.yml</code> with password/key</td>
+<td>No credentials (Snowflake handles auth)</td>
+</tr>
+<tr>
+<td>Runs on your machine or CI/CD</td>
+<td>Runs on Snowflake serverless compute</td>
+</tr>
+<tr>
+<td>Deploy = push to Git + run</td>
+<td>Deploy = <code>snow dbt deploy</code> (one command)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="step-1-initialize-the-project">Step 1: Initialize the Project</h2>
+<p>We started with the standard dbt init structure:</p>
+<pre><code class="language-bash">mkdir -p dbt/corp_dq_gold/models/{staging,marts}
+cd dbt/corp_dq_gold
+</code></pre>
+<p>Then created two config files:</p>
+<h3 id="dbt_projectyml-project-definition"><code>dbt_project.yml</code> -- Project definition</h3>
+<pre><code class="language-yaml">name: 'corp_dq_gold'
+version: '1.0.0'
+config-version: 2
+
+profile: 'corp_dq_gold'
+
+model-paths: [&quot;models&quot;]
+test-paths: [&quot;tests&quot;]
+seed-paths: [&quot;seeds&quot;]
+
+target-path: &quot;target&quot;
+clean-targets:
+  - &quot;target&quot;
+
+models:
+  corp_dq_gold:
+    marts:
+      +materialized: table      # Gold = physical tables
+    staging:
+      +materialized: view       # Staging = lightweight views
+</code></pre>
+<p><strong>Key decisions:</strong>
+- <code>marts/</code> materialized as <strong>table</strong> because Gold data is consumed by BI tools that need predictable performance
+- <code>staging/</code> materialized as <strong>view</strong> because they're just pass-through references to Silver Dynamic Tables (no need to duplicate data)</p>
+<h3 id="profilesyml-connection-config"><code>profiles.yml</code> -- Connection config</h3>
+<pre><code class="language-yaml">corp_dq_gold:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      database: CORP_DWH
+      schema: GOLD
+      warehouse: DQ_LAB_WH
+      role: CORP_DQ_ADMIN
+</code></pre>
+<p><strong>Key decisions:</strong>
+- No <code>account</code>, <code>user</code>, or <code>password</code> fields -- when deployed to Snowflake, auth is handled by the deploying user's session
+- <code>role: CORP_DQ_ADMIN</code> ensures the dbt project runs with lab permissions, not ACCOUNTADMIN
+- Single <code>dev</code> target (in production you'd add <code>staging</code> and <code>prod</code>)</p>
+<hr />
+<h2 id="step-2-define-sources-what-does-dbt-read-from">Step 2: Define Sources (What does dbt read from?)</h2>
+<p>Sources tell dbt where upstream data lives. We point at the Silver Dynamic Tables:</p>
+<h3 id="modelsschemayml-sources-section"><code>models/schema.yml</code> -- Sources section</h3>
+<pre><code class="language-yaml">version: 2
+
+sources:
+  - name: silver
+    database: CORP_DWH
+    schema: SILVER
+    description: &quot;Silver layer Dynamic Tables (auto-refreshing from RAW)&quot;
+    tables:
+      - name: INT_CUSTOMERS
+        description: &quot;Unified customer table from 3 source systems&quot;
+      - name: INT_TRANSACTIONS
+        description: &quot;Parsed and typed transactions from bank feed&quot;
+</code></pre>
+<p><strong>Why declare sources?</strong>
+- dbt tracks lineage: it knows Gold depends on Silver
+- <code>{{ source('silver', 'INT_CUSTOMERS') }}</code> generates fully-qualified <code>CORP_DWH.SILVER.INT_CUSTOMERS</code>
+- If the table moves or renames, you change one line here, not every model</p>
+<hr />
+<h2 id="step-3-build-staging-models-thin-layer-over-sources">Step 3: Build Staging Models (Thin layer over sources)</h2>
+<p>Staging models are the entry point into the dbt DAG. They reference sources and apply minimal logic.</p>
+<h3 id="modelsstagingstg_silver_customerssql"><code>models/staging/stg_silver_customers.sql</code></h3>
+<pre><code class="language-sql">-- Staging view referencing the Silver Dynamic Table directly
+
+SELECT
+    CUSTOMER_NAME,
+    CUSTOMER_NAME_AR,
+    NATIONAL_ID,
+    IBAN,
+    EMAIL,
+    PHONE,
+    CITY,
+    SOURCE_SYSTEM,
+    SOURCE_PRIORITY,
+    DQ_SCORE,
+    IS_DUPLICATE,
+    LOADED_AT
+FROM {{ source('silver', 'INT_CUSTOMERS') }}
+</code></pre>
+<h3 id="modelsstagingstg_silver_transactionssql"><code>models/staging/stg_silver_transactions.sql</code></h3>
+<pre><code class="language-sql">-- Staging view referencing the Silver Dynamic Table directly
+
+SELECT
+    CUSTOMER_REF,
+    TXN_DATE,
+    AMOUNT,
+    CURRENCY,
+    TXN_TYPE,
+    SOURCE_SYSTEM,
+    IS_VALID,
+    LOADED_AT
+FROM {{ source('silver', 'INT_TRANSACTIONS') }}
+</code></pre>
+<p><strong>Why have staging at all if it's just a SELECT *?</strong></p>
+<ol>
+<li><strong>Decoupling</strong> -- if we rename columns, add filters, or change types, we change staging only. Marts don't care.</li>
+<li><strong>Lineage</strong> -- dbt draws the DAG: <code>source → staging → marts</code>. Without staging, sources connect directly to marts, which gets messy at scale.</li>
+<li><strong>Testing</strong> -- we can add tests at the staging layer (e.g., "never more than 100 rows") without modifying the mart.</li>
+</ol>
+<hr />
+<h2 id="step-4-build-mart-models-business-logic">Step 4: Build Mart Models (Business logic)</h2>
+<p>Marts contain the real transformation logic. These become Gold tables.</p>
+<h3 id="modelsmartsdim_customersql"><code>models/marts/dim_customer.sql</code></h3>
+<pre><code class="language-sql">-- Deduplicated customer dimension from Silver layer
+-- Business logic: keep only non-duplicate records (primary source wins)
+-- Surrogate key uses stable hash to ensure consistent IDs across refreshes
+
+SELECT
+    ABS(HASH(COALESCE(NATIONAL_ID, '') || '|' || SOURCE_SYSTEM || '|' || COALESCE(EMAIL, ''))) AS CUSTOMER_ID,
+    CUSTOMER_NAME,
+    NATIONAL_ID,
+    IBAN,
+    EMAIL,
+    PHONE,
+    CITY,
+    SOURCE_SYSTEM,
+    DQ_SCORE,
+    LOADED_AT AS CREATED_DATE,
+    CURRENT_TIMESTAMP() AS LAST_UPDATED,
+    TRUE AS IS_ACTIVE
+FROM {{ ref('stg_silver_customers') }}
+WHERE IS_DUPLICATE = FALSE
+</code></pre>
+<p><strong>Design decisions:</strong>
+- <code>WHERE IS_DUPLICATE = FALSE</code> -- Silver already flagged duplicates (via ROW_NUMBER over NATIONAL_ID). Gold only keeps the "winner" (highest SOURCE_PRIORITY).
+- <code>ABS(HASH(...)) AS CUSTOMER_ID</code> -- deterministic surrogate key using a hash of NATIONAL_ID + SOURCE_SYSTEM + EMAIL. Unlike ROW_NUMBER(), this is stable across full refreshes.
+- <code>IS_ACTIVE = TRUE</code> -- all records start active. A future SCD pattern would set this to FALSE when a customer is deactivated.</p>
+<h3 id="modelsmartsfact_transactionssql"><code>models/marts/fact_transactions.sql</code></h3>
+<pre><code class="language-sql">-- Valid transactions with derived customer key for referential integrity
+-- Business logic: only valid transactions make it to Gold
+-- CUSTOMER_ID is a hash of CUSTOMER_REF (independent of dim_customer).
+-- The DQ lab intentionally demonstrates orphan detection when keys don't match.
+
+SELECT
+    ROW_NUMBER() OVER (ORDER BY t.TXN_DATE, t.CUSTOMER_REF) AS TXN_ID,
+    ABS(HASH(t.CUSTOMER_REF)) AS CUSTOMER_ID,
+    t.CUSTOMER_REF,
+    t.TXN_DATE,
+    t.AMOUNT,
+    t.CURRENCY,
+    t.TXN_TYPE,
+    t.SOURCE_SYSTEM,
+    t.LOADED_AT
+FROM {{ ref('stg_silver_transactions') }} t
+WHERE t.IS_VALID = TRUE
+</code></pre>
+<p><strong>Design decisions:</strong>
+- <code>WHERE t.IS_VALID = TRUE</code> -- Silver flags invalid records (blank ref, negative amount, parse failures). Only clean rows reach Gold.
+- <code>ABS(HASH(t.CUSTOMER_REF)) AS CUSTOMER_ID</code> -- derived numeric key enables DMF attachment and referential integrity checks. Because it hashes a different input than dim_customer's key, orphans are always detected (intentional DQ demonstration).
+- <code>CUSTOMER_REF</code> kept as-is -- the original bank feed reference, useful for traceability.
+- <code>ROW_NUMBER() ... AS TXN_ID</code> -- surrogate key for the fact table, ordered deterministically by date + ref.</p>
+<hr />
+<h2 id="step-5-add-tests-schemayml">Step 5: Add Tests (schema.yml)</h2>
+<p>dbt tests validate data after materialization. They're defined declaratively in YAML:</p>
+<h3 id="modelsschemayml-models-tests-section"><code>models/schema.yml</code> -- Models + tests section</h3>
+<pre><code class="language-yaml">models:
+  - name: dim_customer
+    description: &quot;Deduplicated customer dimension - one row per unique customer&quot;
+    columns:
+      - name: CUSTOMER_ID
+        tests:
+          - unique          # No two rows share the same ID
+          - not_null        # Every row must have an ID
+      - name: NATIONAL_ID
+        tests:
+          - unique:
+              where: &quot;NATIONAL_ID IS NOT NULL&quot;  # Unique AMONG non-nulls
+      - name: EMAIL
+        tests:
+          - not_null
+      - name: SOURCE_SYSTEM
+        tests:
+          - accepted_values:
+              values: ['ERP', 'CRM', 'GOV_PORTAL']
+
+  - name: fact_transactions
+    description: &quot;Valid financial transactions - only records passing validation reach Gold&quot;
+    columns:
+      - name: TXN_ID
+        tests:
+          - unique
+          - not_null
+      - name: CUSTOMER_ID
+        description: &quot;Derived numeric key (hash of CUSTOMER_REF)&quot;
+        tests:
+          - not_null
+      - name: CUSTOMER_REF
+        description: &quot;Customer reference from bank feed&quot;
+        tests:
+          - not_null
+      - name: AMOUNT
+        tests:
+          - not_null
+      - name: TXN_TYPE
+        tests:
+          - accepted_values:
+              values: ['PAYMENT', 'INVOICE', 'TRANSFER', 'REFUND']
+</code></pre>
+<p><strong>Test types used:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>What it checks</th>
+<th>Fails when...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unique</code></td>
+<td>No duplicate values</td>
+<td>Two rows have the same value</td>
+</tr>
+<tr>
+<td><code>not_null</code></td>
+<td>No NULL values</td>
+<td>Any row has NULL</td>
+</tr>
+<tr>
+<td><code>accepted_values</code></td>
+<td>Value in allowed list</td>
+<td>A row has 'UNKNOWN' or unexpected value</td>
+</tr>
+<tr>
+<td><code>relationships</code></td>
+<td>FK exists in parent</td>
+<td>A value in child doesn't exist in parent (not used here -- see Module 4 for DMF-based FK checks)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="step-6-deploy-to-snowflake">Step 6: Deploy to Snowflake</h2>
+<p>With the project developed, deploy it as a Snowflake-native object:</p>
+<pre><code class="language-bash">cd dbt/corp_dq_gold
+
+# Deploy (uploads project as a Snowflake object)
+snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source . --database CORP_DWH --schema GOLD
+
+# Verify it exists
+snow dbt list --in schema GOLD --database CORP_DWH
+</code></pre>
+<p>Once deployed, you can run it from SQL (no CLI needed):</p>
+<pre><code class="language-sql">-- Build all models (creates/refreshes Gold tables)
+EXECUTE DBT PROJECT CORP_DWH.GOLD.CORP_DQ_GOLD ARGS = 'run';
+
+-- Run all tests
+EXECUTE DBT PROJECT CORP_DWH.GOLD.CORP_DQ_GOLD ARGS = 'test';
+
+-- Run a specific model
+EXECUTE DBT PROJECT CORP_DWH.GOLD.CORP_DQ_GOLD ARGS = 'run --select dim_customer';
+</code></pre>
+<hr />
+<h2 id="the-complete-dag">The Complete DAG</h2>
+<pre><code>sources:                staging:                marts:
+                        (views)                 (tables)
+
+INT_CUSTOMERS  ──────&gt;  stg_silver_customers  ──────&gt;  dim_customer
+(Dynamic Table)
+
+INT_TRANSACTIONS ────&gt;  stg_silver_transactions ─────&gt;  fact_transactions
+(Dynamic Table)
+</code></pre>
+<p><strong>Data flow:</strong>
+1. Source systems feed RAW tables (Module 0)
+2. Dynamic Tables auto-refresh Silver from RAW (Module 0B Part A)
+3. dbt reads Silver, deduplicates, and materializes Gold (Module 0B Part B)
+4. DMFs monitor ALL layers continuously (Modules 1-7)</p>
+<hr />
+<h2 id="dbt-tests-vs-dmfs-complementary-not-competing">dbt Tests vs DMFs: Complementary, Not Competing</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>dbt Tests</th>
+<th>Snowflake DMFs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run when</strong></td>
+<td>On demand (<code>dbt test</code> / <code>EXECUTE ... 'test'</code>)</td>
+<td>Continuously (TRIGGER_ON_CHANGES)</td>
+</tr>
+<tr>
+<td><strong>Scope</strong></td>
+<td>Gold layer only (whatever dbt builds)</td>
+<td>Any table/view in any schema</td>
+</tr>
+<tr>
+<td><strong>Failure mode</strong></td>
+<td>Blocks pipeline (test fails = don't deploy)</td>
+<td>Fires alert (data already landed)</td>
+</tr>
+<tr>
+<td><strong>Best for</strong></td>
+<td>Build-time gates before promoting to Gold</td>
+<td>Runtime monitoring after data arrives</td>
+</tr>
+<tr>
+<td><strong>Who writes</strong></td>
+<td>Analytics engineers (YAML)</td>
+<td>Data engineers + stewards (SQL/catalog)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The hybrid pattern used in this lab:</strong>
+- dbt tests catch bugs <strong>before</strong> data reaches Gold (build-time gate)
+- DMFs catch drift <strong>after</strong> data arrives in any layer (runtime monitor)
+- Together: nothing bad gets in (dbt) AND nothing bad goes unnoticed (DMFs)</p>
+<hr />
+<h2 id="building-your-own-dbt-in-snowflake-project">Building Your Own dbt-in-Snowflake Project</h2>
+<p>If you want to create a new project from scratch:</p>
+<pre><code class="language-bash"># 1. Create project structure
+mkdir -p my_project/models/{staging,marts}
+cd my_project
+
+# 2. Create dbt_project.yml (copy from above, change name)
+# 3. Create profiles.yml (set your database/schema/warehouse/role)
+# 4. Define sources in models/schema.yml
+# 5. Write staging models (one per source table)
+# 6. Write mart models (business logic + joins)
+# 7. Add tests in schema.yml
+# 8. Deploy:
+snow dbt deploy MY_PROJECT --connection dq-lab --source . --database MY_DB --schema MY_SCHEMA
+
+# 9. Execute:
+snow dbt execute -c default --database MY_DB --schema MY_SCHEMA MY_PROJECT run
+</code></pre>
+<p><strong>Tips:</strong></p>
+<ul>
+<li>Start small: 1 source, 1 staging, 1 mart. Add complexity after it works.</li>
+<li>Use <code>+materialized: view</code> for staging, <code>+materialized: table</code> for marts.</li>
+<li>No passwords in <code>profiles.yml</code> -- Snowflake handles auth at deploy time.</li>
+<li>Run tests after every model change: <code>EXECUTE DBT PROJECT ... ARGS = 'test'</code></li>
+</ul>
+<footer>
+<p>Data Quality Monitoring with Snowflake &mdash; Hands-On Lab</p>
+<p>Facilitated by <strong>Marawen Charni</strong> | Senior Partner Solutions Engineer, Snowflake</p>
+<p style="margin-top:0.5rem; color:#666;">&copy; 2026 Snowflake Inc. All rights reserved.</p>
+</footer>
+</body>
+</html>
