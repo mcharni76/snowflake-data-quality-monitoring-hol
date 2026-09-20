@@ -43,8 +43,8 @@ You will need the `notebooks/` folder (15 `.ipynb` files to upload) and `dbt/cor
 2. Fill in your name, email, and company
 3. Choose these options:
    - **Edition:** Enterprise (required for Data Metric Functions)
-   - **Cloud Provider:** Any (AWS, Azure, or GCP)
-   - **Region:** Choose one close to you. For KSA workshops, select **GCP - Middle East (Dammam)** if available, or any region (Cortex AI uses cross-region inference)
+   - **Cloud Provider:** Any (AWS, Azure, or GCP) -- the lab works on all three
+   - **Region:** Choose one close to you. Any region works. Cortex AI uses cross-region inference automatically when enabled (Module 0 handles this)
 4. Click **Start Free Trial**
 5. Check your email for the activation link and set your password
 6. Log in at your account URL (e.g., `https://abc12345.snowflakecomputing.com`)

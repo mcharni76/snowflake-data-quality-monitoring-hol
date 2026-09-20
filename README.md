@@ -1,12 +1,68 @@
 # Data Quality Monitoring with Snowflake
 
-![Snowflake](https://img.shields.io/badge/Snowflake-Enterprise-29B5E8?logo=snowflake&logoColor=white)
-![dbt](https://img.shields.io/badge/dbt-in_Snowflake-FF694B?logo=dbt&logoColor=white)
-![Cortex AI](https://img.shields.io/badge/Cortex_AI-Powered-9B59B6)
-![License](https://img.shields.io/badge/License-Apache_2.0-green)
-![Modules](https://img.shields.io/badge/Modules-15-blue)
+| | |
+|---|---|
+| **Platform** | Snowflake Enterprise Edition |
+| **Features** | Data Metric Functions, Dynamic Tables, Cortex AI, dbt in Snowflake |
+| **Modules** | 15 hands-on modules |
+| **Duration** | 4-10 hours (track-dependent) |
+| **License** | Apache 2.0 |
 
 Build a **production-ready data quality monitoring framework** using only native Snowflake capabilities. No external tools, no additional infrastructure, no ongoing maintenance -- just Snowflake.
+
+---
+
+## Your Facilitator
+
+| | |
+|---|---|
+| **Name** | Marawen Charni |
+| **Role** | Senior Partner Solutions Engineer, Snowflake |
+| **Region** | Middle East & Africa |
+| **Focus** | Data Cloud, Partner Enablement, AI/ML, Data Engineering |
+| **Events** | Speaker at GITEX, LEAP |
+
+---
+
+## The Scenario: A Saudi Holding Company
+
+> **Fictional context for this lab.** All data, names, and scenarios are synthetic.
+
+Our fictional company is a Saudi diversified holding group headquartered in Riyadh with subsidiaries in real estate development, facility management, and industrial services. They operate across 5 regions of KSA with 56 corporate customers and process ~50 financial transactions daily.
+
+### The Business Problem
+
+The company recently migrated to Snowflake as their enterprise data platform. Data flows in from four source systems:
+
+| Source | System | What It Contains |
+|--------|--------|-----------------|
+| **ERP** | SAP S/4HANA | 30 corporate customer records (Arabic names, National IDs, IBANs) |
+| **CRM** | Salesforce | 25 customer records (overlapping with ERP -- different field formats) |
+| **Gov Portal** | Unified National Platform (Nafath) | 10 government-verified identity records |
+| **Bank Feed** | SAMA-regulated payment gateway | 50 daily transactions (SAR amounts, beneficiary refs) |
+
+**The challenge:** Each source system has different data quality characteristics. The ERP has customers with invalid National IDs (too short, wrong format). The CRM has NULL identifiers. Customer "Abdullah" appears in both ERP and CRM with slightly different details. Transaction feeds occasionally go stale. And nobody knows which records to trust when sources disagree.
+
+**Your mission:** Build a comprehensive, automated data quality monitoring framework that detects issues at every layer (RAW → Silver → Gold), logs them, alerts stakeholders, and provides an executive dashboard -- all using native Snowflake capabilities.
+
+### The Data Landscape
+
+```
+CORP_DWH (Corporate Data Warehouse)
+├── RAW     → 4 staging tables (raw feeds, untransformed)
+├── SILVER  → 2 Dynamic Tables (deduped, merged, auto-refreshing)
+├── GOLD    → 2 dimension/fact tables + views (dbt-governed, tested)
+└── DQ      → Rules catalog, DMFs, issues log, sweep log, AI models
+```
+
+### Why This Matters
+
+1. **Regulatory compliance** -- Saudi Central Bank (SAMA) requires accurate beneficiary identification; invalid National IDs risk transaction rejection
+2. **Customer 360 trust** -- Merging ERP + CRM + Gov data without quality checks produces unreliable golden records
+3. **Operational SLAs** -- Transaction feeds must arrive within 2 hours; stale data means missed payment deadlines
+4. **Board reporting** -- The CFO needs a single DQ scorecard across all entities, not per-system excuses
+
+---
 
 ## What You Will Build
 
@@ -117,10 +173,10 @@ flowchart LR
 
 Below is a condensed version for experienced users:
 
-### Step 1: Clone the repo
+### Step 1: Unzip the lab package
 
 ```bash
-git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+unzip snowflake-data-quality-monitoring-hol.zip
 cd snowflake-data-quality-monitoring-hol
 ```
 
@@ -252,20 +308,13 @@ Each notebook is self-contained with explanations, code, and verification checkp
 │   ├── teardown.sql                    #   Quick cleanup without notebook
 │   └── validate_notebooks.py           #   Validates all .ipynb are valid JSON
 │
-├── .github/workflows/validate.yml      # CI: validates notebooks on push
-├── .gitignore
 ├── LICENSE                             # Apache 2.0
 └── README.md                           # This file
 ```
 
-## Publishing & Contributing
+## Contact
 
-**Repository:** [github.com/mcharni76/snowflake-data-quality-monitoring-hol](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol)
-
-Contributions welcome. To contribute:
-1. Fork the repo
-2. Create a feature branch
-3. Submit a PR with description of changes
+For questions, feedback, or issues with this lab, reach out to your workshop facilitator.
 
 ## Keywords
 

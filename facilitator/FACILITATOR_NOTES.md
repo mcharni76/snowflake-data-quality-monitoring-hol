@@ -89,7 +89,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 - **Why after Module 7:** Account Usage has 1-3h latency. By now, DMFs have been running long enough to have data
 
 ### Module 2: Custom DMFs
-- Saudi-specific validations resonate well with KSA partners
+- Saudi-specific validations resonate well with Middle East partners, but the framework applies to any regulatory environment with identity, financial, and compliance data quality requirements
 - Emphasize: DMFs are first-class Snowflake objects (grantable, auditable)
 
 ### Module 3: Rules Catalog

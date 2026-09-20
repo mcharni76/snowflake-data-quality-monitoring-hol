@@ -86,7 +86,7 @@ with tab1:
             for _, row in scorecard.iterrows():
                 h = float(row["HEALTH_SCORE_PCT"] or 0)
                 color = "normal" if h >= 90 else "off" if h >= 70 else "inverse"
-                st.progress(h / 100, text=f"{row['TABLE_NAME']} — {h:.0f}% ({row['PASSED']}/{row['TOTAL_EXPECTATIONS']} passing)")
+                st.progress(h / 100, text=f"{row['TABLE_NAME']} — {h:.0f}% ({row['PASSED']}/{row['TOTAL_CHECKS']} passing)")
         else:
             st.info("No scorecard data.")
 
@@ -95,8 +95,8 @@ with tab2:
     st.subheader("Quality Trend Over Time")
     trend_df = session.sql("""
         SELECT MEASUREMENT_HOUR,
-            COUNT(CASE WHEN EXPECTATION_RESULT = 'MET' THEN 1 END) AS PASSING,
-            COUNT(CASE WHEN EXPECTATION_RESULT = 'NOT_MET' THEN 1 END) AS FAILING
+            COUNT(CASE WHEN STATUS = 'PASS' THEN 1 END) AS PASSING,
+            COUNT(CASE WHEN STATUS = 'FAIL' THEN 1 END) AS FAILING
         FROM CORP_DWH.DQ.V_DQ_TREND
         GROUP BY MEASUREMENT_HOUR
         ORDER BY MEASUREMENT_HOUR
