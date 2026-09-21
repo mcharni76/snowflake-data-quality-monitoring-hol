@@ -258,6 +258,49 @@ snow dbt --help
 <li>[ ] At least <code>0_SETUP.ipynb</code> imported into Snowflake Notebooks</li>
 </ul>
 <p><strong>Estimated time:</strong> 15-20 minutes to complete all prerequisites.</p>
+<hr />
+<h2 id="appendix-e-remote-development-with-vs-code-or-cursor-optional">Appendix E: Remote Development with VS Code or Cursor (Optional)</h2>
+<p>Snowflake now supports <strong>Remote Development</strong> (Public Preview), letting you connect VS Code or Cursor to a Snowflake-backed development environment over Remote-SSH. Notebooks run on Snowflake-managed compute, not your local machine.</p>
+<p>This is an <strong>alternative</strong> to the Snowsight Workspaces approach in Appendix B. Use it if you prefer working in a desktop IDE.</p>
+<h3 id="why-use-remote-dev">Why Use Remote Dev</h3>
+<ul>
+<li>Run notebooks on Snowflake compute (no local Python/Snowpark needed)</li>
+<li>Full IDE features: IntelliSense, multi-file editing, terminal access</li>
+<li>Procedures with <code>BEGIN...END</code> blocks execute natively (no CLI splitting issues)</li>
+<li>Same notebook files work in both Snowsight and VS Code/Cursor</li>
+</ul>
+<h3 id="setup">Setup</h3>
+<ol>
+<li>Install the <strong>Snowflake Extension</strong> in VS Code or Cursor</li>
+<li>Sign in with your Snowflake account credentials</li>
+<li>Open the Command Palette (<code>Cmd+Shift+P</code>) and run <strong>Snowflake: Connect to Remote Development Environment</strong></li>
+<li>Select your account, database (<code>CORP_DWH</code>), and warehouse (<code>DQ_LAB_WH</code>)</li>
+<li>Upload the 15 <code>.ipynb</code> files to the remote workspace</li>
+<li>Open any notebook and run cells -- execution happens on Snowflake compute</li>
+</ol>
+<h3 id="headless-execution-cli">Headless Execution (CLI)</h3>
+<p>You can also execute entire notebooks without opening them:</p>
+<pre><code class="language-bash"># Upload notebook to a stage
+snow stage copy notebooks/1_RAW_LAYER_DQ.ipynb @CORP_DWH.NOTEBOOKS.NOTEBOOK_STAGE/ --overwrite
+
+# Create a notebook object from the stage file
+snow notebook create CORP_DWH.NOTEBOOKS.NB_1_RAW_LAYER_DQ \
+    -f @CORP_DWH.NOTEBOOKS.NOTEBOOK_STAGE/1_RAW_LAYER_DQ.ipynb
+
+# Execute all cells headlessly
+snow notebook execute CORP_DWH.NOTEBOOKS.NB_1_RAW_LAYER_DQ
+</code></pre>
+<p>This is useful for CI/CD validation of lab notebooks before publishing.</p>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>VS Code or Cursor (CoCo Desktop support coming soon)</li>
+<li>Snowflake Extension for VS Code</li>
+<li>Account parameter <code>ENABLE_NOTEBOOK_SERVICE_REMOTE_VS_CODE_ACCESS</code> must be <code>true</code> (on by default)</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> Remote Development is in Public Preview. If you encounter issues, fall back to Snowsight Workspaces (Appendix B).</p>
+</blockquote>
+<hr />
 <footer>
 <p>Data Quality Monitoring with Snowflake &mdash; Hands-On Lab</p>
 <p>Facilitated by <strong>Marawen Charni</strong> | Senior Partner Solutions Engineer, Snowflake</p>

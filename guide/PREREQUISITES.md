@@ -205,3 +205,55 @@ snow dbt --help
 - [ ] At least `0_SETUP.ipynb` imported into Snowflake Notebooks
 
 **Estimated time:** 15-20 minutes to complete all prerequisites.
+
+---
+
+## Appendix E: Remote Development with VS Code or Cursor (Optional)
+
+Snowflake now supports **Remote Development** (Public Preview), letting you connect VS Code or Cursor to a Snowflake-backed development environment over Remote-SSH. Notebooks run on Snowflake-managed compute, not your local machine.
+
+This is an **alternative** to the Snowsight Workspaces approach in Appendix B. Use it if you prefer working in a desktop IDE.
+
+### Why Use Remote Dev
+
+- Run notebooks on Snowflake compute (no local Python/Snowpark needed)
+- Full IDE features: IntelliSense, multi-file editing, terminal access
+- Procedures with `BEGIN...END` blocks execute natively (no CLI splitting issues)
+- Same notebook files work in both Snowsight and VS Code/Cursor
+
+### Setup
+
+1. Install the **Snowflake Extension** in VS Code or Cursor
+2. Sign in with your Snowflake account credentials
+3. Open the Command Palette (`Cmd+Shift+P`) and run **Snowflake: Connect to Remote Development Environment**
+4. Select your account, database (`CORP_DWH`), and warehouse (`DQ_LAB_WH`)
+5. Upload the 15 `.ipynb` files to the remote workspace
+6. Open any notebook and run cells -- execution happens on Snowflake compute
+
+### Headless Execution (CLI)
+
+You can also execute entire notebooks without opening them:
+
+```bash
+# Upload notebook to a stage
+snow stage copy notebooks/1_RAW_LAYER_DQ.ipynb @CORP_DWH.NOTEBOOKS.NOTEBOOK_STAGE/ --overwrite
+
+# Create a notebook object from the stage file
+snow notebook create CORP_DWH.NOTEBOOKS.NB_1_RAW_LAYER_DQ \
+    -f @CORP_DWH.NOTEBOOKS.NOTEBOOK_STAGE/1_RAW_LAYER_DQ.ipynb
+
+# Execute all cells headlessly
+snow notebook execute CORP_DWH.NOTEBOOKS.NB_1_RAW_LAYER_DQ
+```
+
+This is useful for CI/CD validation of lab notebooks before publishing.
+
+### Requirements
+
+- VS Code or Cursor (CoCo Desktop support coming soon)
+- Snowflake Extension for VS Code
+- Account parameter `ENABLE_NOTEBOOK_SERVICE_REMOTE_VS_CODE_ACCESS` must be `true` (on by default)
+
+> **Note:** Remote Development is in Public Preview. If you encounter issues, fall back to Snowsight Workspaces (Appendix B).
+
+---
