@@ -7,35 +7,40 @@ Use these prompts with Gemini to generate the article images.
 ## dq-00-cover.png (Cover Image)
 
 ```
-Create a professional infographic in flat design style. Clean vectors, sharp edges, NO hand-drawn aesthetic. White background. Dimensions: 1200x1500 portrait.
+Create a technical diagram in a hand-drawn sketch style (Excalidraw aesthetic with slightly wobbly lines and hand-written font). White background. Dimensions: 1200x1500 portrait.
 
-Title at top (bold, dark #1F2937): "Stop Building Data Quality Frameworks from Scratch"
-Subtitle (lighter, #6B7280): "15 Snowflake Notebooks. Zero External Tools. Production-Ready."
+Title at top (bold, hand-written): "Stop Building Data Quality Frameworks from Scratch"
+Subtitle (lighter, hand-written): "15 Snowflake Notebooks. Zero External Tools. Production-Ready."
 
 PRIMARY VISUAL (center, ~60% of image):
-A vertical flow diagram showing 4 layers stacked top to bottom:
+A vertical flow diagram showing 4 layers stacked top to bottom, connected by hand-drawn arrows:
 
-Layer 1 (top): "RAW" label with 4 small table icons in a row, colored bronze (#B45309). Labels: ERP, CRM, Gov, Bank. Small shield icons on each table indicating quality checks.
+Layer 1 (top): "RAW" label with 4 small hand-drawn table icons in a row, colored bronze (#B45309). Labels: ERP, CRM, Gov, Bank. Small shield icons on each table indicating quality checks.
 
-Layer 2: "SILVER" label with 2 larger table icons, colored silver (#6B7280). Labels: INT_CUSTOMERS, INT_TRANSACTIONS. A small "DT" badge (Dynamic Tables) on each. Arrows flow down from the 4 RAW tables into these 2.
+Layer 2: "SILVER" label with 2 larger hand-drawn table icons, colored silver (#6B7280). Labels: INT_CUSTOMERS, INT_TRANSACTIONS. A small "DT" badge (Dynamic Tables) on each. Hand-drawn arrows flow down from the 4 RAW tables into these 2.
 
-Layer 3: "GOLD" label with 2 table icons, colored gold (#D97706). Labels: DIM_CUSTOMER, FACT_TRANSACTIONS. A small "dbt" badge on each. Arrows flow down from Silver.
+Layer 3: "GOLD" label with 2 hand-drawn table icons, colored gold (#D97706). Labels: DIM_CUSTOMER, FACT_TRANSACTIONS. A small "dbt" badge on each. Hand-drawn arrows flow down from Silver.
 
-Layer 4 (bottom): "DQ LAYER" label in Snowflake Blue (#29B5E8). Contains 5 small icons in a row: magnifying glass (DMFs), document (Rules Catalog), brain (Cortex AI), bell (Alerts), chart (Dashboard). Dotted lines connect back up to all three layers above.
+Layer 4 (bottom): "DQ LAYER" label in Snowflake Blue (#29B5E8). Contains 5 small hand-drawn icons in a row: magnifying glass (DMFs), document (Rules Catalog), brain (Cortex AI), bell (Alerts), chart (Dashboard). Dotted hand-drawn lines connect back up to all three layers above.
 
-SIDE ANNOTATIONS (right side, small text):
+SIDE ANNOTATIONS (right side, small hand-written text):
 - Next to RAW: "ROW_COUNT, FRESHNESS, NULL_COUNT"
 - Next to SILVER: "National ID, IBAN, Phone, Duplicates"
 - Next to GOLD: "Expectations, Cross-Reference Integrity"
 - Next to DQ: "AI Rule Discovery, Anomaly Detection"
 
 BOTTOM STRIP:
-Three stat boxes in a row with rounded corners:
-- "15" / "Notebooks" (Snowflake Blue background)
-- "20+" / "Data Metric Functions" (Green #10B981 background)
-- "$5" / "Total Compute Cost" (Gold #D97706 background)
+Three hand-drawn rounded boxes in a row:
+- "15" / "Notebooks" (Snowflake Blue #29B5E8 fill)
+- "20+" / "Data Metric Functions" (Green #10B981 fill)
+- "$5" / "Total Compute Cost" (Gold #D97706 fill)
 
 Color palette: Snowflake Blue #29B5E8, Bronze #B45309, Silver #6B7280, Gold #D97706, Green #10B981, Dark text #1F2937, Light text #6B7280. White background.
+
+Style notes:
+- Everything should feel hand-drawn with slightly wobbly lines and hand-written Virgil font
+- Same Excalidraw aesthetic as the other diagrams in this series
+- The medallion layers (RAW to SILVER to GOLD) should be visually distinct through color and size
 ```
 
 ---

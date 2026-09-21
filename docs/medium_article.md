@@ -1,10 +1,10 @@
-# Stop Building Data Quality Frameworks from Scratch
+# Your Data Quality Stack Is Six Tools Too Many
 
-*You don't need Great Expectations, Airflow, and a separate metadata catalog. You need 15 Snowflake notebooks and an afternoon.*
+*Snowflake already has DMFs, Dynamic Tables, Cortex AI, Horizon, native alerts, and cost visibility. Here's the 15-notebook lab that proves you don't need anything else.*
 
 ![Cover](diagrams/dq-00-cover.png)
 
-**Reading Time:** 12 minutes
+**Reading Time:** 9 minutes
 **Difficulty:** Intermediate
 **Prerequisites:** A Snowflake account (Enterprise edition or trial)
 **Coffee Required:** A full pot. You're about to rethink your entire DQ stack.
@@ -101,25 +101,17 @@ Map your SLA tier (which you define with Horizon tags) to a monitoring schedule.
 
 The lab walks through this cost analysis in Module 1B, with actual credit consumption numbers from `ACCOUNT_USAGE.DATA_QUALITY_MONITORING_USAGE_HISTORY`.
 
-## The Modules
+## The Four Phases
 
-The lab is structured as 15 notebooks that build on each other:
+The lab is 15 notebooks grouped into four phases. Each builds on the previous.
 
-| # | Module | What You Build | Key Insight |
-|---|--------|---------------|-------------|
-| 0 | Setup | Medallion architecture, 4 source tables, 115 seeded records | The quality issues are intentional. Don't fix the data. Fix the monitoring. |
-| 0B | Pipeline | Dynamic Tables (Silver) + dbt in Snowflake (Gold) | DTs are declarative pipelines. No DAG. No scheduling. Just SQL and a target lag. |
-| 1 | Raw Layer DQ | System DMFs: ROW_COUNT, FRESHNESS, NULL_COUNT, BLANK_COUNT | NULL and blank are different. Most source systems use empty strings, not NULL. |
-| 1B | Cost Analysis | DMF credit consumption, tiered scheduling, cost projection | The cheapest DMF is the one you don't need. Start daily, promote to trigger. |
-| 2 | Silver Layer DQ | Custom DMFs: National ID, IBAN, phone format, duplicates | Saudi-specific regex: `^[12][0-9]{9}$` for National ID, `^SA[0-9A-Za-z]{22}$` for IBAN. |
-| 3 | Gold Rules Catalog | Self-service rule definitions, auto-provisioning procedure | Business users define rules in a table. A stored procedure generates DMFs automatically. |
-| 4 | Expectations | Pass/fail verdicts, cross-reference integrity, data loss detection | Expectations turn metrics into decisions. A NULL_COUNT of 10 is a number. "10 > 0 = FAIL" is a verdict. |
-| 4B | Remediation | Issue logging, quarantine, resolution workflow | Detection without remediation is just expensive observation. |
-| 5 | AI/ML DQ | Cortex AI rule suggestions, z-score anomaly detection | Tell the AI: "analyze this table and suggest quality rules." It reads the schema, samples data, and proposes rules with SQL. |
-| 6 | Governance | Tags, classification, lineage via Horizon | Tag a column as PII. Classify it automatically. See lineage from RAW to Gold. One platform. |
-| 7 | Alerts | Email notifications, scheduled sweep, sweep log | Alerts fire on expectation failures. The sweep runs hourly and logs everything. |
-| 8 | Dashboard | Three options: SQL-only, Python/plotly, Streamlit | Pick the one your team will actually maintain. |
-| 9 | Teardown | Clean removal of all lab objects | One notebook, 30 seconds, zero residue. |
+**Phase 1: Foundation (Modules 0, 0B)** -- Build the medallion architecture. Four source tables with 115 intentionally dirty records. Dynamic Tables auto-refresh the Silver layer. dbt in Snowflake governs the Gold layer. The quality issues are seeded on purpose. Don't fix the data. Fix the monitoring.
+
+**Phase 2: Detection (Modules 1, 1B, 2, 3)** -- Attach system DMFs (ROW_COUNT, FRESHNESS, NULL_COUNT) at the RAW layer, then write custom DMFs for business rules (National ID format, IBAN validation, duplicate detection) at Silver and Gold. Module 3 introduces a self-service rules catalog: business users define rules in a table, a stored procedure auto-generates DMFs. Module 1B analyzes the actual credit cost of every DMF.
+
+**Phase 3: Action (Modules 4, 4B, 5)** -- Turn metrics into decisions with expectations (VALUE = 0 means pass, anything else means fail). Build a remediation workflow: detect, log, quarantine, resolve. Then let Cortex AI suggest rules you didn't think of, and flag statistical outliers with z-score anomaly detection.
+
+**Phase 4: Operations (Modules 6, 7, 8, 9)** -- Tag columns as PII via Horizon. Set up email alerts that fire on failures. Schedule an hourly sweep. Build an executive dashboard (three options: SQL-only, Python/plotly, or Streamlit). Tear it all down in 30 seconds.
 
 ## The Part Nobody Talks About: AI-Powered Rule Discovery
 
@@ -174,14 +166,21 @@ That's not a demo. That's a framework.
 
 ## Getting Started
 
-The lab is open-source (Apache 2.0) and available on GitHub:
+The lab is open-source (Apache 2.0). Here's what the first 10 minutes look like:
 
-1. Clone or download the repository
-2. Create a Snowflake trial account (or use an existing Enterprise account)
-3. Upload the 15 notebooks to Snowflake Workspaces
-4. Start with Module 0 and follow the numbered sequence
+```bash
+# 1. Get the lab
+git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
+cd snowflake-data-quality-monitoring-hol/hol
 
-Each notebook is self-contained with explanations, code cells, verification checkpoints, quizzes, and a challenge section. You don't need to read documentation. Just run the cells and read the markdown.
+# 2. Connect your Snowflake CLI
+snow connection add   # name: dq-lab, role: ACCOUNTADMIN
+snow connection test  # should show: Connection test successful
+
+# 3. Upload notebooks to Snowsight Workspaces and run Module 0
+```
+
+By the end of Module 0, you have a database with 115 records across 4 source tables, two roles, and a warehouse. By Module 3, you have 20+ DMFs running automatically. By Module 7, failures trigger email alerts. Each notebook has verification checkpoints that confirm you're on track.
 
 **Repository:** [github.com/mcharni76/snowflake-data-quality-monitoring-hol](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol)
 
@@ -195,6 +194,6 @@ Each notebook is self-contained with explanations, code cells, verification chec
 
 ### A Note on How This Article Came to Be
 
-> **Figures:** Generated with **Gemini** in infographic style.
+> **Figures:** Generated with **Gemini** in hand-drawn sketch style.
 > **Content:** Assisted by **Snowflake Cortex Code**.
 > **Experience:** Based on real enterprise DQ implementations across the Middle East (genericized and anonymized).
