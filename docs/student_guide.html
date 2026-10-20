@@ -475,6 +475,7 @@ $$;
 <li><strong>3 invalid National IDs</strong> (Gov Portal records: 98765, 30876543210, ABC1234567)</li>
 <li><strong>0 invalid IBANs</strong> (all ERP IBANs are valid; CRM/Gov have NULL)</li>
 <li><strong>~9 duplicate National IDs</strong> (IDs shared across ERP, CRM, and Gov sources)</li>
+<li><strong>1 negative amount</strong> in <code>SILVER.INT_TRANSACTIONS</code> (the incorrectly coded refund seeded in Module 0), caught by <code>CHECK_AMOUNT_NOT_NEGATIVE</code></li>
 </ul>
 <hr />
 <h2 id="module-3-gold-layer-dq-business-rules-catalog">Module 3: Gold Layer DQ - Business Rules Catalog</h2>

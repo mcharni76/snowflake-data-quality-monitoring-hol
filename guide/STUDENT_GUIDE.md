@@ -265,6 +265,7 @@ $$;
 - **3 invalid National IDs** (Gov Portal records: 98765, 30876543210, ABC1234567)
 - **0 invalid IBANs** (all ERP IBANs are valid; CRM/Gov have NULL)
 - **~9 duplicate National IDs** (IDs shared across ERP, CRM, and Gov sources)
+- **1 negative amount** in `SILVER.INT_TRANSACTIONS` (the incorrectly coded refund seeded in Module 0), caught by `CHECK_AMOUNT_NOT_NEGATIVE`
 
 ---
 
