@@ -112,11 +112,12 @@ footer a { color: var(--sf-blue); }
 </tbody>
 </table>
 <hr />
-<h2 id="the-scenario-a-saudi-holding-company">The Scenario: A Saudi Holding Company</h2>
+<h2 id="the-scenario-a-diversified-holding-company">The Scenario: A Diversified Holding Company</h2>
 <blockquote>
 <p><strong>Fictional context for this lab.</strong> All data, names, and scenarios are synthetic.</p>
 </blockquote>
-<p>Our fictional company is a Saudi diversified holding group headquartered in Riyadh with subsidiaries in real estate development, facility management, and industrial services. They operate across 5 regions of KSA with 56 corporate customers and process ~50 financial transactions daily.</p>
+<p>Our fictional company is a diversified holding group with subsidiaries in real estate development, facility management, and industrial services. It has 56 corporate customers and processes ~50 financial transactions daily.</p>
+<p>The sample data uses Saudi identity, banking and phone formats (10-digit National ID, <code>SA</code> IBAN, <code>+966</code> phones), so the validation rules in this lab are Saudi-specific. To adapt the lab to another country, change the regex patterns in Modules 2 and 3 to your local ID, IBAN and phone formats. The framework itself does not change.</p>
 <h3 id="the-business-problem">The Business Problem</h3>
 <p>The company recently migrated to Snowflake as their enterprise data platform. Data flows in from four source systems:</p>
 <table>
@@ -161,7 +162,7 @@ footer a { color: var(--sf-blue); }
 </code></pre>
 <h3 id="why-this-matters">Why This Matters</h3>
 <ol>
-<li><strong>Regulatory compliance</strong> -- Saudi Central Bank (SAMA) requires accurate beneficiary identification; invalid National IDs risk transaction rejection</li>
+<li><strong>Regulatory compliance</strong> -- Central bank rules (SAMA, for this dataset) require accurate beneficiary identification; invalid National IDs risk transaction rejection</li>
 <li><strong>Customer 360 trust</strong> -- Merging ERP + CRM + Gov data without quality checks produces unreliable golden records</li>
 <li><strong>Operational SLAs</strong> -- Transaction feeds must arrive within 2 hours; stale data means missed payment deadlines</li>
 <li><strong>Board reporting</strong> -- The CFO needs a single DQ scorecard across all entities, not per-system excuses</li>

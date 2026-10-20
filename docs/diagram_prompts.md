@@ -33,7 +33,7 @@ BOTTOM STRIP:
 Three hand-drawn rounded boxes in a row:
 - "15" / "Notebooks" (Snowflake Blue #29B5E8 fill)
 - "20+" / "Data Metric Functions" (Green #10B981 fill)
-- "$5" / "Total Compute Cost" (Gold #D97706 fill)
+- "0" / "External Tools" (Gold #D97706 fill)
 
 Color palette: Snowflake Blue #29B5E8, Bronze #B45309, Silver #6B7280, Gold #D97706, Green #10B981, Dark text #1F2937, Light text #6B7280. White background.
 
@@ -178,7 +178,7 @@ Dotted blue lines (#29B5E8) connecting back to all three layer columns.
 Green arrows (#10B981) flowing left to right between columns.
 
 BOTTOM ANNOTATION:
-"Total: 115 records, 20+ DMFs, 12 rules, 3 dashboard options" in dark gray.
+"Total: 115 records, 20 custom DMFs, 12 rules, 3 dashboard options" in dark gray.
 
 Color palette:
 - Snowflake Blue (#29B5E8) for DQ layer and monitoring elements
@@ -197,28 +197,26 @@ Color palette:
 ```
 Create a technical diagram in a hand-drawn sketch style (Excalidraw aesthetic with slightly wobbly lines and hand-written font). White background. Dimensions: 1200x600 pixels.
 
-Title (top-left, bold): "DMF Scheduling: The 12x Cost Difference"
+Title (top-left, bold): "DMF Scheduling: 12x More Checks Than the Data Needs"
 
 LAYOUT: Side-by-side comparison with a divider line in the middle.
 
 LEFT PANEL - "TRIGGER_ON_CHANGES":
 A timeline showing 24 hours (midnight to midnight) as a horizontal line.
-5 small green (#10B981) check marks at irregular intervals along the timeline (representing when data changes arrive).
-Label below: "5 evaluations/day"
-Cost box: "$0.15/day" in green text.
+2 small green (#10B981) check marks on the timeline, one in the morning and one in the evening (representing the two times the table actually changes).
+Label below: "2 evaluations/day"
 Caption: "Runs only when data changes. Ideal for TIER 1 (mission-critical)."
 
 RIGHT PANEL - "CRON (HOURLY)":
 Same 24-hour timeline.
 24 amber (#F59E0B) check marks at every hour mark, evenly spaced.
-19 of them have a small "no change" label in light gray (indicating wasted runs).
+22 of them have a small "no change" label in light gray (indicating runs on unchanged data).
 Label below: "24 evaluations/day"
-Cost box: "$1.80/day" in red (#EF4444) text.
-Caption: "Runs every hour regardless. 79% wasted for this table."
+Caption: "Runs every hour regardless. 22 of 24 runs check data that didn't change."
 
 CENTER DIVIDER:
 Large text: "12x" in bold red (#EF4444), with an arrow pointing from right to left.
-Below: "Choose based on SLA tier, not habit."
+Below: "12x more evaluations. Choose by SLA tier, not habit."
 
 BOTTOM ROW - Three tier boxes:
 - TIER 1 (Green): "TRIGGER_ON_CHANGES" / "Mission-critical feeds"

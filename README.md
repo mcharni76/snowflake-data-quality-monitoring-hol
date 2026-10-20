@@ -24,11 +24,13 @@ Build a **production-ready data quality monitoring framework** using only native
 
 ---
 
-## The Scenario: A Saudi Holding Company
+## The Scenario: A Diversified Holding Company
 
 > **Fictional context for this lab.** All data, names, and scenarios are synthetic.
 
-Our fictional company is a Saudi diversified holding group headquartered in Riyadh with subsidiaries in real estate development, facility management, and industrial services. They operate across 5 regions of KSA with 56 corporate customers and process ~50 financial transactions daily.
+Our fictional company is a diversified holding group with subsidiaries in real estate development, facility management, and industrial services. It has 56 corporate customers and processes ~50 financial transactions daily.
+
+The sample data uses Saudi identity, banking and phone formats (10-digit National ID, `SA` IBAN, `+966` phones), so the validation rules in this lab are Saudi-specific. To adapt the lab to another country, change the regex patterns in Modules 2 and 3 to your local ID, IBAN and phone formats. The framework itself does not change.
 
 ### The Business Problem
 
@@ -57,7 +59,7 @@ CORP_DWH (Corporate Data Warehouse)
 
 ### Why This Matters
 
-1. **Regulatory compliance** -- Saudi Central Bank (SAMA) requires accurate beneficiary identification; invalid National IDs risk transaction rejection
+1. **Regulatory compliance** -- Central bank rules (SAMA, for this dataset) require accurate beneficiary identification; invalid National IDs risk transaction rejection
 2. **Customer 360 trust** -- Merging ERP + CRM + Gov data without quality checks produces unreliable golden records
 3. **Operational SLAs** -- Transaction feeds must arrive within 2 hours; stale data means missed payment deadlines
 4. **Board reporting** -- The CFO needs a single DQ scorecard across all entities, not per-system excuses

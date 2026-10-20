@@ -1,192 +1,196 @@
 # Your Data Quality Stack Is Six Tools Too Many
 
-*Snowflake already has DMFs, Dynamic Tables, Cortex AI, Horizon, native alerts, and cost visibility. Here's the 15-notebook lab that proves you don't need anything else.*
+*Snowflake already ships Data Metric Functions, Dynamic Tables, Cortex AI, Horizon, native alerts and per-table DQ cost history. I built a 15-notebook lab to see how far you get with just those.*
+
+This story was written with the assistance of an AI writing program (Snowflake Cortex Code). I reviewed it, and I checked every number and code sample against the lab and a test account.
 
 ![Cover](diagrams/dq-00-cover.png)
+*Cover image generated with Gemini.*
 
 **Reading Time:** 9 minutes
 **Difficulty:** Intermediate
-**Prerequisites:** A Snowflake account (Enterprise edition or trial)
-**Coffee Required:** A full pot. You're about to rethink your entire DQ stack.
+**Prerequisites:** A Snowflake account on Enterprise Edition (a free trial works)
+**Coffee Required:** A full pot. You're about to question your whole DQ stack.
 
 ---
 
-> **What we're building:** A production-ready data quality monitoring framework using only native Snowflake capabilities. No external tools, no additional infrastructure, no ongoing maintenance. From raw data landing to executive dashboard in 15 hands-on modules.
+> **What we're building:** a data quality monitoring framework that uses only native Snowflake features. No extra tools, no extra infrastructure. It goes from raw data landing to an executive dashboard in 15 hands-on notebooks.
 
 ---
 
-## The Tool Sprawl Problem
+## Six tools to answer one question
 
-Every enterprise data team I work with has the same architecture diagram on their wall. It looks something like this:
+A lot of the data quality setups I see look something like this:
 
-- Airflow for scheduling quality checks
+- Airflow to schedule the quality checks
 - Great Expectations for rule definitions
 - A separate metadata catalog (Atlan, DataHub, OpenMetadata)
-- dbt tests for transformation-layer validation
-- A custom Slack/email integration for alerting
-- A BI tool for the dashboard nobody looks at
+- dbt tests for the transformation layer
+- A custom Slack or email integration for alerts
+- A BI tool for the dashboard nobody opens after week two
 
 That's six systems to answer one question: *can I trust this data?*
 
-And here's what actually happens. The Airflow DAG breaks on a Friday. The Great Expectations suite drifts out of sync with the schema. The metadata catalog shows lineage from three months ago. The dbt tests pass but the dashboard still shows garbage. And the Slack channel has so many alerts that everyone muted it in week two.
+Each one is a place where things can break. The Airflow DAG fails on a Friday. The expectation suite drifts away from the schema. The catalog shows old lineage. The dbt tests pass and the dashboard still shows bad numbers. And the alert channel gets so noisy that people mute it.
 
-I've seen this pattern across dozens of enterprise deployments in the Middle East, from Saudi banks to government agencies to holding companies. The tools are different, the outcome is the same: DQ monitoring that works in the demo but fails in production.
+## What Snowflake already ships for data quality
 
-## What If the Platform Already Had Everything?
+Snowflake has Data Metric Functions (DMFs): SQL functions that measure something about a table, like a null count or a format violation count, and run on a schedule you set. Many teams I talk to have tried ROW_COUNT once and stopped there. That's like buying a sports car and only using the cup holder.
 
-Snowflake shipped Data Metric Functions (DMFs) as a native feature. Most teams I talk to either haven't heard of them or used ROW_COUNT once and moved on. That's like buying a sports car and only using the cup holder.
+Here's how the pieces map:
 
-Here's what DMFs actually give you, out of the box:
-
-| Capability | External Tool | Snowflake Native |
+| Capability | Typical external tool | Snowflake native |
 |-----------|---------------|-----------------|
-| Rule definition | Great Expectations YAML | SQL function (CREATE DATA METRIC FUNCTION) |
-| Scheduling | Airflow/cron | TRIGGER_ON_CHANGES or cron, built-in |
-| Metadata | Separate catalog | INFORMATION_SCHEMA + Horizon tags |
-| Alerting | Custom integration | Native ALERT + SYSTEM$SEND_EMAIL |
-| Cost visibility | You don't have this | ACCOUNT_USAGE.DATA_QUALITY_MONITORING_USAGE_HISTORY |
-| Lineage | Separate tool | OBJECT_DEPENDENCIES (automatic) |
+| Rule definition | Great Expectations suite | `CREATE DATA METRIC FUNCTION` (SQL) |
+| Scheduling | Airflow or cron | `TRIGGER_ON_CHANGES` or a cron schedule on the table |
+| Pass/fail verdicts | Custom code | Expectations on a DMF (`VALUE = 0`) |
+| Metadata | Separate catalog | `INFORMATION_SCHEMA` + Horizon tags |
+| Alerting | Custom integration | `CREATE ALERT` + `SYSTEM$SEND_EMAIL` |
+| Cost visibility | Usually not built in | `ACCOUNT_USAGE.DATA_QUALITY_MONITORING_USAGE_HISTORY` |
+| Lineage | Separate tool | `ACCOUNT_USAGE.OBJECT_DEPENDENCIES` |
 
-That last row is the one that usually gets people. With DMFs, you don't just get quality checks. You get cost visibility per table, per DMF, per day. Try getting that from Great Expectations.
+The cost row is the one people notice. `DATA_QUALITY_MONITORING_USAGE_HISTORY` shows the credits DQ monitoring used per table, per hour. It doesn't break the cost down per DMF, but per-table cost is already more than most external setups report.
 
-## The Lab: 10 Hours, Zero External Dependencies
+## What the lab builds
 
-I built a hands-on lab that takes you from an empty Snowflake account to a complete DQ monitoring framework. Not a toy. Not a "hello world" with ROW_COUNT. A real framework with:
+The lab starts from an empty Snowflake account and ends with a working DQ framework. It's not a "hello world" with ROW_COUNT. It includes:
 
-- A medallion architecture (RAW, Silver, Gold) processing data from 4 source systems
-- Dynamic Tables for the Silver layer (auto-refreshing, declarative)
-- dbt in Snowflake for the Gold layer (deployed as a native object, not a CLI tool)
-- 20+ Data Metric Functions across all three layers
-- A self-service rules catalog that auto-provisions DMFs from business-readable definitions
-- Cortex AI that reads your table and suggests quality rules in plain English
-- Z-score anomaly detection that flags statistical outliers
-- A full remediation workflow (detect, log, quarantine, resolve)
-- Tags, classification, and lineage via Snowflake Horizon
-- Email alerts and a scheduled sweep that runs hourly
-- Three dashboard options (SQL-only, Python/plotly, Streamlit)
+- A medallion architecture (RAW, Silver, Gold) fed by 4 source systems
+- Dynamic Tables for the Silver layer
+- dbt for the Gold layer, deployed with `snow dbt deploy` and run inside Snowflake with `EXECUTE DBT PROJECT`
+- 20 custom DMFs plus system DMFs across all three layers
+- A rules catalog table that a stored procedure turns into DMFs (for regex, range and allowed-value rules)
+- Cortex AI that suggests draft rules for a table
+- Z-score anomaly detection on transaction amounts
+- A remediation workflow: log, quarantine, resolve
+- Tags, classification and lineage with Snowflake Horizon
+- Email alerts and an hourly sweep
+- Three dashboard options (SQL-only, Python, Streamlit)
 
-The scenario is a Saudi diversified holding company. Four source systems (ERP, CRM, Government Portal, Bank Feed), 115 records with intentionally seeded quality issues, and a CFO who wants a single scorecard. It's fictional, but the problems are real: NULL identifiers, cross-source duplicates, stale feeds, invalid National IDs, and transaction outliers.
+The scenario is a fictional diversified holding company with four sources: ERP, CRM, a government portal and a bank feed. There are 115 records with quality issues I seeded on purpose: NULL identifiers, duplicates across sources, stale feeds, invalid National IDs and outlier amounts. The data uses Saudi formats (10-digit National ID, `SA` IBAN, `+966` phones). If you work elsewhere, swap the regex patterns for your country's formats. The framework stays the same.
 
-## The "Wrong Way, Then Right Way" Pattern
+## Hourly cron runs 12x more checks than a twice-a-day table needs
 
-### Wrong: One-size-fits-all scheduling
+### The common setup: one schedule for everything
 
-Most teams slap a cron schedule on every quality check. Every table gets checked every hour, whether it changed or not.
+Many teams put the same cron schedule on every table. Every table gets checked every hour, whether it changed or not.
 
 ```sql
--- The expensive way: check every hour regardless
+-- One schedule for everything: 24 evaluations a day
 ALTER TABLE STG_TRANSACTIONS
 SET DATA_METRIC_SCHEDULE = 'USING CRON 0 * * * * UTC';
 ```
 
-This works. It's also 12x more expensive than it needs to be for tables that only change twice a day.
+This works. But if the table only changes twice a day, you run 24 evaluations where 2 would do. That's 12x more checks than the data needs. I'm counting evaluations here, not measured credits. The real cost depends on table size and how many DMFs are attached.
 
-### Right: Tiered monitoring based on business impact
+### A better setup: schedule by business impact
 
 ```sql
--- TIER 1: Mission-critical, check on every change
+-- TIER 1: mission-critical, check on every change
 ALTER TABLE STG_TRANSACTIONS
 SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
 
--- TIER 2: Important but not urgent, check twice daily  
+-- TIER 2: important but not urgent, check twice a day
 ALTER TABLE STG_CUSTOMERS_CRM
 SET DATA_METRIC_SCHEDULE = 'USING CRON 0 6,18 * * * UTC';
 
--- TIER 3: Low-priority, check weekly
+-- TIER 3: low priority, check weekly
 ALTER TABLE STG_GOV_PORTAL
 SET DATA_METRIC_SCHEDULE = 'USING CRON 0 6 * * 1 UTC';
 ```
 
-Map your SLA tier (which you define with Horizon tags) to a monitoring schedule. Tier 1 tables get `TRIGGER_ON_CHANGES` because you need to know immediately. Tier 3 tables get a weekly check because the cost of checking hourly exceeds the cost of a late detection.
+The lab stores the tier as a Horizon tag (`SLA_TIER`) and maps each tier to a schedule. Tier 1 tables run on change because a late detection is expensive. Tier 3 tables run weekly because checking hourly costs more than finding the problem a few days late.
 
-The lab walks through this cost analysis in Module 1B, with actual credit consumption numbers from `ACCOUNT_USAGE.DATA_QUALITY_MONITORING_USAGE_HISTORY`.
+Module 1B walks through this with the credit numbers from `DATA_QUALITY_MONITORING_USAGE_HISTORY`. Note that this view lags by a few hours, so run 1B near the end of the lab.
 
-## The Four Phases
+## Four phases, 15 notebooks
 
-The lab is 15 notebooks grouped into four phases. Each builds on the previous.
+The 15 notebooks fall into four phases. Each phase builds on the one before.
 
-**Phase 1: Foundation (Modules 0, 0B)** -- Build the medallion architecture. Four source tables with 115 intentionally dirty records. Dynamic Tables auto-refresh the Silver layer. dbt in Snowflake governs the Gold layer. The quality issues are seeded on purpose. Don't fix the data. Fix the monitoring.
+**Phase 1: Foundation (Modules 0, 0B).** Build the medallion architecture. Load four source tables with 115 messy records. Dynamic Tables refresh the Silver layer, and dbt builds the Gold layer. Don't fix the data. Fix the monitoring.
 
-**Phase 2: Detection (Modules 1, 1B, 2, 3)** -- Attach system DMFs (ROW_COUNT, FRESHNESS, NULL_COUNT) at the RAW layer, then write custom DMFs for business rules (National ID format, IBAN validation, duplicate detection) at Silver and Gold. Module 3 introduces a self-service rules catalog: business users define rules in a table, a stored procedure auto-generates DMFs. Module 1B analyzes the actual credit cost of every DMF.
+**Phase 2: Detection (Modules 1, 1B, 2, 3).** Attach system DMFs (ROW_COUNT, FRESHNESS, NULL_COUNT, BLANK_COUNT) to the RAW tables. Then write custom DMFs for business rules at Silver and Gold: National ID format, IBAN format, phone format and duplicates. Module 3 adds a rules catalog. You describe a rule as a row in a table, and a stored procedure creates and attaches the DMF. Module 1B looks at what all of this costs.
 
-**Phase 3: Action (Modules 4, 4B, 5)** -- Turn metrics into decisions with expectations (VALUE = 0 means pass, anything else means fail). Build a remediation workflow: detect, log, quarantine, resolve. Then let Cortex AI suggest rules you didn't think of, and flag statistical outliers with z-score anomaly detection.
+**Phase 3: Action (Modules 4, 4B, 5).** Turn metrics into decisions with expectations: `VALUE = 0` passes, anything else fails. Log every failure, quarantine the critical ones and resolve them with a reason. Then ask Cortex AI to draft rules, and flag outlier amounts with a z-score DMF.
 
-**Phase 4: Operations (Modules 6, 7, 8, 9)** -- Tag columns as PII via Horizon. Set up email alerts that fire on failures. Schedule an hourly sweep. Build an executive dashboard (three options: SQL-only, Python/plotly, or Streamlit). Tear it all down in 30 seconds.
+**Phase 4: Operations (Modules 6, 7, 8, 9).** Tag PII columns with Horizon and run classification. Set up an email alert that fires when a check fails. Schedule an hourly sweep. Build a dashboard in SQL, Python or Streamlit. Then remove everything with one teardown script.
 
-## The Part Nobody Talks About: AI-Powered Rule Discovery
+## Cortex AI writes the first draft of your rules
 
-Module 5 is where this lab diverges from every other DQ workshop I've seen.
-
-Instead of manually writing rules for each column, you point Cortex AI at a table and ask it to suggest quality rules:
+Module 5 is where the lab goes past detection. Instead of writing every rule by hand, you ask Cortex AI for suggestions:
 
 ```sql
-CALL DQ.AI_SUGGEST_RULES('CORP_DWH.GOLD.DIM_CUSTOMER');
+CALL CORP_DWH.DQ.AI_SUGGEST_RULES('GOLD.FACT_TRANSACTIONS');
 ```
 
 The procedure:
-1. Reads the table schema (column names, types)
-2. Samples 50 rows of actual data
-3. Sends both to Cortex AI with a prompt that asks for quality rules
-4. Parses the JSON response into RULES_CATALOG rows
-5. Handles parsing failures gracefully (no crash, just a log entry)
 
-The AI doesn't replace your data steward. It gives your data steward a starting point. Instead of staring at a 40-column table and deciding where to begin, they review 10-15 AI-suggested rules and approve, reject, or modify each one.
+1. Reads the table's column names and data types from `INFORMATION_SCHEMA.COLUMNS`
+2. Sends them to `claude-haiku-4-5` with a prompt asking for exactly 3 rules as JSON
+3. Inserts each suggestion into `RULES_CATALOG` with `IS_ACTIVE = FALSE`
+4. Inserts a placeholder row if the JSON doesn't parse, so the call never fails silently
 
-In the lab, the AI correctly identifies that National IDs should be 10 digits starting with 1 or 2, that IBANs should follow the SA + 22 character pattern, and that transaction amounts should be positive. It also suggests rules you might not think of, like checking that email domains are valid or that phone numbers follow the +966 format.
+The AI doesn't replace your data steward. It gives them a starting point. Every suggestion lands inactive, and a person approves or rejects it.
 
-## Who Should Run This Lab
+There's a trade-off to know about. The procedure sends only column names and types, not sample values. That keeps customer data out of the prompt, but it also means the AI can't see the actual patterns in the data. Its suggestions come from what the column names suggest. The output also changes between runs, so treat it as a draft every time.
 
-I built this for SI partners who implement data quality for enterprise customers on Snowflake. But it's useful for anyone who:
+## Detection is step 1 of 10
 
-- Is evaluating whether to build DQ monitoring natively in Snowflake or bolt on external tools
-- Wants to understand DMFs beyond ROW_COUNT
-- Needs a reference architecture for production DQ monitoring
-- Wants to see how Dynamic Tables, dbt in Snowflake, Cortex AI, and Horizon work together in a single project
+Most DQ workshops stop at detection. Run a check, see a failure, done.
 
-The lab runs on a trial account. Total compute cost is under $5 for the full 10-hour run.
+This lab covers the full loop:
 
-## What's Different About This Workshop
+1. **Detect** with DMFs on every layer
+2. **Decide** with expectations (pass or fail)
+3. **Log** to `DQ_ISSUES_LOG` with severity and owner
+4. **Alert** by email, checked every 5 minutes
+5. **Investigate** with drill-down queries
+6. **Remediate** by quarantining and resolving
+7. **Report** on an executive dashboard
+8. **Govern** with tags, classification and lineage
+9. **Optimize** with cost analysis and tiered schedules
+10. **Automate** with AI-drafted rules and catalog-driven DMFs
 
-Most DQ workshops teach you detection. Run a check. See a failure. Done.
+Detection without remediation is just expensive observation.
 
-This lab teaches the full lifecycle:
+## When this lab is worth your time, and when it isn't
 
-1. **Detect** it (DMFs on every layer)
-2. **Decide** on it (Expectations: pass or fail?)
-3. **Log** it (DQ_ISSUES_LOG with severity, owner, SLA)
-4. **Alert** on it (email notification within minutes)
-5. **Investigate** it (drill-down queries and root cause analysis)
-6. **Remediate** it (quarantine, resolve, close the loop)
-7. **Report** on it (executive dashboard with DQ scores)
-8. **Govern** it (tags, classification, lineage)
-9. **Optimize** it (cost analysis, tiered scheduling)
-10. **Automate** it (AI suggests rules, procedures provision DMFs)
+I built it for SI partners who implement data quality on Snowflake for enterprise customers. It's also useful if you:
 
-That's not a demo. That's a framework.
+- Are deciding between native DQ in Snowflake and an external tool
+- Want to use DMFs beyond ROW_COUNT
+- Need a reference design for DQ monitoring in production
+- Want to see Dynamic Tables, dbt in Snowflake, Cortex AI and Horizon working in one project
 
-## Getting Started
+It's less useful if most of your data lives outside Snowflake. DMFs only check Snowflake tables. If you already run a tool like Great Expectations across several platforms and it works, adding native DMFs means running two systems instead of one.
 
-The lab is open-source (Apache 2.0). Here's what the first 10 minutes look like:
+On cost: my full test runs used about 1.4 credits on an X-Small warehouse, plus well under 0.01 credits of DMF serverless compute. Cortex AI calls are billed separately. A student working at their own pace will idle more, but the lab warehouse auto-suspends after 60 seconds.
+
+I tested the lab end to end on an Enterprise account and, separately, on a trial account with Enterprise Edition. Both work.
+
+## Run Module 0 in ten minutes
+
+The lab is open source (Apache 2.0). The first ten minutes look like this:
 
 ```bash
 # 1. Get the lab
 git clone https://github.com/mcharni76/snowflake-data-quality-monitoring-hol.git
-cd snowflake-data-quality-monitoring-hol/hol
+cd snowflake-data-quality-monitoring-hol
 
-# 2. Connect your Snowflake CLI
+# 2. Connect the Snowflake CLI
 snow connection add   # name: dq-lab, role: ACCOUNTADMIN
-snow connection test  # should show: Connection test successful
+snow connection test
 
-# 3. Upload notebooks to Snowsight Workspaces and run Module 0
+# 3. Upload the notebooks to Snowsight Workspaces and run Module 0
 ```
 
-By the end of Module 0, you have a database with 115 records across 4 source tables, two roles, and a warehouse. By Module 3, you have 20+ DMFs running automatically. By Module 7, failures trigger email alerts. Each notebook has verification checkpoints that confirm you're on track.
+After Module 0 you have a database with 115 records across 4 source tables, two roles and a warehouse. After Module 3, about 20 DMFs run automatically. After Module 7, a failing check sends you an email. Each notebook has checkpoints that tell you if you're on track.
 
 **Repository:** [github.com/mcharni76/snowflake-data-quality-monitoring-hol](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol)
 
 ---
 
-*About the Author: [Marawen Charni](https://www.linkedin.com/in/mcharni) is a Solutions Engineer at Snowflake, based in the Middle East. He believes the best data quality framework is the one your team doesn't need a separate vendor to maintain.*
+*About the Author: [Marawen Charni](https://www.linkedin.com/in/mcharni) is a Senior Partner Solutions Engineer at Snowflake, based in the Middle East. He believes the best data quality framework is the one your team doesn't need a separate vendor to maintain.*
 
 *Follow on Medium: [@marawen.cherni](https://medium.com/@marawen.cherni)*
 
@@ -195,5 +199,5 @@ By the end of Module 0, you have a database with 115 records across 4 source tab
 ### A Note on How This Article Came to Be
 
 > **Figures:** Generated with **Gemini** in hand-drawn sketch style.
-> **Content:** Assisted by **Snowflake Cortex Code**.
-> **Experience:** Based on real enterprise DQ implementations across the Middle East (genericized and anonymized).
+> **Content:** Drafted with **Snowflake Cortex Code** and reviewed by me.
+> **Testing:** I ran every notebook end to end on a Snowflake Enterprise account and on a trial account before publishing.
