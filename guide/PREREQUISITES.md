@@ -57,6 +57,15 @@ Your trial includes:
 
 > **Important:** Note your **account identifier** (e.g., `abc12345`) and **account URL**. You will need these for the Snowflake CLI connection.
 
+### Verify Your Email in Snowsight (Required)
+
+Module 0 creates an email notification integration, and Module 7 sends DQ alerts through it. Snowflake only allows emails to addresses that belong to a user in your account **and** are verified. If yours is not verified, Module 0 Step 3 fails with `394209: Email recipients ... are not allowed`.
+
+1. Log into Snowsight, click your name (bottom left) and open your **profile** settings
+2. Check the **Email** field. If it is not marked as verified, click **Resend verification email**
+3. Open the email from Snowflake and click the verification link
+4. Use this same address wherever the notebooks say `<<YOUR_EMAIL>>` or `your.email@company.com`
+
 ---
 
 ## Appendix B: Set Up a Snowflake Notebook Workspace
@@ -191,6 +200,7 @@ snow dbt --help
 | `Database CORP_DWH does not exist` | Run Module 0 (0_SETUP.ipynb) first to create the database |
 | `Permission denied on GOLD schema` | Ensure you ran Module 0 setup which grants privileges |
 | `Connection timeout` | Check your network/VPN. Snowflake needs outbound HTTPS (443). |
+| `394209: Email recipients ... are not allowed` (Module 0 Step 3) | Your email is not verified. Follow "Verify Your Email in Snowsight" in Appendix A, then re-run only the Step 3 cell. |
 
 ---
 
@@ -198,6 +208,7 @@ snow dbt --help
 
 - [ ] Snowflake trial account created (Enterprise Edition)
 - [ ] Can log into Snowsight web UI
+- [ ] Email shows as verified in your Snowsight profile
 - [ ] DQ_LAB_WH warehouse exists (or will be created in Module 0)
 - [ ] Snowflake CLI installed (`snow --version` works)
 - [ ] CLI connection configured and tested (`snow connection test` passes)

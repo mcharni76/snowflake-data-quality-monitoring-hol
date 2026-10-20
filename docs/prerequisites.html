@@ -93,6 +93,14 @@ cd snowflake-data-quality-monitoring-hol
 <blockquote>
 <p><strong>Important:</strong> Note your <strong>account identifier</strong> (e.g., <code>abc12345</code>) and <strong>account URL</strong>. You will need these for the Snowflake CLI connection.</p>
 </blockquote>
+<h3 id="verify-your-email-in-snowsight-required">Verify Your Email in Snowsight (Required)</h3>
+<p>Module 0 creates an email notification integration, and Module 7 sends DQ alerts through it. Snowflake only allows emails to addresses that belong to a user in your account <strong>and</strong> are verified. If yours is not verified, Module 0 Step 3 fails with <code>394209: Email recipients ... are not allowed</code>.</p>
+<ol>
+<li>Log into Snowsight, click your name (bottom left) and open your <strong>profile</strong> settings</li>
+<li>Check the <strong>Email</strong> field. If it is not marked as verified, click <strong>Resend verification email</strong></li>
+<li>Open the email from Snowflake and click the verification link</li>
+<li>Use this same address wherever the notebooks say <code>&lt;&lt;YOUR_EMAIL&gt;&gt;</code> or <code>your.email@company.com</code></li>
+</ol>
 <hr />
 <h2 id="appendix-b-set-up-a-snowflake-notebook-workspace">Appendix B: Set Up a Snowflake Notebook Workspace</h2>
 <p>Snowflake Notebooks run inside <strong>Workspaces</strong> in Snowsight (the Snowflake web UI). No local Jupyter installation needed.</p>
@@ -244,6 +252,10 @@ snow dbt --help
 <td><code>Connection timeout</code></td>
 <td>Check your network/VPN. Snowflake needs outbound HTTPS (443).</td>
 </tr>
+<tr>
+<td><code>394209: Email recipients ... are not allowed</code> (Module 0 Step 3)</td>
+<td>Your email is not verified. Follow "Verify Your Email in Snowsight" in Appendix A, then re-run only the Step 3 cell.</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -251,6 +263,7 @@ snow dbt --help
 <ul>
 <li>[ ] Snowflake trial account created (Enterprise Edition)</li>
 <li>[ ] Can log into Snowsight web UI</li>
+<li>[ ] Email shows as verified in your Snowsight profile</li>
 <li>[ ] DQ_LAB_WH warehouse exists (or will be created in Module 0)</li>
 <li>[ ] Snowflake CLI installed (<code>snow --version</code> works)</li>
 <li>[ ] CLI connection configured and tested (<code>snow connection test</code> passes)</li>

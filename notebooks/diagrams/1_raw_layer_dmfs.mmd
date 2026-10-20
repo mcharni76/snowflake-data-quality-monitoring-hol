@@ -1,0 +1,15 @@
+flowchart LR
+    subgraph ATTACH["Attach DMFs"]
+        RC[ROW_COUNT]
+        NC[NULL_COUNT]
+        BC[BLANK_COUNT]
+        FR[FRESHNESS]
+    end
+    subgraph SCHEDULE["Schedule"]
+        TR[TRIGGER_ON_CHANGES]
+    end
+    subgraph VERIFY["Verify"]
+        RES[Query Results]
+        DD[Drill-Down]
+    end
+    ATTACH --> SCHEDULE --> VERIFY

@@ -51,6 +51,8 @@ GRANT ROLE CORP_DQ_STEWARD TO ROLE CORP_DQ_ADMIN;
 ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';
 
 -- Notification integration (replace email before running!)
+-- The address must belong to a user in this account AND be verified in Snowsight
+-- (profile settings > Resend verification email). Otherwise: error 394209.
 -- CREATE OR REPLACE NOTIFICATION INTEGRATION CORP_DQ_ALERTS
 --     TYPE = EMAIL ENABLED = TRUE
 --     ALLOWED_RECIPIENTS = ('<<YOUR_EMAIL>>');

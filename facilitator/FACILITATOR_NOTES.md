@@ -17,6 +17,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 2. Import notebooks into Snowflake Notebooks workspace
 3. Install `snow` CLI and configure connection
 4. Test with `snow connection test`
+5. Verify their email in Snowsight (profile settings, **Resend verification email** if not verified). Module 0 Step 3 fails with error 394209 for unverified addresses, and Module 7 alerts are only delivered to verified ones.
 
 **Facilitator pre-check:** Run `scripts/setup_only.sql` on a test account to confirm everything works. Deploy dbt project to validate.
 
@@ -115,6 +116,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | Empty DQ results | DMFs haven't fired yet | Wait 1-2 min or touch table with UPDATE |
 | "Insufficient privileges" | Wrong role | `USE ROLE CORP_DQ_ADMIN;` |
 | Cortex AI error | Cross-region not enabled | Module 0 Step 3 |
+| `394209: Email recipients ... are not allowed` | Student email not verified | Verify in Snowsight profile, then re-run only Module 0 Step 3 (safe to re-run) |
 | Dynamic Table not refreshing | Initial lag period | Wait up to TARGET_LAG duration |
 | Dashboard view won't create | No DMF results yet | Run modules 1-4 first, then create views |
 | dbt project not found | Student didn't deploy | Run: `snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source dbt/corp_dq_gold --database CORP_DWH --schema GOLD` |

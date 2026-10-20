@@ -1,0 +1,7 @@
+flowchart LR
+    DMF[DMF executes<br/>returns VALUE] --> EXP[Expectation evaluates<br/>VALUE vs threshold]
+    EXP -->|MET| PASS[PASS]
+    EXP -->|NOT_MET| FAIL[FAIL]
+    FAIL --> ACTION[Alert / Quarantine / Block]
+    style PASS fill:#2ECC71,color:#fff
+    style FAIL fill:#E74C3C,color:#fff

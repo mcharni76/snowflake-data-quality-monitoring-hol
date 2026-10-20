@@ -1,0 +1,10 @@
+flowchart LR
+    NL[Natural Language Rule] --> PARSE[Cortex AI Parse]
+    PARSE --> CAT[Rules Catalog]
+    CAT --> PROV[Auto-Provision DMF]
+    PROV --> MON[Monitor]
+    SCAN[Table Scan] --> SUGGEST[AI Suggest Rules]
+    SUGGEST --> CAT
+    ANOMALY[Z-Score Anomaly] -.-> MON
+    style NL fill:#9B59B6,color:#fff
+    style SCAN fill:#9B59B6,color:#fff

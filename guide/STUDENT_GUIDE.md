@@ -45,6 +45,7 @@ flowchart LR
 3. **CLI Connection** -- Run `snow connection add`, name it `dq-lab`, enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Set default: `snow connection set-default dq-lab`. Test: `snow connection test`
 4. **Notebook Workspace** -- In Snowsight, go to **Workspaces** (left sidebar), create a folder (e.g., `DQ_Lab`), then click **+ > Upload File** and upload all 15 `.ipynb` notebooks from the `notebooks/` folder.
 5. **Warehouse** -- Create one if needed: `CREATE WAREHOUSE DQ_LAB_WH WAREHOUSE_SIZE='XSMALL';`
+6. **Verified Email** -- In Snowsight, click your name (bottom left), open your **profile** settings, and if your email is not marked as verified, click **Resend verification email** and follow the link. Module 0 adds this address to the alert integration and Module 7 sends alerts to it. Unverified addresses are rejected.
 
 > Detailed step-by-step instructions: see `guide/PREREQUISITES.md` in the lab repository.
 
@@ -138,8 +139,11 @@ Every DQ check in this lab maps to one of 7 domains. Understanding these domains
 
 1. Open the `0_SETUP` notebook in Snowflake Notebooks
 2. Ensure you are using the `ACCOUNTADMIN` role
-3. Run all cells sequentially (top to bottom)
-4. Verify the row count output at the end matches expectations
+3. Make sure your email is verified in Snowsight (see Prerequisites, item 6), then replace `<<YOUR_EMAIL>>` in Step 3 with that address
+4. Run all cells sequentially (top to bottom)
+5. Verify the row count output at the end matches expectations
+
+> **Step 3 fails with `394209: Email recipients ... are not allowed`?** Your email is not verified yet. Verify it in Snowsight, come back, re-run only the Step 3 cell, and continue.
 
 ### Expected Output (Verification Cell)
 
@@ -417,6 +421,8 @@ THEN
     CALL SYSTEM$SEND_EMAIL(integration, recipient, subject, body);
 ```
 
+> **Recipient:** Use the same verified email you added to `CORP_DQ_ALERTS` in Module 0. Snowflake does not deliver to unverified addresses.
+
 > **Remember:** Alerts are created SUSPENDED. You must `ALTER ALERT ... RESUME` to activate. Don't forget to SUSPEND them after the lab to avoid ongoing email noise.
 
 ---
@@ -517,6 +523,7 @@ All three variants share the same 4 dashboard views built on DMF results. The ch
 | "Data metric function not found" | DMF not created yet | Run Module 2 before Module 3/4 |
 | Cortex AI error | Cross-region not enabled | `ALTER ACCOUNT SET CORTEX_ENABLED_CROSS_REGION = 'ANY_REGION';` |
 | Alert not firing | Alert is suspended | `ALTER ALERT alert_name RESUME;` |
+| `394209: Email recipients ... are not allowed` | Email not verified in Snowsight | Verify it in your Snowsight profile, then re-run Module 0 Step 3 |
 | "Cannot add DMF" error | Missing EXECUTE DATA METRIC FUNCTION grant | Re-run Module 0 role grants |
 
 ---

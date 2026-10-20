@@ -87,6 +87,7 @@ flowchart LR
 <li><strong>CLI Connection</strong> -- Run <code>snow connection add</code>, name it <code>dq-lab</code>, enter your trial account details (account ID, username, password, role: ACCOUNTADMIN). Set default: <code>snow connection set-default dq-lab</code>. Test: <code>snow connection test</code></li>
 <li><strong>Notebook Workspace</strong> -- In Snowsight, go to <strong>Workspaces</strong> (left sidebar), create a folder (e.g., <code>DQ_Lab</code>), then click <strong>+ &gt; Upload File</strong> and upload all 15 <code>.ipynb</code> notebooks from the <code>notebooks/</code> folder.</li>
 <li><strong>Warehouse</strong> -- Create one if needed: <code>CREATE WAREHOUSE DQ_LAB_WH WAREHOUSE_SIZE='XSMALL';</code></li>
+<li><strong>Verified Email</strong> -- In Snowsight, click your name (bottom left), open your <strong>profile</strong> settings, and if your email is not marked as verified, click <strong>Resend verification email</strong> and follow the link. Module 0 adds this address to the alert integration and Module 7 sends alerts to it. Unverified addresses are rejected.</li>
 </ol>
 <blockquote>
 <p>Detailed step-by-step instructions: see <code>guide/PREREQUISITES.md</code> in the lab repository.</p>
@@ -278,9 +279,13 @@ flowchart LR
 <ol>
 <li>Open the <code>0_SETUP</code> notebook in Snowflake Notebooks</li>
 <li>Ensure you are using the <code>ACCOUNTADMIN</code> role</li>
+<li>Make sure your email is verified in Snowsight (see Prerequisites, item 6), then replace <code>&lt;&lt;YOUR_EMAIL&gt;&gt;</code> in Step 3 with that address</li>
 <li>Run all cells sequentially (top to bottom)</li>
 <li>Verify the row count output at the end matches expectations</li>
 </ol>
+<blockquote>
+<p><strong>Step 3 fails with <code>394209: Email recipients ... are not allowed</code>?</strong> Your email is not verified yet. Verify it in Snowsight, come back, re-run only the Step 3 cell, and continue.</p>
+</blockquote>
 <h3 id="expected-output-verification-cell">Expected Output (Verification Cell)</h3>
 <pre><code>TABLE_NAME                  | ROW_COUNT
 ----------------------------|----------
@@ -687,6 +692,7 @@ THEN
     CALL SYSTEM$SEND_EMAIL(integration, recipient, subject, body);
 </code></pre>
 <blockquote>
+<p><strong>Recipient:</strong> Use the same verified email you added to <code>CORP_DQ_ALERTS</code> in Module 0. Snowflake does not deliver to unverified addresses.</p>
 <p><strong>Remember:</strong> Alerts are created SUSPENDED. You must <code>ALTER ALERT ... RESUME</code> to activate. Don't forget to SUSPEND them after the lab to avoid ongoing email noise.</p>
 </blockquote>
 <hr />
@@ -897,6 +903,11 @@ THEN
 <td>Alert not firing</td>
 <td>Alert is suspended</td>
 <td><code>ALTER ALERT alert_name RESUME;</code></td>
+</tr>
+<tr>
+<td><code>394209: Email recipients ... are not allowed</code></td>
+<td>Email not verified in Snowsight</td>
+<td>Verify it in your Snowsight profile, then re-run Module 0 Step 3</td>
 </tr>
 <tr>
 <td>"Cannot add DMF" error</td>

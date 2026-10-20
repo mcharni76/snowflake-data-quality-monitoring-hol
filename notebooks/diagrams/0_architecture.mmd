@@ -1,0 +1,21 @@
+flowchart LR
+    subgraph RAW["RAW Layer"]
+        ERP[STG_CUSTOMERS_ERP<br/>30 rows]
+        CRM[STG_CUSTOMERS_CRM<br/>25 rows]
+        GOV[STG_GOV_PORTAL<br/>10 rows]
+        TXN[STG_TRANSACTIONS<br/>50 rows]
+    end
+    subgraph SILVER["SILVER Layer<br/>(Dynamic Tables)"]
+        IC[INT_CUSTOMERS<br/>~65 rows]
+        IT[INT_TRANSACTIONS<br/>50 rows]
+    end
+    subgraph GOLD["GOLD Layer<br/>(dbt)"]
+        DIM[DIM_CUSTOMER<br/>~56 rows]
+        FACT[FACT_TRANSACTIONS<br/>48 rows]
+    end
+    ERP --> IC
+    CRM --> IC
+    GOV --> IC
+    TXN --> IT
+    IC --> DIM
+    IT --> FACT
