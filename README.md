@@ -43,7 +43,7 @@ The company recently migrated to Snowflake as their enterprise data platform. Da
 | **Gov Portal** | Unified National Platform (Nafath) | 10 government-verified identity records |
 | **Bank Feed** | SAMA-regulated payment gateway | 50 daily transactions (SAR amounts, beneficiary refs) |
 
-**The challenge:** Each source system has different data quality characteristics. The ERP has customers with invalid National IDs (too short, wrong format). The CRM has NULL identifiers. Customer "Abdullah" appears in both ERP and CRM with slightly different details. Transaction feeds occasionally go stale. And nobody knows which records to trust when sources disagree.
+**The challenge:** Each source system has different data quality characteristics. The government portal feed has invalid National IDs from OCR errors (too short, too long, letters in the ID). The ERP has stray whitespace around IDs and a missing English name. The CRM has NULL identifiers. Customer "Abdullah" appears in both ERP and CRM with slightly different details. Transaction feeds occasionally go stale. And nobody knows which records to trust when sources disagree.
 
 **Your mission:** Build a comprehensive, automated data quality monitoring framework that detects issues at every layer (RAW → Silver → Gold), logs them, alerts stakeholders, and provides an executive dashboard -- all using native Snowflake capabilities.
 

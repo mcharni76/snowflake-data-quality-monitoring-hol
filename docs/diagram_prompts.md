@@ -9,8 +9,8 @@ Use these prompts with Gemini to generate the article images.
 ```
 Create a technical diagram in a hand-drawn sketch style (Excalidraw aesthetic with slightly wobbly lines and hand-written font). White background. Dimensions: 1200x1500 portrait.
 
-Title at top (bold, hand-written): "Stop Building Data Quality Frameworks from Scratch"
-Subtitle (lighter, hand-written): "15 Snowflake Notebooks. Zero External Tools. Production-Ready."
+Title at top (bold, hand-written): "Your Data Quality Stack Is Six Tools Too Many"
+Subtitle (lighter, hand-written): "A 15-notebook lab using only native Snowflake features"
 
 PRIMARY VISUAL (center, ~60% of image):
 A vertical flow diagram showing 4 layers stacked top to bottom, connected by hand-drawn arrows:
@@ -32,8 +32,8 @@ SIDE ANNOTATIONS (right side, small hand-written text):
 BOTTOM STRIP:
 Three hand-drawn rounded boxes in a row:
 - "15" / "Notebooks" (Snowflake Blue #29B5E8 fill)
-- "20+" / "Data Metric Functions" (Green #10B981 fill)
-- "0" / "External Tools" (Gold #D97706 fill)
+- "20" / "Custom DMFs" (Green #10B981 fill)
+- "10" / "Lifecycle Steps" (Gold #D97706 fill)
 
 Color palette: Snowflake Blue #29B5E8, Bronze #B45309, Silver #6B7280, Gold #D97706, Green #10B981, Dark text #1F2937, Light text #6B7280. White background.
 
@@ -57,7 +57,7 @@ LEFT SIDE (labeled "TYPICAL STACK"):
 - "Airflow" (small box, dark gray #374151)
 - "Great Expectations" (small box, dark gray)
 - "Metadata Catalog" (small box, dark gray)
-- "dbt Cloud" (small box, dark gray)
+- "dbt tests" (small box, dark gray)
 - "Slack Bot" (small box, dark gray)
 - "BI Dashboard" (small box, dark gray)
 A frustrated stick figure in the center with question marks above their head.
@@ -72,7 +72,7 @@ One large rounded rectangle in Snowflake Blue (#29B5E8) containing 6 neatly orga
 - "Cortex AI" (small rounded pill)
 - "Cost Visibility" (small rounded pill)
 A happy stick figure next to it.
-Label below: "1 platform, zero maintenance" in Green (#10B981)
+Label below: "1 platform, no extra infrastructure" in Green (#10B981)
 
 A large arrow between left and right sides, colored green (#10B981), labeled "Simplify"
 
@@ -116,7 +116,7 @@ Green arrows (#10B981) connecting each step clockwise.
 CENTER of the oval: "Snowflake Native" in Snowflake Blue, with a small snowflake logo.
 
 Below each step, a small label in light gray (#6B7280):
-1. "DMFs" 2. "Expectations" 3. "DQ_ISSUES_LOG" 4. "SYSTEM$SEND_EMAIL" 5. "Drill-down SQL" 6. "Quarantine + Resolve" 7. "Dashboard Views" 8. "Horizon Tags" 9. "Cost per DMF" 10. "Cortex AI"
+1. "DMFs" 2. "Expectations" 3. "DQ_ISSUES_LOG" 4. "SYSTEM$SEND_EMAIL" 5. "Drill-down SQL" 6. "Quarantine + Resolve" 7. "Dashboard Views" 8. "Horizon Tags" 9. "Cost per table" 10. "Cortex AI"
 
 ANNOTATION (bottom-right corner):
 "Most workshops stop at step 1." in Red (#EF4444), with a small arrow pointing to "DETECT".
@@ -145,10 +145,11 @@ COLUMN 1 - "SOURCES" (leftmost):
 - "Salesforce CRM" (25 rows) - dark gray
 - "Gov Portal" (10 rows) - dark gray
 - "Bank Feed" (50 rows) - dark gray
-Small red dots on some boxes (indicating quality issues):
-- Red dot on ERP: "invalid IDs"
-- Red dot on CRM: "NULL fields"
-- Red dot on Bank: "stale data, outliers"
+Small red dots on each box (indicating seeded quality issues):
+- Red dot on ERP: "ID whitespace, missing name"
+- Red dot on CRM: "NULL IDs"
+- Red dot on Gov Portal: "invalid IDs (OCR)"
+- Red dot on Bank: "stale, blank refs, outliers"
 
 COLUMN 2 - "RAW" (Bronze #B45309 background strip):
 4 table icons: STG_ERP, STG_CRM, STG_GOV, STG_TXN
