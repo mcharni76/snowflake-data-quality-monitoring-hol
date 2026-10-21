@@ -2,9 +2,9 @@ flowchart LR
     OPEN[OPEN] --> INV[INVESTIGATING]
     INV --> Q[QUARANTINED]
     INV --> ACC[ACCEPTED]
-    INV --> RES[RESOLVED]
-    Q --> RES
+    INV --> FIX[FIXED]
+    Q --> FIX
     style OPEN fill:#E74C3C,color:#fff
     style Q fill:#F39C12,color:#fff
-    style RES fill:#2ECC71,color:#fff
+    style FIX fill:#2ECC71,color:#fff
     style ACC fill:#95A5A6,color:#fff

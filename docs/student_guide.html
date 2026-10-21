@@ -731,7 +731,7 @@ THEN
 <h3 id="remediation-lifecycle">Remediation Lifecycle</h3>
 <pre><code>DETECT → LOG → INVESTIGATE → REMEDIATE → VERIFY → CLOSE
 </code></pre>
-<p>Each issue progresses through states: <code>OPEN</code> → <code>INVESTIGATING</code> → <code>RESOLVED</code>. The stored procedure enforces valid transitions and logs resolution notes.</p>
+<p>Each issue progresses through states: <code>OPEN</code> → <code>INVESTIGATING</code> → <code>FIXED</code> (data corrected) or <code>ACCEPTED</code> (known limitation). CRITICAL records can be <code>QUARANTINED</code> while they wait for a fix. An issue counts as resolved once it reaches <code>FIXED</code> or <code>ACCEPTED</code>; the <code>RESOLVE_ISSUE</code> procedure records the notes and stamps <code>RESOLVED_AT</code>.</p>
 <blockquote>
 <p><strong>Tip:</strong> The <code>NOT EXISTS</code> anti-duplicate guard in the logging INSERT prevents the same issue from being logged twice — a critical pattern for scheduled DQ sweeps.</p>
 </blockquote>

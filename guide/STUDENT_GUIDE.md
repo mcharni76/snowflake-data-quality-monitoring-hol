@@ -452,7 +452,7 @@ Module 4 detects issues. Module 4B completes the lifecycle: investigate, log, re
 DETECT → LOG → INVESTIGATE → REMEDIATE → VERIFY → CLOSE
 ```
 
-Each issue progresses through states: `OPEN` → `INVESTIGATING` → `RESOLVED`. The stored procedure enforces valid transitions and logs resolution notes.
+Each issue progresses through states: `OPEN` → `INVESTIGATING` → `FIXED` (data corrected) or `ACCEPTED` (known limitation). CRITICAL records can be `QUARANTINED` while they wait for a fix. An issue counts as resolved once it reaches `FIXED` or `ACCEPTED`; the `RESOLVE_ISSUE` procedure records the notes and stamps `RESOLVED_AT`.
 
 > **Tip:** The `NOT EXISTS` anti-duplicate guard in the logging INSERT prevents the same issue from being logged twice — a critical pattern for scheduled DQ sweeps.
 
