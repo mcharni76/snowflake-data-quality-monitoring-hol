@@ -547,22 +547,26 @@ $$;
 -- At least 100 rows:     VALUE &gt;= 100
 </code></pre>
 <h3 id="reading-results">Reading Results</h3>
+<p><code>SYSTEM$EVALUATE_DATA_QUALITY_EXPECTATIONS_PERSIST_RESULT('&lt;table&gt;', TRUE)</code> returns one row per expectation, with the verdict in <code>EXPECTATION_VIOLATED</code>:</p>
 <table>
 <thead>
 <tr>
-<th>EXPECTATION_RESULT</th>
+<th>EXPECTATION_VIOLATED</th>
+<th>Verdict</th>
 <th>Meaning</th>
 <th>Action</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>MET</code></td>
+<td><code>FALSE</code></td>
+<td>MET</td>
 <td>Value satisfies condition</td>
 <td>No action needed</td>
 </tr>
 <tr>
-<td><code>NOT_MET</code></td>
+<td><code>TRUE</code></td>
+<td>NOT_MET</td>
 <td>Value violates condition</td>
 <td>Investigate and remediate</td>
 </tr>

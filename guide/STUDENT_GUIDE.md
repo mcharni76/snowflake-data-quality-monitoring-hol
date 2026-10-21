@@ -326,10 +326,12 @@ ALTER TABLE db.schema.table
 
 ### Reading Results
 
-| EXPECTATION_RESULT | Meaning | Action |
-|--------------------|---------|--------|
-| `MET` | Value satisfies condition | No action needed |
-| `NOT_MET` | Value violates condition | Investigate and remediate |
+`SYSTEM$EVALUATE_DATA_QUALITY_EXPECTATIONS_PERSIST_RESULT('<table>', TRUE)` returns one row per expectation, with the verdict in `EXPECTATION_VIOLATED`:
+
+| EXPECTATION_VIOLATED | Verdict | Meaning | Action |
+|----------------------|---------|---------|--------|
+| `FALSE` | MET | Value satisfies condition | No action needed |
+| `TRUE` | NOT_MET | Value violates condition | Investigate and remediate |
 
 ### DQ Scorecard (Python Cell)
 
