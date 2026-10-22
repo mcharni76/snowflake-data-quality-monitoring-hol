@@ -122,6 +122,8 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | dbt project not found | Student didn't deploy | Run: `snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source dbt/corp_dq_gold --database CORP_DWH --schema GOLD` |
 | "snow: command not found" | CLI not installed | Install: `pip install snowflake-cli` or `brew install snowflake-cli` |
 
+If you hit a problem not listed here, or a fix that doesn't work, please [open an issue on GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues) so it can be fixed for the next cohort. Include the module, the cell name, the full error message, and the cloud provider and region.
+
 ---
 
 ## Post-Lab Discussion

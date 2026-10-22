@@ -188,6 +188,8 @@ After Module 0 you have a database with 115 records across 4 source tables, two 
 
 **Repository:** [github.com/mcharni76/snowflake-data-quality-monitoring-hol](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol)
 
+If something doesn't work in your account, [open an issue](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues) and I'll take a look.
+
 ---
 
 *About the Author: [Marawen Charni](https://www.linkedin.com/in/mcharni) is a Senior Partner Solutions Engineer at Snowflake, based in the Middle East. He believes the best data quality framework is the one your team doesn't need a separate vendor to maintain.*

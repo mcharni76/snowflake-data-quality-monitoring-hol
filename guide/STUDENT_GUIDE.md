@@ -529,6 +529,8 @@ All three variants share the same 4 dashboard views built on DMF results. The ch
 | `394209: Email recipients ... are not allowed` | Email not verified in Snowsight | Verify it in your Snowsight profile, then re-run Module 0 Step 3 |
 | "Cannot add DMF" error | Missing EXECUTE DATA METRIC FUNCTION grant | Re-run Module 0 role grants |
 
+Problem not listed here? [Open an issue on GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues) with the module, the cell name, the full error message, and your cloud provider and region.
+
 ---
 
 ## Next Steps

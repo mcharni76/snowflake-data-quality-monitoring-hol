@@ -295,7 +295,6 @@ Each notebook is self-contained with explanations, code, and verification checkp
 ├── START_HERE.md                          # Student entry point (start here!)
 ├── guide/                              # Student-facing documentation
 │   ├── STUDENT_GUIDE.md                #   Full reference: domains, patterns, glossary
-│   ├── STUDENT_GUIDE.html              #   Same content, rich visual rendering
 │   ├── PREREQUISITES.md                #   Trial account, CLI install, workspace setup
 │   ├── WORKSHOP_CARDS.md               #   One-page summary per module
 │   ├── LAB_MAP.md                      #   Flow diagram + learning paths
@@ -316,7 +315,9 @@ Each notebook is self-contained with explanations, code, and verification checkp
 
 ## Contact
 
-For questions, feedback, or issues with this lab, reach out to your workshop facilitator.
+For questions or feedback during a workshop, reach out to your workshop facilitator.
+
+Found a bug, a broken step, or a doc that doesn't match what you see? [Open an issue on GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues). Include the module and cell name, the full error message, and your cloud provider and region.
 
 ## Keywords
 

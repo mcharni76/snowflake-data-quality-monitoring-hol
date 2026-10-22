@@ -165,3 +165,5 @@ After completing the lab, please fill in the feedback form:
 ---
 
 > **Questions?** Reach out to your workshop facilitator.
+>
+> **Found a bug?** [Open an issue on GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues) with the module, the cell name and the full error message.
