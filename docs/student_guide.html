@@ -383,24 +383,25 @@ RAW.STG_TRANSACTIONS        | 50
 </table>
 <h3 id="what-you-will-do">What You Will Do</h3>
 <ol>
+<li>Set <code>TRIGGER_ON_CHANGES</code> schedule on all raw tables (first, before any DMF)</li>
 <li>Attach <code>ROW_COUNT</code> to ERP table (volume check)</li>
 <li>Attach <code>FRESHNESS</code> to timestamp columns (SLA compliance)</li>
 <li>Attach <code>NULL_COUNT</code> to CRM National ID and Email (completeness)</li>
 <li>Attach <code>BLANK_COUNT</code> to Transaction CUSTOMER_REF (the tricky one!)</li>
-<li>Set <code>TRIGGER_ON_CHANGES</code> schedule on all raw tables</li>
 <li>Add expectations for automated pass/fail</li>
 <li>Query results via <code>DATA_QUALITY_MONITORING_RESULTS</code></li>
 </ol>
 <blockquote>
+<p><strong>Order matters:</strong> set the schedule before attaching DMFs. A DMF attached first waits up to about 20 minutes in <code>STARTED_AND_PENDING_SCHEDULE_UPDATE</code> and ignores data changes in that window.</p>
 <p><strong>Important:</strong> <code>BLANK_COUNT</code> catches empty strings (<code>''</code>) that <code>NULL_COUNT</code> misses. Always use both for string columns where completeness matters.</p>
 </blockquote>
 <h3 id="key-sql-pattern">Key SQL Pattern</h3>
-<pre><code class="language-sql">-- Attach a system DMF
+<pre><code class="language-sql">-- Set automatic schedule (first)
+ALTER TABLE schema.table SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
+
+-- Attach a system DMF
 ALTER TABLE schema.table
     ADD DATA METRIC FUNCTION SNOWFLAKE.CORE.NULL_COUNT ON (column_name);
-
--- Set automatic schedule
-ALTER TABLE schema.table SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
 
 -- Add expectation
 ALTER TABLE schema.table
@@ -918,6 +919,11 @@ THEN
 <td>"Cannot add DMF" error</td>
 <td>Missing EXECUTE DATA METRIC FUNCTION grant</td>
 <td>Re-run Module 0 role grants</td>
+</tr>
+<tr>
+<td>Still no results after 5 min, <code>SCHEDULE_STATUS = STARTED_AND_PENDING_SCHEDULE_UPDATE</code></td>
+<td>DMF was attached before the table schedule was set</td>
+<td>Wait until the status is <code>STARTED</code> (up to about 20 min), then run the module's trigger cell again</td>
 </tr>
 </tbody>
 </table>

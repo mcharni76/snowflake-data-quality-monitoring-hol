@@ -191,25 +191,27 @@ Don't wait until Gold to find problems. Attach checks at the gate (RAW layer) so
 
 ### What You Will Do
 
-1. Attach `ROW_COUNT` to ERP table (volume check)
-2. Attach `FRESHNESS` to timestamp columns (SLA compliance)
-3. Attach `NULL_COUNT` to CRM National ID and Email (completeness)
-4. Attach `BLANK_COUNT` to Transaction CUSTOMER_REF (the tricky one!)
-5. Set `TRIGGER_ON_CHANGES` schedule on all raw tables
+1. Set `TRIGGER_ON_CHANGES` schedule on all raw tables (first, before any DMF)
+2. Attach `ROW_COUNT` to ERP table (volume check)
+3. Attach `FRESHNESS` to timestamp columns (SLA compliance)
+4. Attach `NULL_COUNT` to CRM National ID and Email (completeness)
+5. Attach `BLANK_COUNT` to Transaction CUSTOMER_REF (the tricky one!)
 6. Add expectations for automated pass/fail
 7. Query results via `DATA_QUALITY_MONITORING_RESULTS`
+
+> **Order matters:** set the schedule before attaching DMFs. A DMF attached first waits up to about 20 minutes in `STARTED_AND_PENDING_SCHEDULE_UPDATE` and ignores data changes in that window.
 
 > **Important:** `BLANK_COUNT` catches empty strings (`''`) that `NULL_COUNT` misses. Always use both for string columns where completeness matters.
 
 ### Key SQL Pattern
 
 ```sql
+-- Set automatic schedule (first)
+ALTER TABLE schema.table SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
+
 -- Attach a system DMF
 ALTER TABLE schema.table
     ADD DATA METRIC FUNCTION SNOWFLAKE.CORE.NULL_COUNT ON (column_name);
-
--- Set automatic schedule
-ALTER TABLE schema.table SET DATA_METRIC_SCHEDULE = 'TRIGGER_ON_CHANGES';
 
 -- Add expectation
 ALTER TABLE schema.table
@@ -528,6 +530,7 @@ All three variants share the same 4 dashboard views built on DMF results. The ch
 | Alert not firing | Alert is suspended | `ALTER ALERT alert_name RESUME;` |
 | `394209: Email recipients ... are not allowed` | Email not verified in Snowsight | Verify it in your Snowsight profile, then re-run Module 0 Step 3 |
 | "Cannot add DMF" error | Missing EXECUTE DATA METRIC FUNCTION grant | Re-run Module 0 role grants |
+| Still no results after 5 min, `SCHEDULE_STATUS = STARTED_AND_PENDING_SCHEDULE_UPDATE` | DMF was attached before the table schedule was set | Wait until the status is `STARTED` (up to about 20 min), then run the module's trigger cell again |
 
 Problem not listed here? [Open an issue on GitHub](https://github.com/mcharni76/snowflake-data-quality-monitoring-hol/issues) with the module, the cell name, the full error message, and your cloud provider and region.
 

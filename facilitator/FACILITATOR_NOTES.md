@@ -114,6 +114,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Empty DQ results | DMFs haven't fired yet | Wait 1-2 min or touch table with UPDATE |
+| Empty DQ results after 5 min, `SCHEDULE_STATUS = STARTED_AND_PENDING_SCHEDULE_UPDATE` | Student attached DMFs before setting the schedule (old notebook copy or cells run out of order) | Wait until `STARTED` (up to about 20 min), then re-run the module's trigger cell |
 | "Insufficient privileges" | Wrong role | `USE ROLE CORP_DQ_ADMIN;` |
 | Cortex AI error | Cross-region not enabled | Module 0 Step 3 |
 | `394209: Email recipients ... are not allowed` | Student email not verified | Verify in Snowsight profile, then re-run only Module 0 Step 3 (safe to re-run) |
