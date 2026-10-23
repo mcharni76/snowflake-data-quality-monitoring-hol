@@ -1,6 +1,7 @@
 import markdown, os, re
 
-os.chdir('/Users/mcharni/Projects/DQ/hol')
+# Run from the lab root (the folder above scripts/), wherever the lab was cloned or unzipped
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.makedirs('docs', exist_ok=True)
 
 HTML_TEMPLATE = """<!DOCTYPE html>
