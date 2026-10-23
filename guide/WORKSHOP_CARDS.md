@@ -115,7 +115,7 @@ One-page summary per module. Use as printed handouts, slide deck overview, or qu
 | **What you build** | RULES_CATALOG table (12 rules), auto-provisioning procedure, multi-column consistency DMFs |
 | **Key concept** | Rules as data: self-service, auditable, automatable. Stewards add rules without SQL. |
 | **Prerequisite** | Module 2 (DMFs exist for reference) |
-| **Checkpoint** | 7+ rules provisioned with DMF_NAME populated, consistency checks attached |
+| **Checkpoint** | 8 rules provisioned with DMF_NAME populated, consistency checks attached |
 
 ---
 
