@@ -87,7 +87,7 @@ Snowflake Notebooks run inside **Workspaces** in Snowsight (the Snowflake web UI
    - Click the **+** button again and select **Upload File**
    - Select all `.ipynb` files from the `notebooks/` folder (you can multi-select)
    - The files appear in your workspace file explorer
-5. Open `0_SETUP.ipynb` by clicking on it — it opens as a notebook tab in the editor
+5. Open `0_SETUP.ipynb` by clicking on it. It opens as a notebook tab in the editor
 6. Set the execution context using the **role and warehouse picker** (top-left of the notebook editor):
    - **Role:** ACCOUNTADMIN (for Module 0 only)
    - **Warehouse:** DQ_LAB_WH (or create one: `CREATE WAREHOUSE DQ_LAB_WH WAREHOUSE_SIZE = 'XSMALL'`)
@@ -96,7 +96,7 @@ Snowflake Notebooks run inside **Workspaces** in Snowsight (the Snowflake web UI
 
 - Upload all 15 notebooks at the start so you can switch between them using the file explorer
 - After Module 0, switch the notebook role to `CORP_DQ_ADMIN` (top-left role picker)
-- Each notebook is independent — you can close and reopen without losing state (objects persist in Snowflake)
+- Each notebook is independent: you can close and reopen without losing state (objects persist in Snowflake)
 - The notebook kernel stays active even if you navigate away or close your browser
 - Use the **minimap** (right side) for quick navigation between cells within a notebook
 
