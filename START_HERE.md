@@ -18,7 +18,7 @@ Your job: detect every issue automatically, log it, alert the right people, and 
 
 | # | Requirement | Details |
 |---|-------------|---------|
-| 1 | **Snowflake Trial** | [Sign up for a free 30-day trial](https://signup.snowflake.com/) -- select **Enterprise Edition**, any cloud/region |
+| 1 | **Snowflake Trial** | [Sign up for a free 30-day trial](https://signup.snowflake.com/) -- select **Enterprise Edition**, any cloud/region. Use **your own account** with ACCOUNTADMIN: a shared account is not supported |
 | 2 | **Verified email** | In Snowsight, open your profile and verify your email (needed for the Module 0 alert integration and Module 7 alerts). See `guide/PREREQUISITES.md` |
 | 3 | **Snowflake CLI** | `brew install snowflake-cli` or `pip install snowflake-cli` |
 | 4 | **Browser** | Chrome/Edge for Snowsight |

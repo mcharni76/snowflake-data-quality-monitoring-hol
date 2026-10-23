@@ -57,6 +57,8 @@ Your trial includes:
 
 > **Important:** Note your **account identifier** (e.g., `abc12345`) and **account URL**. You will need these for the Snowflake CLI connection.
 
+> **One account per student.** Each student needs their own Enterprise account with ACCOUNTADMIN. A shared account is not supported: every student builds the same `CORP_DWH` database, roles and warehouse, so students would overwrite each other's work. Module 0 also grants `CORP_DQ_ADMIN` to the ACCOUNTADMIN role, not to individual users.
+
 ### Verify Your Email in Snowsight (Required)
 
 Module 0 creates an email notification integration, and Module 7 sends DQ alerts through it. Snowflake only allows emails to addresses that belong to a user in your account **and** are verified. If yours is not verified, Module 0 Step 3 fails with `394209: Email recipients ... are not allowed`.
@@ -206,7 +208,7 @@ snow dbt --help
 
 ## Checklist (Complete Before Workshop Day)
 
-- [ ] Snowflake trial account created (Enterprise Edition)
+- [ ] Snowflake trial account created (Enterprise Edition), one per student, not shared
 - [ ] Can log into Snowsight web UI
 - [ ] Email shows as verified in your Snowsight profile
 - [ ] DQ_LAB_WH warehouse exists (or will be created in Module 0)

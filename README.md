@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Platform** | Snowflake Enterprise Edition |
+| **Platform** | Snowflake Enterprise Edition, one account per student (a free trial works) |
 | **Features** | Data Metric Functions, Dynamic Tables, Cortex AI, dbt in Snowflake |
 | **Modules** | 15 hands-on modules |
 | **Duration** | 4-10 hours (track-dependent) |
@@ -224,7 +224,7 @@ Each notebook is self-contained with explanations, code, and verification checkp
 
 > **dbt deploy:** Do NOT deploy upfront. When you reach Module 0B Step 1, the notebook will tell you to open a terminal and run `snow dbt deploy`. The notebook explains what you're deploying and why before you execute it.
 >
-> **After Module 0:** Switch role to `CORP_DQ_ADMIN` for all remaining modules. You won't need ACCOUNTADMIN again.
+> **After Module 0:** Switch role to `CORP_DQ_ADMIN` for all remaining modules. You only need ACCOUNTADMIN again for the Module 9 teardown.
 
 > **Detailed prerequisites:** See [guide/PREREQUISITES.md](guide/PREREQUISITES.md) for trial account signup, troubleshooting, and more.
 >

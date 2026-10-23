@@ -13,7 +13,7 @@
 ## Pre-Workshop Setup (Send to Students 1 Week Before)
 
 Share `guide/PREREQUISITES.md` with students. They need to complete:
-1. Snowflake trial account (Enterprise Edition)
+1. Snowflake trial account (Enterprise Edition), **one per student**. A shared account is not supported: every student builds the same `CORP_DWH` database, roles and warehouse, and Module 0 grants `CORP_DQ_ADMIN` to the ACCOUNTADMIN role, not to individual users.
 2. Import notebooks into Snowflake Notebooks workspace
 3. Install `snow` CLI and configure connection
 4. Test with `snow connection test`
@@ -119,6 +119,7 @@ Share `guide/PREREQUISITES.md` with students. They need to complete:
 | Cortex AI error | Cross-region not enabled | Module 0 Step 3 |
 | `394209: Email recipients ... are not allowed` | Student email not verified | Verify in Snowsight profile, then re-run only Module 0 Step 3 (safe to re-run) |
 | Dynamic Table not refreshing | Initial lag period | Wait up to TARGET_LAG duration |
+| Objects changed or missing, results differ between students | Several students on one shared account (same `CORP_DWH`) | Give each student their own account; a shared account is not supported |
 | Dashboard view won't create | No DMF results yet | Run modules 1-4 first, then create views |
 | dbt project not found | Student didn't deploy | Run: `snow dbt deploy CORP_DQ_GOLD --connection dq-lab --source dbt/corp_dq_gold --database CORP_DWH --schema GOLD` |
 | "snow: command not found" | CLI not installed | Install: `pip install snowflake-cli` or `brew install snowflake-cli` |

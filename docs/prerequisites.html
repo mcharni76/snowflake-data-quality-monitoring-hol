@@ -92,6 +92,7 @@ cd snowflake-data-quality-monitoring-hol
 - ACCOUNTADMIN role (full access)</p>
 <blockquote>
 <p><strong>Important:</strong> Note your <strong>account identifier</strong> (e.g., <code>abc12345</code>) and <strong>account URL</strong>. You will need these for the Snowflake CLI connection.</p>
+<p><strong>One account per student.</strong> Each student needs their own Enterprise account with ACCOUNTADMIN. A shared account is not supported: every student builds the same <code>CORP_DWH</code> database, roles and warehouse, so students would overwrite each other's work. Module 0 also grants <code>CORP_DQ_ADMIN</code> to the ACCOUNTADMIN role, not to individual users.</p>
 </blockquote>
 <h3 id="verify-your-email-in-snowsight-required">Verify Your Email in Snowsight (Required)</h3>
 <p>Module 0 creates an email notification integration, and Module 7 sends DQ alerts through it. Snowflake only allows emails to addresses that belong to a user in your account <strong>and</strong> are verified. If yours is not verified, Module 0 Step 3 fails with <code>394209: Email recipients ... are not allowed</code>.</p>
@@ -261,7 +262,7 @@ snow dbt --help
 <hr />
 <h2 id="checklist-complete-before-workshop-day">Checklist (Complete Before Workshop Day)</h2>
 <ul>
-<li>[ ] Snowflake trial account created (Enterprise Edition)</li>
+<li>[ ] Snowflake trial account created (Enterprise Edition), one per student, not shared</li>
 <li>[ ] Can log into Snowsight web UI</li>
 <li>[ ] Email shows as verified in your Snowsight profile</li>
 <li>[ ] DQ_LAB_WH warehouse exists (or will be created in Module 0)</li>
