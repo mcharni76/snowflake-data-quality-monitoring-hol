@@ -282,6 +282,7 @@ Each notebook is self-contained with explanations, code, and verification checkp
 │   ├── 8B_DASHBOARD_PYTHON.ipynb       #   Dashboard (Python + plotly)
 │   ├── 8C_DASHBOARD_STREAMLIT.ipynb    #   Dashboard (Streamlit in Notebook)
 │   ├── 9_TEARDOWN.ipynb                #   Cleanup all objects
+│   ├── environment.yml                 #   Streamlit version pin for the app (used by Module 8C)
 │   └── streamlit_dq_app.py             #   Standalone Streamlit dashboard (used by Module 8C)
 │
 ├── dbt/corp_dq_gold/                   # dbt project (deploy with snow dbt deploy)

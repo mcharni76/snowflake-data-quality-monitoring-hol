@@ -28,22 +28,27 @@ def validate_notebook(path: Path) -> list[str]:
     return errors
 
 def check_streamlit_app_in_sync(notebook_dir: Path) -> list[str]:
-    """Module 8C embeds streamlit_dq_app.py; the copy must match the file exactly."""
+    """Module 8C embeds streamlit_dq_app.py and environment.yml; the copies must match the files exactly."""
     nb_path = notebook_dir / "8C_DASHBOARD_STREAMLIT.ipynb"
-    app_path = notebook_dir / "streamlit_dq_app.py"
-    if not nb_path.exists() or not app_path.exists():
+    if not nb_path.exists():
         return []
     nb = json.loads(nb_path.read_text())
-    marker = "app_code = r'''"
-    for cell in nb.get("cells", []):
-        source = "".join(cell.get("source", []))
-        if marker in source:
-            start = source.index(marker) + len(marker)
-            embedded = source[start:source.index("'''", start)]
-            if embedded != app_path.read_text():
-                return ["8C embedded app differs from streamlit_dq_app.py (update the deploy cell)"]
-            return []
-    return ["8C deploy cell with app_code = r'''...''' not found"]
+    errors = []
+    for marker, file_name in (("app_code = r'''", "streamlit_dq_app.py"), ("env_yml = '''", "environment.yml")):
+        file_path = notebook_dir / file_name
+        if not file_path.exists():
+            errors.append(f"{file_name} missing from notebooks/")
+            continue
+        for cell in nb.get("cells", []):
+            source = "".join(cell.get("source", []))
+            if marker in source:
+                start = source.index(marker) + len(marker)
+                if source[start:source.index("'''", start)] != file_path.read_text():
+                    errors.append(f"8C embedded copy differs from {file_name} (update the deploy cell)")
+                break
+        else:
+            errors.append(f"8C deploy cell with {marker}...''' not found")
+    return errors
 
 def main():
     notebook_dir = Path(__file__).parent.parent / "notebooks"
