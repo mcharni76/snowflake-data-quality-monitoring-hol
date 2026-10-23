@@ -144,7 +144,7 @@ with tab3:
         if selected_sev != "All":
             fails = fails[fails["SEVERITY"] == selected_sev]
 
-        st.dataframe(fails, use_container_width=True, hide_index=True)
+        st.dataframe(fails, width="stretch", hide_index=True)
         st.caption(f"Showing {len(fails)} failing rule(s)")
     else:
         st.success("\u2705 No failures detected! All expectations are passing.")
@@ -167,7 +167,7 @@ with tab4:
         mcol2.metric("Provisioned", prov)
         mcol3.metric("Pending", pend)
 
-        st.dataframe(catalog, use_container_width=True, hide_index=True)
+        st.dataframe(catalog, width="stretch", hide_index=True)
     else:
         st.info("No rules in catalog. Run Module 3 first.")
 
@@ -192,7 +192,7 @@ with tab5:
             WHERE NATIONAL_ID IS NULL
             ORDER BY CUSTOMER_NAME
         """).to_pandas()
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
         st.caption(f"{len(df)} customers with NULL National ID")
 
     elif drill == "Duplicate Customers":
@@ -202,7 +202,7 @@ with tab5:
             WHERE IS_DUPLICATE = TRUE
             ORDER BY NATIONAL_ID
         """).to_pandas()
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
         st.caption(f"{len(df)} duplicate records flagged")
 
     elif drill == "Orphan Transactions":
@@ -212,7 +212,7 @@ with tab5:
             WHERE CUSTOMER_ID NOT IN (SELECT CUSTOMER_ID FROM CORP_DWH.GOLD.DIM_CUSTOMER)
             ORDER BY AMOUNT DESC LIMIT 20
         """).to_pandas()
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
         st.caption(f"{len(df)} orphan transactions (CUSTOMER_ID not in DIM_CUSTOMER)")
 
     elif drill == "Stale Data (Freshness)":
@@ -224,4 +224,4 @@ with tab5:
                      THEN 'STALE' ELSE 'FRESH' END AS STATUS
             FROM CORP_DWH.RAW.STG_TRANSACTIONS
         """).to_pandas()
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width="stretch", hide_index=True)
