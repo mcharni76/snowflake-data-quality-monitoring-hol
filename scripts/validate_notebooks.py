@@ -27,6 +27,24 @@ def validate_notebook(path: Path) -> list[str]:
 
     return errors
 
+def check_streamlit_app_in_sync(notebook_dir: Path) -> list[str]:
+    """Module 8C embeds streamlit_dq_app.py; the copy must match the file exactly."""
+    nb_path = notebook_dir / "8C_DASHBOARD_STREAMLIT.ipynb"
+    app_path = notebook_dir / "streamlit_dq_app.py"
+    if not nb_path.exists() or not app_path.exists():
+        return []
+    nb = json.loads(nb_path.read_text())
+    marker = "app_code = r'''"
+    for cell in nb.get("cells", []):
+        source = "".join(cell.get("source", []))
+        if marker in source:
+            start = source.index(marker) + len(marker)
+            embedded = source[start:source.index("'''", start)]
+            if embedded != app_path.read_text():
+                return ["8C embedded app differs from streamlit_dq_app.py (update the deploy cell)"]
+            return []
+    return ["8C deploy cell with app_code = r'''...''' not found"]
+
 def main():
     notebook_dir = Path(__file__).parent.parent / "notebooks"
     notebooks = sorted(notebook_dir.glob("*.ipynb"))
@@ -45,6 +63,10 @@ def main():
             total_errors += len(errors)
         else:
             print(f"OK:   {nb_path.name}")
+
+    for err in check_streamlit_app_in_sync(notebook_dir):
+        print(f"FAIL: {err}")
+        total_errors += 1
 
     print(f"\n{'='*50}")
     print(f"Notebooks: {len(notebooks)} | Errors: {total_errors}")
